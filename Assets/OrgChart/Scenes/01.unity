@@ -944,7 +944,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_Sprite: {fileID: 21300000, guid: c403974a825c34e0aa00b2e2b1dfba83, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -2001,8 +2001,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Sprite: {fileID: 21300000, guid: 6bf03096cd8004737a95c34d95c69cfc, type: 3}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 2c57fd4492d6a614a90181460596b04d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3417,6 +3417,18 @@ Prefab:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11406110, guid: 99f61eebfc13d48b290b1b854c921126, type: 2}
+      propertyPath: m_Color.r
+      value: .551470578
+      objectReference: {fileID: 0}
+    - target: {fileID: 11406110, guid: 99f61eebfc13d48b290b1b854c921126, type: 2}
+      propertyPath: m_Color.g
+      value: .377108544
+      objectReference: {fileID: 0}
+    - target: {fileID: 11406110, guid: 99f61eebfc13d48b290b1b854c921126, type: 2}
+      propertyPath: m_Color.b
+      value: .377108544
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 11414928, guid: 99f61eebfc13d48b290b1b854c921126, type: 2}
   m_ParentPrefab: {fileID: 100100000, guid: 99f61eebfc13d48b290b1b854c921126, type: 2}
@@ -4546,7 +4558,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: .427941114, g: .347426474, b: .75, a: 1}
   m_Sprite: {fileID: 21300000, guid: 75da0e71811434adab9972dddef87722, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
@@ -8265,7 +8277,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: .300695837, g: .669117689, b: .231239185, a: 1}
   m_Sprite: {fileID: 21300000, guid: 815e747ff7a6e438ea1c6060e7fb715a, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
