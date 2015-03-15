@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class StaffDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler {
 	[SerializeField] Transform chindrenContainer;
+	[SerializeField] bool isRoot = false;
 	#region IDropHandler implementation
 	public void OnDrop (PointerEventData eventData)
 	{

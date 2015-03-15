@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &156352
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 409632}
+  - 114: {fileID: 11400614}
+  m_Layer: 0
+  m_Name: HairSprites
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &409632
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 156352}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 599, y: 282, z: 5}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+--- !u!114 &11400614
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 156352}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09c8e26161be8463cb9559cc4be86c3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hair2: {fileID: 21300000, guid: 8a46c8a5fb5944fe6a9107bc8250f890, type: 3}
+  hair3: {fileID: 21300000, guid: 9b3d8bc9e6fdb4295abccbd6779d371d, type: 3}
+  hair4: {fileID: 21300000, guid: 3132fcd88404b471e946a02a3e519fba, type: 3}
+  hair5: {fileID: 21300000, guid: 4a6ec4de2887847f89c05c87dc8b4bec, type: 3}
+  hair6: {fileID: 21300000, guid: ae497ef3d9d7e4506b1cf28f284e2628, type: 3}
+--- !u!1001 &100100000
+Prefab:
+  m_ObjectHideFlags: 1
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications: []
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 0}
+  m_RootGameObject: {fileID: 156352}
+  m_IsPrefabParent: 1

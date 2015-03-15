@@ -4,22 +4,22 @@ using System.Collections;
 public class BgmManager : MonoBehaviour {
 
 	AudioClip[] acs;
-	AudioSource audio;
+	AudioSource au;
 	// Use this for initialization
 	void Start () {
 		acs = Resources.LoadAll<AudioClip>("bgm");
-		audio = gameObject.AddComponent<AudioSource>();
+		au = gameObject.AddComponent<AudioSource>();
 		play();
 	}
 	void play(){
 		if(acs.Length == 0){
 			return;
 		}
-		audio.Stop();
+		au.Stop();
 		AudioClip ac = acs[Random.Range(0,acs.Length)];
-		audio.clip = ac;
+		au.clip = ac;
 		
-		audio.Play();
+		au.Play();
 		Debug.Log (ac.name);
 		Invoke("play", ac.length);
 	}
