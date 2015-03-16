@@ -7,11 +7,12 @@ public class StaffData {
 	public int baseSkill;
 	public int skillDiff = 0;
 	public StaffData[] children;
-	public float shirtsHue;
-	public float tieHue;
-	public float suitsHue;
-	public float hairHue;
-	public float faceHue;
+	public Color shirtsColor;
+	public Color tieColor;
+	public Color suitsColor;
+	public Color hairColor;
+	public Color faceColor;
 	public bool hired = false;
+	public int tier = 0;
 	
 }

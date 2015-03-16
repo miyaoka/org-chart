@@ -5,32 +5,22 @@ using UnityEngine.UI;
 
 public class StaffDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler {
 	[SerializeField] Transform chindrenContainer;
+	[SerializeField] Outline outLine;
 	[SerializeField] bool isRoot = false;
 	#region IDropHandler implementation
 	public void OnDrop (PointerEventData eventData)
 	{
-	/*
-		Debug.Log("onDrop");
-		Debug.Log(chindrenContainer.position);
-		Debug.Log(eventData.pointerDrag.transform.position);
-*/
-
 		GameObject draggedItem = eventData.pointerDrag;
 		if(draggedItem.transform.parent == chindrenContainer){
 			return;
 		}
-//		Debug.Log (draggedItem.transform.parent.position);
-//		Debug.Log (chindrenContainer.position);
-		
+
 		GameSounds.auDrop.Play();
-//		draggedItem.GetComponent<StaffController>().auDrop.Play();
 		draggedItem.transform.SetParent(chindrenContainer, true);
-//		eventData.pointerDrag.GetComponent<StaffController>().update();
+
+		EventManager.Instance.TriggerEvent (new ChartChangeEvent() );
 		
-		
-//		(eventData.pointerDrag.transform as RectTransform).position.x = 0;
-//		Debug.Log ( (eventData.pointerDrag.transform.parent.transform as RectTransform).position);
-//		Debug.Log ( (eventData.pointerDrag.transform as RectTransform).position);
+
 	}
 	#endregion
 
@@ -38,7 +28,10 @@ public class StaffDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHandle
 
 	public void OnPointerEnter (PointerEventData eventData)
 	{
-		GetComponent<Outline>().enabled = true;
+		if (isRoot && !eventData.pointerDrag) {
+			return;
+		}
+		outLine.enabled = true;
 	}
 
 	#endregion
@@ -47,7 +40,7 @@ public class StaffDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHandle
 
 	public void OnPointerExit (PointerEventData eventData)
 	{
-		GetComponent<Outline>().enabled = false;
+		outLine.enabled = false;
 	}
 
 	#endregion

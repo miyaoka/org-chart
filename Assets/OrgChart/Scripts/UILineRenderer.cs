@@ -65,7 +65,7 @@ public class UILineRenderer : Graphic
 		// requires sets of quads
 		if (Points == null || Points.Length < 2)
 		Points = new[] { new Vector2(0, 0), new Vector2(1, 1) };
-		var capSize = 24;
+//		var capSize = 24;
 		var sizeX = rectTransform.rect.width;
 		var sizeY = rectTransform.rect.height;
 		var offsetX = -rectTransform.pivot.x * rectTransform.rect.width;
@@ -81,7 +81,7 @@ public class UILineRenderer : Graphic
 		// would be cool to support corners too, but that might be a bit tough :)
 		var pointList = new List<Vector2> ();
 		pointList.Add (Points [0]);
-		var capPoint = Points [0] + (Points [1] - Points [0]).normalized * capSize;
+//		var capPoint = Points [0] + (Points [1] - Points [0]).normalized * capSize;
 //		pointList.Add (capPoint);
 		
 		// should bail before the last point to add another cap point
@@ -89,7 +89,7 @@ public class UILineRenderer : Graphic
 		{
 			pointList.Add (Points [i]);
 		}
-		capPoint = Points [Points.Length-1] - (Points [Points.Length-1] - Points [Points.Length-2]).normalized * capSize;
+//		capPoint = Points [Points.Length-1] - (Points [Points.Length-1] - Points [Points.Length-2]).normalized * capSize;
 //		pointList.Add (capPoint);
 		pointList.Add (Points [Points.Length - 1]);
 		

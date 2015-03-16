@@ -24,6 +24,7 @@ public class StaffController : MonoBehaviour {
 	
 	int baseSkill = 10;
 	int age = 30;
+	int tier = 0;
 	Vector3 lastPos;
 	Vector3 lastParentPos;
 		
@@ -31,11 +32,11 @@ public class StaffController : MonoBehaviour {
 //		updateSkillText();
 //		updateFamilyLine();
 		
-//		SetupListeners();
+		SetupListeners();
 	}
 	
 	void Update()  {
-		if(familyLine){
+		if(familyLine.enabled){
 		/*
 			Debug.Log("-----");
 			Debug.Log (rect.position);
@@ -45,45 +46,75 @@ public class StaffController : MonoBehaviour {
 */			
 //			lastPos = rect.position;
 //			lastParentPos = rect.parent.position;
-			updateFamilyLine();
-			updateSkillText();
 //			transform.hasChanged = false;
 		}
 		
 	}
+
+
 	public void setData(StaffData data){
 		age = data.age;
 		baseSkill = data.baseSkill;
-		updateSkillText();
+		shirts.color = data.shirtsColor;
+		tie.color = data.tieColor;
+		suits.color = data.suitsColor;
+
+
+		updateInfo();
 		
 	}
+	public void SetupListeners(){
+		EventManager.Instance.AddListener<ChartChangeEvent>(OnChartChange);
+	}
+	void OnDestroy(){
+		DisposeListeners();
+	}
+	public void DisposeListeners(){
+		if(EventManager.Instance){
+			EventManager.Instance.RemoveListener<ChartChangeEvent>(OnChartChange);
+		}
+	}
+	public void OnChartChange(ChartChangeEvent evt){
+		StartCoroutine (updateFamilyTreeOnNextFrame() );
+//		Invoke ("updateFamilyLine", 1/30F);
+//		updateFamilyLine();
+		updateInfo();
+	}
+	IEnumerator updateFamilyTreeOnNextFrame(){
+		familyLine.enabled = false;
+
+		//returning 0 will make it wait 1 frame
+		yield return 0;
+
+		updateFamilyLine();
+	}
+
 //	public StaffData getData(){
 	
 //	}
 	/*
-	void OnDestroy(){
-		DisposeListeners();
-	}
+
+
 	
-	public void SetupListeners(){
-		EventManager.Instance.AddListener<StaffRelationEvent>(OnStaffRelationUpdate);
-	}
-	
-	public void DisposeListeners(){
-//		if(EventManager.Instance){
-			EventManager.Instance.RemoveListener<StaffRelationEvent>(OnStaffRelationUpdate);
-//		}
-	}
-	
+
 	public void OnStaffRelationUpdate(StaffRelationEvent evt){
 //		updateSkillText();
 //		updateFamilyLine();
 	}	
 	*/
 	
-	void updateSkillText(){
-		currentSkillText.text = (baseSkill - chindrenContainer.childCount).ToString();
-		baseSkillText.text = chindrenContainer.childCount == 0 ? "" : "/" + baseSkill.ToString();
+	void updateInfo(){
+		int childCount = chindrenContainer.childCount;
+		currentSkillText.text = (baseSkill - childCount).ToString();
+		baseSkillText.text = childCount == 0 ? "" : "/" + baseSkill.ToString();
+
+		if (childCount == 0) {
+//			tie.enabled = false;
+			suits.enabled = false;
+		} else {
+			tie.enabled = true;
+			suits.enabled = true;
+		}
 
 		ageText.text = "(" + age.ToString() + ")";
 		updateHair();
@@ -114,8 +145,8 @@ public class StaffController : MonoBehaviour {
 	}
 	*/
 	public void updateFamilyLine(){
-		if(!familyLine){
-			return;
+		if (tier == 1) {
+			familyLine.enabled = false;
 		}
 		familyLine.enabled = true;
 

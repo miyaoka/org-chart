@@ -30,7 +30,8 @@ public class StaffDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 		foreach(Shadow shadow in shadows){
 			Destroy(shadow);
 		}
-		Destroy(draggedItem.GetComponentInChildren<UILineRenderer>());
+		draggedItem.GetComponentInChildren<UILineRenderer> ().enabled = false;
+//		Destroy(draggedItem.GetComponentInChildren<UILineRenderer>());
 
 		//set size and alpha
 		ContentSizeFitter csf = draggedItem.AddComponent<ContentSizeFitter>();
@@ -51,6 +52,9 @@ public class StaffDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 		//hide original
 		GetComponent<CanvasGroup>().alpha = 0.0F;
 //		GetComponent<StaffDropHandler>().enabled = false;
+
+		//notify to all
+		EventManager.Instance.TriggerEvent (new StaffBeginDragEvent(gameObject));
 		
 	}
 
@@ -74,9 +78,9 @@ public class StaffDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 		//show original
 		GetComponent<CanvasGroup>().alpha = 1.0F;
 //		GetComponent<StaffDropHandler>().enabled = true;
-		
-//		EventManager.Instance.QueueEvent(new StaffRelationEvent());
-		
+
+		EventManager.Instance.TriggerEvent (new StaffEndDragEvent ());
+
 	}
 
 	#endregion
