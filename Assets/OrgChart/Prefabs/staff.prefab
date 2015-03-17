@@ -495,7 +495,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 101036}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 1573420865, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
   m_Name: 
@@ -793,9 +793,12 @@ MonoBehaviour:
   hair: {fileID: 11466950}
   hairSprites: {fileID: 11400614, guid: 4f24a916f4fc44213abd351c0a93feec, type: 2}
   staffPrefab: {fileID: 153004}
+  skillImage: {fileID: 11485874}
   age: 30
   baseSkill: 10
   tier: 0
+  hired: 0
+  skillType: 0
 --- !u!114 &11464464
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1001,7 +1004,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: .509803951, g: .568627477, b: .741176486, a: 1}
+  m_Color: {r: .327205896, g: .654411793, b: .424239427, a: 1}
   m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0

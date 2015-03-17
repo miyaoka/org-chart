@@ -17,3 +17,7 @@ public class StaffEndDragEvent : GameEvent {
 	public StaffEndDragEvent(){
 	}
 }
+public class EndTurnEvent : GameEvent {	
+	public EndTurnEvent(){
+	}
+}

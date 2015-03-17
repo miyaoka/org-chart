@@ -18,26 +18,27 @@ public class GameController : MonoBehaviour {
         foreach( Transform child in staffContainer){
 			Destroy(child.gameObject);
         }
-        
 		updateRecruits ();
 	}
 	public void SetupListeners(){
-		EventManager.Instance.AddListener<ChartChangeEvent>(OnChartChange);
+		EventManager.Instance.AddListener<ChartChangeEvent>(onChartChange);
+		EventManager.Instance.AddListener<EndTurnEvent>(onEndTurn);
 	}
 	void OnDestroy(){
 		DisposeListeners();
 	}
 	public void DisposeListeners(){
 		if(EventManager.Instance){
-			EventManager.Instance.RemoveListener<ChartChangeEvent>(OnChartChange);
+			EventManager.Instance.RemoveListener<ChartChangeEvent>(onChartChange);
+			EventManager.Instance.RemoveListener<EndTurnEvent>(onEndTurn);
 		}
 	}
-	public void OnChartChange(ChartChangeEvent evt){
+	void onEndTurn(EndTurnEvent e){
+		updateRecruits ();	
+	}
+	void onChartChange(ChartChangeEvent evt){
 		StaffData[] sd = data;
 		data = sd;
-		
-//		StartCoroutine (updateFamilyTreeOnNextFrame() );
-//        updateInfo();
     }
 	public StaffData[] data{
 		get{
@@ -84,7 +85,7 @@ public class GameController : MonoBehaviour {
 		foreach( Transform child in recruitContainer){
 			Destroy(child.gameObject);
 		}
-		int count = Random.Range (25, 25);
+		int count = Random.Range (3, 7);
 		for(int i = 0; i < count; i++){
 			createStaff().transform.SetParent(recruitContainer);
 		}
@@ -112,6 +113,8 @@ public class GameController : MonoBehaviour {
 		sd.shirtsColor = HSVToRGB (shirtsHue, Random.value * .2F, shirtsV);
 		sd.tieColor = HSVToRGB (tieHue, Random.value * .2F + .2F, tieV);
 		sd.suitsColor = HSVToRGB (suitsHue, Random.value * .3F, suitsV);
+		
+		sd.skillType = Random.Range(1,4);
 		
 		sc.data = sd;
 		

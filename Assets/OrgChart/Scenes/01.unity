@@ -557,8 +557,9 @@ GameObject:
   - 114: {fileID: 575482722}
   - 114: {fileID: 575482721}
   - 82: {fileID: 575482723}
+  - 114: {fileID: 575482724}
   m_Layer: 5
-  m_Name: endButton
+  m_Name: endTurnButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -624,6 +625,18 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 575482723}
         m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine, Version=0.0.0.0,
+            Culture=neutral, PublicKeyToken=null
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 575482724}
+        m_MethodName: onClick
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -765,6 +778,17 @@ AudioSource:
       tangentMode: 0
     m_PreInfinity: 2
     m_PostInfinity: 2
+--- !u!114 &575482724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 575482716}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb990e73d9eb4d7b895699d3e6e2ae0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &757261904
 GameObject:
   m_ObjectHideFlags: 0
@@ -1178,6 +1202,38 @@ Prefab:
     - target: {fileID: 22498522, guid: 99f61eebfc13d48b290b1b854c921126, type: 2}
       propertyPath: m_SizeDelta.x
       value: 223
+      objectReference: {fileID: 0}
+    - target: {fileID: 11435192, guid: 99f61eebfc13d48b290b1b854c921126, type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11401742, guid: 99f61eebfc13d48b290b1b854c921126, type: 2}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11435192, guid: 99f61eebfc13d48b290b1b854c921126, type: 2}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 11435192, guid: 99f61eebfc13d48b290b1b854c921126, type: 2}
+      propertyPath: m_FillCenter
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11435192, guid: 99f61eebfc13d48b290b1b854c921126, type: 2}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 11401742, guid: 99f61eebfc13d48b290b1b854c921126, type: 2}
+      propertyPath: m_UseGraphicAlpha
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11401742, guid: 99f61eebfc13d48b290b1b854c921126, type: 2}
+      propertyPath: m_EffectDistance.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 11401742, guid: 99f61eebfc13d48b290b1b854c921126, type: 2}
+      propertyPath: m_EffectDistance.y
+      value: -2
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 99f61eebfc13d48b290b1b854c921126, type: 2}
@@ -1916,13 +1972,17 @@ Prefab:
       propertyPath: m_SizeDelta.x
       value: 48
       objectReference: {fileID: 0}
-    - target: {fileID: 11481840, guid: f8ea721917acd40c7b48516c1e57c1fd, type: 2}
-      propertyPath: m_Enabled
-      value: 0
+    - target: {fileID: 11485874, guid: f8ea721917acd40c7b48516c1e57c1fd, type: 2}
+      propertyPath: m_Color.r
+      value: .593013704
       objectReference: {fileID: 0}
-    - target: {fileID: 133570, guid: f8ea721917acd40c7b48516c1e57c1fd, type: 2}
-      propertyPath: m_IsActive
-      value: 0
+    - target: {fileID: 11485874, guid: f8ea721917acd40c7b48516c1e57c1fd, type: 2}
+      propertyPath: m_Color.b
+      value: .579577088
+      objectReference: {fileID: 0}
+    - target: {fileID: 11485874, guid: f8ea721917acd40c7b48516c1e57c1fd, type: 2}
+      propertyPath: m_Color.g
+      value: .662745118
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: f8ea721917acd40c7b48516c1e57c1fd, type: 2}

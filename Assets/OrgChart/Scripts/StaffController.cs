@@ -19,6 +19,7 @@ public class StaffController : MonoBehaviour {
 	
 	[SerializeField] HairSprites hairSprites;
 	[SerializeField] GameObject staffPrefab;
+	[SerializeField] Image skillImage;
 	
     
     float familyLineHeight = 19.0F;
@@ -28,9 +29,11 @@ public class StaffController : MonoBehaviour {
     public int baseSkill = 10;
 	public int tier = 0;
 	public bool hired;
+	public int skillType;
 
 		
-	void Start(){	
+	void Start(){
+		
 	}
 	
 	void Update()  {
@@ -46,6 +49,7 @@ public class StaffController : MonoBehaviour {
 			sd.tieColor = tie.color;
 			sd.suitsColor = suits.color;
 			sd.hired = hired;
+			sd.skillType = skillType;
 //			sd.children = new StaffData[childrenContainer.childCount];
 			
 			return sd;
@@ -56,10 +60,14 @@ public class StaffController : MonoBehaviour {
 			baseSkill = value.baseSkill;
 			tier = value.tier;
 			hired = value.hired;
-
+			skillType = value.skillType;
+			
 			shirts.color = value.shirtsColor;
 			tie.color = value.tieColor;
 			suits.color = value.suitsColor;
+			
+			
+			skillImage.color = GameController.HSVToRGB((float)value.skillType / 3F, (value.skillType == 0) ? 0 : .2F, .6F);
 			
 
             updateInfo();
@@ -120,8 +128,8 @@ public class StaffController : MonoBehaviour {
 		float endX = parentRect.sizeDelta.x/2 - rect.position.x + parentRect.position.x;
 		familyLine.Points = new Vector2[] { 
 			new Vector2(startX, 0), 
-			new Vector2(startX, 6),//familyLineHeight * .4F),
-			new Vector2(endX, 6),//familyLineHeight * .4F),
+			new Vector2(startX, 8),//familyLineHeight * .4F),
+			new Vector2(endX, 8),//familyLineHeight * .4F),
 			new Vector2(endX, familyLineHeight * .6F),
 			
 			new Vector2(endX, familyLineHeight)

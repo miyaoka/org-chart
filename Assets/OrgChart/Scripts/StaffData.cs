@@ -14,5 +14,6 @@ public class StaffData {
 	public Color faceColor;
 	public bool hired = false;
 	public int tier = 3;
+	public int skillType;
 	
 }
