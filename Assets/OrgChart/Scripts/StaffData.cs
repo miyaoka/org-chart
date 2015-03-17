@@ -13,6 +13,6 @@ public class StaffData {
 	public Color hairColor;
 	public Color faceColor;
 	public bool hired = false;
-	public int tier = 0;
+	public int tier = 3;
 	
 }

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class StaffController : MonoBehaviour {
 	
-	[SerializeField] RectTransform childrenContainer;
+	[SerializeField] public RectTransform childrenContainer;
 	[SerializeField] Text currentSkillText;
 	[SerializeField] Text baseSkillText;
 	[SerializeField] Text ageText;
@@ -61,19 +61,7 @@ public class StaffController : MonoBehaviour {
 			tie.color = value.tieColor;
 			suits.color = value.suitsColor;
 			
-			foreach(Transform child in childrenContainer){
-				Destroy(child.gameObject);		
-			}
-			for(int i=0; i < value.children.Length; i++){
-				GameObject child = Instantiate(staffPrefab) as GameObject;
-				child.GetComponent<StaffController>().data = value.children[i];
-				/*
-				Debug.Log ("---");
-				Debug.Log (value.children[i].children.Length);
-				Debug.Log (child.GetComponent<StaffController>().childrenContainer.childCount);
-				*/
-				child.transform.SetParent(childrenContainer);
-			}
+
             updateInfo();
             updateFamilyLine();
 		}
@@ -90,17 +78,21 @@ public class StaffController : MonoBehaviour {
 	}
 
 	
-	void updateInfo(){
+	public void updateInfo(){
 		int childCount = childrenContainer.childCount;
 		currentSkillText.text = (baseSkill - childCount).ToString();
 		baseSkillText.text = childCount == 0 ? "" : "/" + baseSkill.ToString();
 
-		if (childCount == 0) {
-//			tie.enabled = false;
-			suits.enabled = false;
-		} else {
+		int t = tier + ((childCount == 0) ? 1 : 0);
+		if(t <= 1){
 			tie.enabled = true;
 			suits.enabled = true;
+		} else if(t == 2) {
+			tie.enabled = true;
+			suits.enabled = false;
+		} else {
+			tie.enabled = false;
+			suits.enabled = false;			
 		}
 
 		ageText.text = "(" + age.ToString() + ")";

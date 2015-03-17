@@ -44,31 +44,35 @@ public class GameController : MonoBehaviour {
 			StaffData sd = new StaffData();
 			
 			sd.children = new StaffData[staffContainer.childCount];
-			for(int i = 0; i < staffContainer.childCount; i++){				
-                sd.children[i] = staffContainer.GetChild(i).GetComponent<StaffController>().data;
+			for(int i = 0; i < staffContainer.childCount; i++){	
+				Transform child = staffContainer.GetChild(i);
+                sd.children[i] = child.GetComponent<StaffController>().data;
 			}
 			
 			return sd;
 			
 		}
 		set{
-//			GameObject[] allChindren = staffContainer.GetComponentsInChildren<GameObject>();
-//			foreach(GameObject child in allChindren) {
-//				Destroy(child);
-//            }
             foreach(Transform child in staffContainer){
             	Destroy(child.gameObject);
             }
-            Transform[] rootChildren = new Transform[value.children.Length];
-			for(int i=0; i < value.children.Length; i++){
-				GameObject child = Instantiate(staffPrefab) as GameObject;
-				child.GetComponent<StaffController>().data = value.children[i];
-				rootChildren[i] = child.transform;
-            }
-			for(int i=0; i < value.children.Length; i++){
-				rootChildren[i].SetParent(staffContainer);
+			for(int i = 0; i < value.children.Length; i++){
+				addChild(value.children[i], staffContainer, 0);
             }
         }
+    }
+
+    void addChild(StaffData sd, Transform parent, int tier){
+		GameObject child = Instantiate(staffPrefab) as GameObject;
+		StaffController sc = child.GetComponent<StaffController>();
+		sd.tier = tier;
+		sc.data = sd;
+        child.transform.SetParent(parent);
+        tier++;
+		for(int i = 0; i < sd.children.Length; i++){
+			addChild(sd.children[i], sc.childrenContainer, tier);
+		}
+		sc.updateInfo();
     }
     
     
