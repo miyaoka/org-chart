@@ -6,7 +6,7 @@ public class StaffData {
 	public int age;
 	public int baseSkill;
 	public int skillDiff = 0;
-	public StaffData[] children;
+	public StaffData[] children = new StaffData[0];
 	public Color shirtsColor;
 	public Color tieColor;
 	public Color suitsColor;

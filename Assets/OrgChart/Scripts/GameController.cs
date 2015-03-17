@@ -14,17 +14,69 @@ public class GameController : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		foreach( Transform child in staffContainer){
+		SetupListeners();
+        foreach( Transform child in staffContainer){
 			Destroy(child.gameObject);
         }
-
+        
 		updateRecruits ();
 	}
-	void updateRecruits(){
+	public void SetupListeners(){
+		EventManager.Instance.AddListener<ChartChangeEvent>(OnChartChange);
+	}
+	void OnDestroy(){
+		DisposeListeners();
+	}
+	public void DisposeListeners(){
+		if(EventManager.Instance){
+			EventManager.Instance.RemoveListener<ChartChangeEvent>(OnChartChange);
+		}
+	}
+	public void OnChartChange(ChartChangeEvent evt){
+		StaffData sd = data;
+		data = sd;
+		
+//		StartCoroutine (updateFamilyTreeOnNextFrame() );
+//        updateInfo();
+    }
+	public StaffData data{
+		get{
+			StaffData sd = new StaffData();
+			
+			sd.children = new StaffData[staffContainer.childCount];
+			for(int i = 0; i < staffContainer.childCount; i++){				
+                sd.children[i] = staffContainer.GetChild(i).GetComponent<StaffController>().data;
+			}
+			
+			return sd;
+			
+		}
+		set{
+//			GameObject[] allChindren = staffContainer.GetComponentsInChildren<GameObject>();
+//			foreach(GameObject child in allChindren) {
+//				Destroy(child);
+//            }
+            foreach(Transform child in staffContainer){
+            	Destroy(child.gameObject);
+            }
+            Transform[] rootChildren = new Transform[value.children.Length];
+			for(int i=0; i < value.children.Length; i++){
+				GameObject child = Instantiate(staffPrefab) as GameObject;
+				child.GetComponent<StaffController>().data = value.children[i];
+				rootChildren[i] = child.transform;
+            }
+			for(int i=0; i < value.children.Length; i++){
+				rootChildren[i].SetParent(staffContainer);
+            }
+        }
+    }
+    
+    
+    void updateRecruits(){
 		foreach( Transform child in recruitContainer){
 			Destroy(child.gameObject);
 		}
-		int count = Random.Range (40, 40);
+		int count = Random.Range (25, 25);
 		for(int i = 0; i < count; i++){
 			createStaff().transform.SetParent(recruitContainer);
 		}
@@ -52,7 +104,9 @@ public class GameController : MonoBehaviour {
 		sd.shirtsColor = HSVToRGB (shirtsHue, Random.value * .2F, shirtsV);
 		sd.tieColor = HSVToRGB (tieHue, Random.value * .2F + .2F, tieV);
 		sd.suitsColor = HSVToRGB (suitsHue, Random.value * .3F, suitsV);
-		sc.setData(sd);
+		
+		sc.data = sd;
+		
 		
 		return staff;
 	

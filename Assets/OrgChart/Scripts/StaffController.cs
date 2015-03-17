@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class StaffController : MonoBehaviour {
 	
-	[SerializeField] RectTransform chindrenContainer;
+	[SerializeField] RectTransform childrenContainer;
 	[SerializeField] Text currentSkillText;
 	[SerializeField] Text baseSkillText;
 	[SerializeField] Text ageText;
@@ -18,68 +18,68 @@ public class StaffController : MonoBehaviour {
 	[SerializeField] Image hair;
 	
 	[SerializeField] HairSprites hairSprites;
+	[SerializeField] GameObject staffPrefab;
 	
+    
+    float familyLineHeight = 19.0F;
 	
-	float familyLineHeight = 19.0F;
-	
-	int baseSkill = 10;
-	int age = 30;
-	int tier = 0;
-	Vector3 lastPos;
-	Vector3 lastParentPos;
+//	string[] fields = "age baseSkill tier".Split(" "[0]);
+	public int age = 30;
+    public int baseSkill = 10;
+	public int tier = 0;
+
 		
-	void Start(){
-//		updateSkillText();
-//		updateFamilyLine();
-		
-		SetupListeners();
+	void Start(){	
 	}
 	
 	void Update()  {
-		if(familyLine.enabled){
-		/*
-			Debug.Log("-----");
-			Debug.Log (rect.position);
-			Debug.Log (lastPos);
-			Debug.Log (rect.parent.position);
-			Debug.Log (lastParentPos);
-*/			
-//			lastPos = rect.position;
-//			lastParentPos = rect.parent.position;
-//			transform.hasChanged = false;
-		}
+	}
+	public StaffData data{
+		get{
+			StaffData sd = new StaffData();
+			
+			sd.age = age;
+			sd.baseSkill = baseSkill;
+			sd.tier = tier;
+			sd.shirtsColor = shirts.color;
+			sd.tieColor = tie.color;
+			sd.suitsColor = suits.color;
+			sd.children = new StaffData[childrenContainer.childCount];
+			for(int i = 0; i < childrenContainer.childCount; i++){
+				sd.children[i] = childrenContainer.GetChild(i).GetComponent<StaffController>().data;
+			}
+			
+			return sd;
 		
-	}
+		}
+		set{
+			age = value.age;
+			baseSkill = value.baseSkill;
+			tier = value.tier;
 
-
-	public void setData(StaffData data){
-		age = data.age;
-		baseSkill = data.baseSkill;
-		shirts.color = data.shirtsColor;
-		tie.color = data.tieColor;
-		suits.color = data.suitsColor;
-
-
-		updateInfo();
-		
-	}
-	public void SetupListeners(){
-		EventManager.Instance.AddListener<ChartChangeEvent>(OnChartChange);
-	}
-	void OnDestroy(){
-		DisposeListeners();
-	}
-	public void DisposeListeners(){
-		if(EventManager.Instance){
-			EventManager.Instance.RemoveListener<ChartChangeEvent>(OnChartChange);
+			shirts.color = value.shirtsColor;
+			tie.color = value.tieColor;
+			suits.color = value.suitsColor;
+			
+			foreach(Transform child in childrenContainer){
+				Destroy(child.gameObject);		
+			}
+			for(int i=0; i < value.children.Length; i++){
+				GameObject child = Instantiate(staffPrefab) as GameObject;
+				child.GetComponent<StaffController>().data = value.children[i];
+				/*
+				Debug.Log ("---");
+				Debug.Log (value.children[i].children.Length);
+				Debug.Log (child.GetComponent<StaffController>().childrenContainer.childCount);
+				*/
+				child.transform.SetParent(childrenContainer);
+			}
+            updateInfo();
+            updateFamilyLine();
 		}
 	}
-	public void OnChartChange(ChartChangeEvent evt){
-		StartCoroutine (updateFamilyTreeOnNextFrame() );
-//		Invoke ("updateFamilyLine", 1/30F);
-//		updateFamilyLine();
-		updateInfo();
-	}
+
+
 	IEnumerator updateFamilyTreeOnNextFrame(){
 		familyLine.enabled = false;
 
@@ -89,22 +89,9 @@ public class StaffController : MonoBehaviour {
 		updateFamilyLine();
 	}
 
-//	public StaffData getData(){
-	
-//	}
-	/*
-
-
-	
-
-	public void OnStaffRelationUpdate(StaffRelationEvent evt){
-//		updateSkillText();
-//		updateFamilyLine();
-	}	
-	*/
 	
 	void updateInfo(){
-		int childCount = chindrenContainer.childCount;
+		int childCount = childrenContainer.childCount;
 		currentSkillText.text = (baseSkill - childCount).ToString();
 		baseSkillText.text = childCount == 0 ? "" : "/" + baseSkill.ToString();
 
@@ -121,36 +108,19 @@ public class StaffController : MonoBehaviour {
 	}
 	void updateHair(){
 		hair.sprite = hairSprites.hairByAge(age);
-//		Debug.Log (hairSprites.hairByAge(age));
-			//hair.sprite = 
-//		Debug.Log ("hair2" + Mathf.FloorToInt((float)age / 10));
-//		Debug.Log(this.GetType().GetField("hair" + Mathf.FloorToInt((float)age / 10)).GetValue(this));
-		
-		
 	}
-	/*
-	public void update()
-	{
-		RectTransform parentRect = rect.parent.GetComponent<RectTransform>();
-//		familyLine.enabled = false;
-		
-		return;
-		Debug.Log("update");
-		
-		Debug.Log(transform);
-		Debug.Log(transform.position);
-		Debug.Log(parentRect.position);
-		
-//		updateFamilyLine();
-	}
-	*/
+
 	public void updateFamilyLine(){
-		if (tier == 1) {
+		if (tier == 2) {
 			familyLine.enabled = false;
+			return;
 		}
 		familyLine.enabled = true;
 
 		RectTransform rect = GetComponent<RectTransform>();	
+		if(!rect.parent){
+			return;
+		}
 		RectTransform parentRect = rect.parent.GetComponent<RectTransform>();
 		
 		float startX = rect.sizeDelta.x/2;

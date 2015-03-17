@@ -769,6 +769,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 277bfd74d93d640538400f1ee2a4140e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  draggedItem: {fileID: 0}
 --- !u!114 &11462068
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -780,7 +781,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3cccda334e6e344cf92f8ea8649c7983, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  chindrenContainer: {fileID: 22467598}
+  childrenContainer: {fileID: 22467598}
   currentSkillText: {fileID: 11493168}
   baseSkillText: {fileID: 11418648}
   ageText: {fileID: 11493478}
@@ -791,6 +792,10 @@ MonoBehaviour:
   face: {fileID: 11406864}
   hair: {fileID: 11466950}
   hairSprites: {fileID: 11400614, guid: 4f24a916f4fc44213abd351c0a93feec, type: 2}
+  staffPrefab: {fileID: 153004}
+  age: 30
+  baseSkill: 10
+  tier: 0
 --- !u!114 &11464464
 MonoBehaviour:
   m_ObjectHideFlags: 1

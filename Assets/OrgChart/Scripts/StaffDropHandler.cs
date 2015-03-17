@@ -17,6 +17,9 @@ public class StaffDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHandle
 
 		GameSounds.auDrop.Play();
 		draggedItem.transform.SetParent(chindrenContainer, true);
+		
+		// OnEndDrag Event won't raise when reset objects on OnDrop Event, so remove draggedItem here.
+		Destroy(draggedItem.GetComponent<StaffDragHandler>().draggedItem);
 
 		EventManager.Instance.TriggerEvent (new ChartChangeEvent() );
 		

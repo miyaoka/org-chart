@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class StaffDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
 	private Vector3 dragStartOffset;
-	private GameObject draggedItem;
+	public GameObject draggedItem;
 	
 	void Start(){
 	}
@@ -23,7 +23,7 @@ public class StaffDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 		GameSounds.auSelect.Play();
 		
 		//clone item
-		draggedItem = Instantiate(gameObject, transform.position, transform.rotation) as GameObject;
+		draggedItem = Instantiate(gameObject) as GameObject;
 
 		//remove shadow and line
 		Component[] shadows = draggedItem.GetComponentsInChildren<Shadow>();
