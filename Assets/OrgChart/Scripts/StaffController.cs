@@ -27,6 +27,7 @@ public class StaffController : MonoBehaviour {
 	public int age = 30;
     public int baseSkill = 10;
 	public int tier = 0;
+	public bool hired;
 
 		
 	void Start(){	
@@ -44,10 +45,8 @@ public class StaffController : MonoBehaviour {
 			sd.shirtsColor = shirts.color;
 			sd.tieColor = tie.color;
 			sd.suitsColor = suits.color;
-			sd.children = new StaffData[childrenContainer.childCount];
-			for(int i = 0; i < childrenContainer.childCount; i++){
-				sd.children[i] = childrenContainer.GetChild(i).GetComponent<StaffController>().data;
-			}
+			sd.hired = hired;
+//			sd.children = new StaffData[childrenContainer.childCount];
 			
 			return sd;
 		
@@ -56,6 +55,7 @@ public class StaffController : MonoBehaviour {
 			age = value.age;
 			baseSkill = value.baseSkill;
 			tier = value.tier;
+			hired = value.hired;
 
 			shirts.color = value.shirtsColor;
 			tie.color = value.tieColor;
@@ -87,7 +87,7 @@ public class StaffController : MonoBehaviour {
 		if(t <= 1){
 			tie.enabled = true;
 			suits.enabled = true;
-		} else if(t == 2) {
+		} else if(t == 2 || childCount > 0) {
 			tie.enabled = true;
 			suits.enabled = false;
 		} else {
@@ -97,13 +97,14 @@ public class StaffController : MonoBehaviour {
 
 		ageText.text = "(" + age.ToString() + ")";
 		updateHair();
-	}
+		StartCoroutine (updateFamilyTreeOnNextFrame() );
+    }
 	void updateHair(){
 		hair.sprite = hairSprites.hairByAge(age);
 	}
 
 	public void updateFamilyLine(){
-		if (tier == 2) {
+		if (!hired) {
 			familyLine.enabled = false;
 			return;
 		}
