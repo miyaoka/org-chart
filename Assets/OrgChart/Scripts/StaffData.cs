@@ -3,17 +3,18 @@ using System.Collections;
 
 public class StaffData {
 
-	public int age;
 	public int baseSkill;
-	public int skillDiff = 0;
-	public StaffData[] children = new StaffData[0];
+  public int age;
+  public int tier = 3;
+//	public int skillDiff = 0;
+//	public StaffData[] children = new StaffData[0];
 	public Color shirtsColor;
 	public Color tieColor;
 	public Color suitsColor;
 	public Color hairColor;
 	public Color faceColor;
-	public bool hired = false;
-	public int tier = 3;
-	public int skillType;
+	public bool isHired = false;
+	public bool isAssigned = false;
+//	public int skillType;
 	
 }
