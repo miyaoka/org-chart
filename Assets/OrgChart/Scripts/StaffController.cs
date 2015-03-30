@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class StaffController : MonoBehaviour {
 	
+	//view
 	[SerializeField] public RectTransform childrenContainer;
 	[SerializeField] Text currentSkillText;
 	[SerializeField] Text baseSkillText;
@@ -24,7 +25,7 @@ public class StaffController : MonoBehaviour {
     
     float familyLineHeight = 19.0F;
 	
-//	string[] fields = "age baseSkill tier".Split(" "[0]);
+	//model
 	public int age = 30;
     public int baseSkill = 10;
 	public int tier = 0;

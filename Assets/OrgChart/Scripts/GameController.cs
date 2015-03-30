@@ -37,8 +37,8 @@ public class GameController : MonoBehaviour {
 		updateRecruits ();	
 	}
 	void onChartChange(ChartChangeEvent evt){
-		StaffData[] sd = data;
-		data = sd;
+//		StaffData[] sd = data;
+//		data = sd;
     }
 	public StaffData[] data{
 		get{
@@ -91,8 +91,35 @@ public class GameController : MonoBehaviour {
 		}
 
 	}
-	
 	GameObject createStaff(){
+		GameObject staff = Instantiate(staffPrefab) as GameObject;
+		StaffPresenter sp = staff.GetComponent<StaffPresenter>();
+		int age = Random.Range(0,45);
+		float baseSkill = 0;
+		for(int i = 0; i < age; i++){
+			if(.5F <= Random.value){
+				baseSkill++;
+			}
+		}
+		sp.baseSkill.Value = Mathf.FloorToInt(baseSkill * .8F);
+		sp.age.Value = age + 20;
+
+		float shirtsHue = Random.value;
+		float tieHue = (.5F > Random.value) ? nearHue(shirtsHue) : compHue(shirtsHue);
+		float suitsHue = (.5F > Random.value) ? nearHue(shirtsHue) : compHue(shirtsHue);
+		
+		sp.shirtsColor.Value = HSVToRGB (shirtsHue, Random.value * .2F, shirtsV);
+		sp.tieColor.Value = HSVToRGB (tieHue, Random.value * .2F + .2F, tieV);
+		sp.suitsColor.Value = HSVToRGB (suitsHue, Random.value * .3F, suitsV);
+		
+		sp.tier.Value = 1;
+		sp.isAssigned.Value = true;
+		
+		
+		
+		return staff;
+	}
+	GameObject createStaff0(){
 		GameObject staff = Instantiate(staffPrefab) as GameObject;
 		StaffController sc = staff.GetComponent<StaffController>();
 		int age = Random.Range(0,45);

@@ -10,17 +10,22 @@ public class StaffDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHandle
 	#region IDropHandler implementation
 	public void OnDrop (PointerEventData eventData)
 	{
+		Debug.Log ("on drop");
+        
 		GameObject draggedItem = eventData.pointerDrag;
 		if(draggedItem.transform.parent == chindrenContainer){
 			return;
 		}
 
 		GameSounds.auDrop.Play();
-		draggedItem.transform.SetParent(chindrenContainer, true);
+		StaffPresenter sp = draggedItem.GetComponent<StaffPresenter>();
+		sp.dragPointer.transform.SetParent(chindrenContainer, false);
+		sp.dragPointer.GetComponent<StaffPresenter>().setPointer(false);
+		if(sp.childrenContainer.childCount == 0){
+			Destroy(draggedItem);
+		}
+//		draggedItem.transform.SetParent(chindrenContainer, true);
 		
-		// OnEndDrag Event won't raise when reset objects on OnDrop Event, so remove draggedItem here.
-		Destroy(draggedItem.GetComponent<StaffDragHandler>().draggedItem);
-
 		EventManager.Instance.TriggerEvent (new ChartChangeEvent() );
 		
 
