@@ -20,7 +20,7 @@ public class BgmManager : MonoBehaviour {
 		au.clip = ac;
 		
 		au.Play();
-		Debug.Log (ac.name);
+		Debug.Log ("-- BGM -- " +  ac.name);
 		Invoke("play", ac.length);
 	}
 	// Update is called once per frame

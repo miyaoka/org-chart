@@ -45,11 +45,11 @@ public class StaffController : MonoBehaviour {
 
       sd.age = age;
       sd.baseSkill = baseSkill;
-      sd.tier = tier;
+//      sd.tier = tier;
       sd.shirtsColor = shirts.color;
       sd.tieColor = tie.color;
       sd.suitsColor = suits.color;
-      sd.isHired = hired;
+//      sd.isHired = hired;
       //      sd.skillType = skillType;
       //      sd.children = new StaffData[childrenContainer.childCount];
 
@@ -59,8 +59,8 @@ public class StaffController : MonoBehaviour {
     set{
       age = value.age;
       baseSkill = value.baseSkill;
-      tier = value.tier;
-      hired = value.isHired;
+//      tier = value.tier;
+//      hired = value.isHired;
       //      skillType = value.skillType;
 
       shirts.color = value.shirtsColor;
@@ -109,7 +109,7 @@ public class StaffController : MonoBehaviour {
     StartCoroutine (updateFamilyTreeOnNextFrame() );
   }
   void updateHair(){
-    hair.sprite = hairSprites.hairByAge(age);
+//    hair.sprite = hairSprites.hairByAge(age);
   }
 
   public void updateFamilyLine(){

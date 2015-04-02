@@ -49,7 +49,7 @@ public class StaffPresenter : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
 
   private float familyLineHeight = 19.0F;
 
-  public StaffData data{
+  public StaffData staffData{
     get {
       StaffData sd = new StaffData();        
       foreach(FieldInfo fi in sd.GetType().GetFields()){
@@ -103,8 +103,8 @@ public class StaffPresenter : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
       .SubscribeToText(ageText, x => "(" + x.ToString() + ")" )
       .AddTo(eventResources);
 
-    age
-      .Subscribe(x => hair.sprite = hairSprites.hairByAge(x));
+//    age
+//      .Subscribe(x => hair.sprite = hairSprites.hairByAge(x));
 
     shirtsColor
       .Subscribe(x => shirts.color = x);

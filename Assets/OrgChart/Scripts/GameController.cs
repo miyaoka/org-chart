@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
@@ -11,6 +12,9 @@ public class GameController : MonoBehaviour {
   private float shirtsV = .9F;
   private float tieV = .6F;
   private float suitsV = .6F;
+
+  public static Dictionary<int, StaffData> staffDataList = new Dictionary<int, StaffData>();
+  private static int lastStaffId = 0;
 
   // Use this for initialization
   void Start () {
@@ -69,8 +73,8 @@ public class GameController : MonoBehaviour {
   void addChild(StaffData sd, Transform parent, int tier){
     GameObject child = Instantiate(staffPrefab) as GameObject;
     StaffController sc = child.GetComponent<StaffController>();
-    sd.tier = tier;
-    sd.isHired = true;
+//    sd.tier = tier;
+//    sd.isHired = true;
     sc.data = sd;
     child.transform.SetParent(parent);
     tier++;
@@ -94,9 +98,9 @@ public class GameController : MonoBehaviour {
 
   }
   GameObject createStaff(){
-    GameObject staff = Instantiate(staffPrefab) as GameObject;
-    StaffData sd = new StaffData ();
-    StaffPresenter sp = staff.GetComponent<StaffPresenter>();
+    GameObject staffNode = Instantiate(staffPrefab) as GameObject;
+    StaffData data = new StaffData ();
+    StaffNodePresenter node = staffNode.GetComponent<StaffNodePresenter> ();
     int age = Random.Range(0,45);
     float baseSkill = 0;
     for(int i = 0; i < age; i++){
@@ -104,40 +108,23 @@ public class GameController : MonoBehaviour {
         baseSkill++;
       }
     }
-    /*
-    sp.baseSkill.Value = Mathf.FloorToInt(baseSkill * .8F);
-    sp.age.Value = age + 20;
+    data.baseSkill = Mathf.FloorToInt(baseSkill * .8F);
+    data.age = age + 20;
 
     float shirtsHue = Random.value;
     float tieHue = (.5F > Random.value) ? nearHue(shirtsHue) : compHue(shirtsHue);
     float suitsHue = (.5F > Random.value) ? nearHue(shirtsHue) : compHue(shirtsHue);
 
-    sp.shirtsColor.Value = HSVToRGB (shirtsHue, Random.value * .2F, shirtsV);
-    sp.tieColor.Value = HSVToRGB (tieHue, Random.value * .2F + .2F, tieV);
-    sp.suitsColor.Value = HSVToRGB (suitsHue, Random.value * .3F, suitsV);
+    data.shirtsColor = HSVToRGB (shirtsHue, Random.value * .2F, shirtsV);
+    data.tieColor = HSVToRGB (tieHue, Random.value * .2F + .2F, tieV);
+    data.suitsColor = HSVToRGB (suitsHue, Random.value * .3F, suitsV);
 
-    sp.tier.Value = 1;
-    sp.isAssigned.Value = true;
-*/
-    sd.baseSkill = Mathf.FloorToInt(baseSkill * .8F);
-    sd.age = age + 20;
+    staffDataList [lastStaffId] = data;
+    node.staffId.Value = lastStaffId;
 
-    float shirtsHue = Random.value;
-    float tieHue = (.5F > Random.value) ? nearHue(shirtsHue) : compHue(shirtsHue);
-    float suitsHue = (.5F > Random.value) ? nearHue(shirtsHue) : compHue(shirtsHue);
+    lastStaffId++;
 
-    sd.shirtsColor = HSVToRGB (shirtsHue, Random.value * .2F, shirtsV);
-    sd.tieColor = HSVToRGB (tieHue, Random.value * .2F + .2F, tieV);
-    sd.suitsColor = HSVToRGB (suitsHue, Random.value * .3F, suitsV);
-
-    sd.tier = 1;
-    sd.isAssigned = true;
-
-    sp.data = sd;
-
-    StaffData sd2 = sp.data;
-
-    return staff;
+    return staffNode;
   }
   GameObject createStaff0(){
     GameObject staff = Instantiate(staffPrefab) as GameObject;
