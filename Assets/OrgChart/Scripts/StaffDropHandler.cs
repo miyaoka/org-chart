@@ -5,27 +5,36 @@ using UnityEngine.UI;
 public class StaffDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler {
 	[SerializeField] bool isRoot = false;
   private Outline outline;
-  private NodePresenter np;
   private Transform childContainer;
+  private StaffNodePresenter thisNode;
 
   void Awake(){
     outline = GetComponent<Outline> ();
     childContainer = GetComponentInParent<NodePresenter> ().childNodes;
+    thisNode = GetComponentInParent<StaffNodePresenter> ();
   }
 	#region IDropHandler implementation
 	public void OnDrop (PointerEventData eventData)
 	{
-    StaffNodePresenter pointerNodePresenter = eventData.pointerDrag.GetComponentInParent<StaffNodePresenter> ();
-    if(pointerNodePresenter.transform.parent == childContainer){
-      return;
+    StaffNodePresenter pointerNode = eventData.pointerDrag.GetComponentInParent<StaffNodePresenter> ();
+    if (thisNode && !thisNode.isAssigned.Value) {
+      thisNode.staffId.Value = pointerNode.staffId.Value;
+      thisNode.moved = false;
+    } 
+    else {
+      if(pointerNode.transform.parent == childContainer){
+        return;
+      }
+      GameObject newNodeObj = GameController.Instance.createStaffNode ();
+      StaffNodePresenter newNode = newNodeObj.GetComponent<StaffNodePresenter> ();
+      newNode.staffId.Value = pointerNode.staffId.Value;
+
+      newNodeObj.transform.SetParent (childContainer);
     }
 
-    GameSounds.auDrop.Play();
-    GameObject newNode = GameController.Instance.createStaffNode ();
-    StaffNodePresenter newNodePresenter = newNode.GetComponent<StaffNodePresenter> ();
-    newNodePresenter.staffId.Value = pointerNodePresenter.staffId.Value;
 
-    newNode.transform.SetParent (childContainer);
+    GameSounds.auDrop.Play();
+    pointerNode.moved = true;
 	}
 	#endregion
 

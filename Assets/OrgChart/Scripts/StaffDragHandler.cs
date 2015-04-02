@@ -96,8 +96,16 @@ public class StaffDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
   public void OnEndDrag (PointerEventData eventData)
   {
     Destroy(dragPointer);
+    EventManager.Instance.TriggerEvent (new StaffEndDragEvent ());
 
-    GetComponentInParent<StaffNodePresenter>().isAssigned.Value = true;
+    StaffNodePresenter node = GetComponentInParent<StaffNodePresenter> ();
+    if (node.moved) {
+      if (!node.hasChild()) {
+        Destroy (node.gameObject);
+      }
+    } else {
+      node.isAssigned.Value = true;
+    }
 
     /*
     //show original
@@ -106,7 +114,6 @@ public class StaffDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     //    GetComponent<StaffDropHandler>().enabled = true;
     */
 
-    EventManager.Instance.TriggerEvent (new StaffEndDragEvent ());
 
   }
 

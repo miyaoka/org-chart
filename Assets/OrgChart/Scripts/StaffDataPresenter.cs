@@ -22,6 +22,7 @@ public class StaffDataPresenter : MonoBehaviour {
 
   //model
   public ReadOnlyReactiveProperty<int> currentSkill { get; private set; }
+  public ReactiveProperty<int?> parentSkill = new ReactiveProperty<int?> ();
 
   public IntReactiveProperty baseSkill =  new IntReactiveProperty();  
   public IntReactiveProperty age = new IntReactiveProperty();
@@ -30,7 +31,6 @@ public class StaffDataPresenter : MonoBehaviour {
   public ReactiveProperty<Color> suitsColor = new ReactiveProperty<Color>();
   public ReactiveProperty<Color> faceColor = new ReactiveProperty<Color>();
   public ReactiveProperty<Color> hairColor = new ReactiveProperty<Color>();
-
 
   CompositeDisposable eventResources = new CompositeDisposable();
 
@@ -64,6 +64,7 @@ public class StaffDataPresenter : MonoBehaviour {
 
   void Start(){
     StaffNodePresenter node = GetComponentInParent<StaffNodePresenter> ();
+    Image bg = GetComponent<Image> ();
 
     //define prop
     currentSkill = 
@@ -80,6 +81,23 @@ public class StaffDataPresenter : MonoBehaviour {
       .CombineLatest(node.childCountStream, (s, c) => 0 < c ? "/" + s : "" )
       .SubscribeToText(baseSkillText)
       .AddTo(eventResources);
+    currentSkill
+      .CombineLatest (parentSkill, (c, p) => p.HasValue ? p.Value - c : 10)
+      .Subscribe (diff => {
+        if(0 > diff){
+          bg.color = new Color(1,0,0);
+        }
+        else if(0 == diff){
+          bg.color = new Color(1,1,0);
+        }
+        else if(1 == diff){
+          bg.color = new Color(1,1,.75f);
+        }
+        else {
+          bg.color = new Color(1,1,1);
+        }
+    })
+      .AddTo (eventResources);
     age
       .SubscribeToText(ageText, x => "(" + x.ToString() + ")" )
       .AddTo(eventResources);

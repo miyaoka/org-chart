@@ -15,7 +15,7 @@ public class StaffNodePresenter : NodePresenter {
   //model
   public ReactiveProperty<int?> staffId =  new ReactiveProperty<int?>();  
   public IntReactiveProperty tier = new IntReactiveProperty();
-  public ReactiveProperty<bool> isAssigned = new ReactiveProperty<bool> ();
+  public bool moved;
   IObservable<Vector2> parentDelta;
   IObservable<Vector2> thisDelta;
 
@@ -28,19 +28,24 @@ public class StaffNodePresenter : NodePresenter {
     staffId
       .Subscribe(x => {
         if(x.HasValue){
-          staff.staffData = GameController.staffDataList[x.Value];
+          staff.staffData = GameController.Instance.staffDataList[x.Value];
         }
         isAssigned.Value = x.HasValue;
       })
       .AddTo(eventResources);
 
     isAssigned
-      .Subscribe (x => {
-        staffUI.SetActive(x);
-        emptyUI.SetActive(!x);
+      .Subscribe (_ => {
+        staffUI.SetActive(_);
+        emptyUI.SetActive(!_);
+      })
+      .AddTo(eventResources);
 
-        //hide view if no assign no children
-        cg.alpha = (!x && 0 == childNodes.childCount ) ? 0 : 1;
+    //hide content view if no assign & no children
+    isAssigned
+      .CombineLatest (childCountStream, (a, c) => (a || 0 < c ))
+      .Subscribe (hasContent => {
+        cg.alpha = hasContent ? 1 : 0;
       })
       .AddTo(eventResources);
 
@@ -63,28 +68,6 @@ public class StaffNodePresenter : NodePresenter {
       .Subscribe (drawFamilyLine)
       .AddTo(eventResources);
 	}
-  public void onDrop(PointerEventData eventData){
-    Debug.Log ("on drop");
-
-    GameObject draggedItem = eventData.pointerDrag;
-    if(draggedItem.transform.parent == childNodes){
-      return;
-    }
-
-
-
-    StaffPresenter sp = draggedItem.GetComponent<StaffPresenter>();
-    sp.dragPointer.transform.SetParent(childNodes, false);
-    sp.dragPointer.GetComponent<StaffPresenter>().setPointer(false);
-    if(sp.childrenContainer.childCount == 0){
-      Destroy(draggedItem);
-    }
-    //    draggedItem.transform.SetParent(chindrenContainer, true);
-
-    EventManager.Instance.TriggerEvent (new ChartChangeEvent() );
-
-
-  }
   void OnDestroy()
   {
     eventResources.Dispose();

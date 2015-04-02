@@ -13,18 +13,19 @@ public class GameController : MonoBehaviour {
   private float tieV = .6F;
   private float suitsV = .6F;
 
-  public static Dictionary<int, StaffData> staffDataList = new Dictionary<int, StaffData>();
-  private static int lastStaffId = 0;
+  public Dictionary<int, StaffData> staffDataList = new Dictionary<int, StaffData>();
+  private int lastStaffId = 0;
 
-  private static GameController _instance;
-  public static GameController Instance{
+  private static GameController s_Instance;
+  public static GameController Instance {
     get {
-      return _instance;      
+      if (s_Instance == null) {
+        s_Instance = GameObject.FindObjectOfType (typeof(GameController)) as GameController;
+      }
+      return s_Instance;
     }
   }
-  void Awake(){
-    _instance = this;
-  }
+
 
   // Use this for initialization
   void Start () {

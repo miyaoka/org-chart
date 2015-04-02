@@ -177,6 +177,7 @@ GameObject:
   - 114: {fileID: 11487798}
   - 114: {fileID: 11423104}
   - 114: {fileID: 11430558}
+  - 225: {fileID: 22594714}
   m_Layer: 5
   m_Name: content
   m_TagString: Untagged
@@ -362,6 +363,8 @@ GameObject:
   - 224: {fileID: 22428462}
   - 114: {fileID: 11415782}
   - 114: {fileID: 11495756}
+  - 222: {fileID: 22208620}
+  - 114: {fileID: 11478068}
   m_Layer: 5
   m_Name: staff
   m_TagString: Untagged
@@ -618,11 +621,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   childNodes: {fileID: 22413888}
-  assignedNode: {fileID: 197824}
-  emptyNode: {fileID: 182126}
+  contentUI: {fileID: 158966}
+  staffUI: {fileID: 197824}
+  emptyUI: {fileID: 182126}
   familyLine: {fileID: 11411104}
   tier:
     value: 0
+  moved: 0
 --- !u!114 &11422460
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -655,7 +660,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: .933823526, g: .933823526, b: .933823526, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
@@ -676,8 +681,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectColor: {r: 0, g: 0, b: 0, a: .5}
-  m_EffectDistance: {x: 1, y: -1}
-  m_UseGraphicAlpha: 1
+  m_EffectDistance: {x: 2, y: -2}
+  m_UseGraphicAlpha: 0
 --- !u!114 &11424738
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -703,7 +708,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 277bfd74d93d640538400f1ee2a4140e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dragPointer: {fileID: 0}
 --- !u!114 &11434136
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1064,7 +1068,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: .933333397, g: .933333397, b: .933333397, a: 1}
+  m_Color: {r: .933333397, g: .933333397, b: .933333397, a: 0}
   m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
@@ -1123,6 +1127,27 @@ MonoBehaviour:
   m_EffectColor: {r: 1, g: 1, b: 1, a: 1}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
+--- !u!114 &11478068
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 197824}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -765806418, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
 --- !u!114 &11479586
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1235,7 +1260,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_EffectColor: {r: 1, g: 0, b: 0, a: 1}
-  m_EffectDistance: {x: 1, y: -1}
+  m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1
 --- !u!114 &11495374
 MonoBehaviour:
@@ -1292,7 +1317,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: .485294104, g: .485294104, b: .485294104, a: 1}
+  m_Color: {r: .448529422, g: .448529422, b: .448529422, a: 1}
   m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
@@ -1313,6 +1338,12 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 182126}
+--- !u!222 &22208620
+CanvasRenderer:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 197824}
 --- !u!222 &22210978
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -1774,6 +1805,17 @@ CanvasGroup:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 160634}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0
+--- !u!225 &22594714
+CanvasGroup:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 158966}
   m_Enabled: 1
   m_Alpha: 1
   m_Interactable: 1

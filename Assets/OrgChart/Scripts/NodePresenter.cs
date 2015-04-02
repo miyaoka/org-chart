@@ -7,6 +7,8 @@ public class NodePresenter : MonoBehaviour {
   //view
   [SerializeField] public RectTransform childNodes;
 
+  //model
+  public ReactiveProperty<bool> isAssigned = new ReactiveProperty<bool> (true);
   public IObservable<int> childCountStream;
   CompositeDisposable eventResources = new CompositeDisposable();
 
@@ -17,6 +19,9 @@ public class NodePresenter : MonoBehaviour {
         .EveryUpdate ()
         .Select (_ => childNodes.childCount)
         .DistinctUntilChanged ();
+  }
+  public bool hasChild(){
+    return 0 < childNodes.childCount;
   }
 
 }
