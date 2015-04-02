@@ -5,8 +5,7 @@ using UnityEngine.UI;
 
 public class StaffDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
-  private Vector3 dragStartOffset;
-  public GameObject dragPointer;
+  private GameObject dragPointer;
 
   void Start(){
   }
@@ -15,6 +14,7 @@ public class StaffDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
   public void OnBeginDrag (PointerEventData eventData)
   {
+
     Canvas canvas = FindInParents<Canvas>(gameObject);
     if(canvas == null){
       return;
@@ -22,9 +22,16 @@ public class StaffDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
 
     GameSounds.auSelect.Play ();
 
+
     //clone item
-    //    dragPointer = Instantiate(gameObject) as GameObject;
-    dragPointer = GetComponent<StaffPresenter>().clone();
+    dragPointer = GameController.Instance.createStaffNode ();
+    StaffNodePresenter node = dragPointer.GetComponent<StaffNodePresenter> ();
+    node.staffId.Value = GetComponentInParent<StaffNodePresenter> ().staffId.Value;
+
+    //set size
+    dragPointer.GetComponent<ContentSizeFitter>().enabled = true;
+
+
 
     //remove children
     /*
@@ -34,6 +41,7 @@ public class StaffDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     Debug.Log ( sp.shirtsColor.Value);
 */    
 
+    /*
     //remove shadow and line
     Component[] shadows = dragPointer.GetComponentsInChildren<Shadow>();
     foreach(Shadow shadow in shadows){
@@ -43,29 +51,31 @@ public class StaffDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     //    Destroy(draggedItem.GetComponentInChildren<UILineRenderer>());
 
     //set size and alpha
-    ContentSizeFitter csf = dragPointer.AddComponent<ContentSizeFitter>();
     csf.horizontalFit = ContentSizeFitter.FitMode.PreferredSize;
     csf.verticalFit = ContentSizeFitter.FitMode.PreferredSize;
+    */
+
 
     CanvasGroup dcg = dragPointer.GetComponent<CanvasGroup>();
     dcg.blocksRaycasts = false;
-    dcg.alpha = .75F;   
+    dcg.alpha = .75F; 
 
     //add to canvas
     dragPointer.transform.SetParent(canvas.transform);
     dragPointer.transform.SetAsLastSibling();
 
     //keep pos
-    dragStartOffset = (Vector3)eventData.position - transform.position;
+//    dragStartOffset = (Vector3)eventData.position - transform.position;
 
     //hide original
     //    GetComponent<CanvasGroup>().alpha = 0.0F;
+    GetComponentInParent<StaffNodePresenter>().isAssigned.Value = false;
 
-    GetComponent<StaffPresenter>().isAssigned.Value = false;
+//    GetComponent<StaffPresenter>().isAssigned.Value = false;
     //    GetComponent<StaffDropHandler>().enabled = false;
 
     //notify to all
-    EventManager.Instance.TriggerEvent (new StaffBeginDragEvent(gameObject));
+//    EventManager.Instance.TriggerEvent (new StaffBeginDragEvent(gameObject));
 
   }
 
@@ -87,10 +97,14 @@ public class StaffDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
   {
     Destroy(dragPointer);
 
+    GetComponentInParent<StaffNodePresenter>().isAssigned.Value = true;
+
+    /*
     //show original
     //    GetComponent<CanvasGroup>().alpha = 1.0F;
     GetComponent<StaffPresenter>().isAssigned.Value = true;
     //    GetComponent<StaffDropHandler>().enabled = true;
+    */
 
     EventManager.Instance.TriggerEvent (new StaffEndDragEvent ());
 

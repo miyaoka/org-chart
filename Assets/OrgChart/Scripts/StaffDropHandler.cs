@@ -1,34 +1,31 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class StaffDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler {
-	[SerializeField] Transform chindrenContainer;
-	[SerializeField] Outline outLine;
 	[SerializeField] bool isRoot = false;
+  private Outline outline;
+  private NodePresenter np;
+  private Transform childContainer;
+
+  void Awake(){
+    outline = GetComponent<Outline> ();
+    childContainer = GetComponentInParent<NodePresenter> ().childNodes;
+  }
 	#region IDropHandler implementation
 	public void OnDrop (PointerEventData eventData)
 	{
-		Debug.Log ("on drop");
-        
-		GameObject draggedItem = eventData.pointerDrag;
-		if(draggedItem.transform.parent == chindrenContainer){
-			return;
-		}
+    StaffNodePresenter pointerNodePresenter = eventData.pointerDrag.GetComponentInParent<StaffNodePresenter> ();
+    if(pointerNodePresenter.transform.parent == childContainer){
+      return;
+    }
 
-		GameSounds.auDrop.Play();
-		StaffPresenter sp = draggedItem.GetComponent<StaffPresenter>();
-		sp.dragPointer.transform.SetParent(chindrenContainer, false);
-		sp.dragPointer.GetComponent<StaffPresenter>().setPointer(false);
-		if(sp.childrenContainer.childCount == 0){
-			Destroy(draggedItem);
-		}
-//		draggedItem.transform.SetParent(chindrenContainer, true);
-		
-		EventManager.Instance.TriggerEvent (new ChartChangeEvent() );
-		
+    GameSounds.auDrop.Play();
+    GameObject newNode = GameController.Instance.createStaffNode ();
+    StaffNodePresenter newNodePresenter = newNode.GetComponent<StaffNodePresenter> ();
+    newNodePresenter.staffId.Value = pointerNodePresenter.staffId.Value;
 
+    newNode.transform.SetParent (childContainer);
 	}
 	#endregion
 
@@ -39,7 +36,7 @@ public class StaffDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHandle
 		if (isRoot && !eventData.pointerDrag) {
 			return;
 		}
-		outLine.enabled = true;
+    outline.enabled = true;
 	}
 
 	#endregion
@@ -48,7 +45,7 @@ public class StaffDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHandle
 
 	public void OnPointerExit (PointerEventData eventData)
 	{
-		outLine.enabled = false;
+    outline.enabled = false;
 	}
 
 	#endregion

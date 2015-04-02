@@ -7,7 +7,7 @@ public class GameController : MonoBehaviour {
 
   [SerializeField] RectTransform recruitContainer;
   [SerializeField] RectTransform staffContainer;
-  [SerializeField] GameObject staffPrefab;
+  [SerializeField] GameObject staffNodePrefab;
 
   private float shirtsV = .9F;
   private float tieV = .6F;
@@ -15,6 +15,16 @@ public class GameController : MonoBehaviour {
 
   public static Dictionary<int, StaffData> staffDataList = new Dictionary<int, StaffData>();
   private static int lastStaffId = 0;
+
+  private static GameController _instance;
+  public static GameController Instance{
+    get {
+      return _instance;      
+    }
+  }
+  void Awake(){
+    _instance = this;
+  }
 
   // Use this for initialization
   void Start () {
@@ -71,7 +81,7 @@ public class GameController : MonoBehaviour {
   }
 
   void addChild(StaffData sd, Transform parent, int tier){
-    GameObject child = Instantiate(staffPrefab) as GameObject;
+    GameObject child = Instantiate(staffNodePrefab) as GameObject;
     StaffController sc = child.GetComponent<StaffController>();
 //    sd.tier = tier;
 //    sd.isHired = true;
@@ -98,9 +108,21 @@ public class GameController : MonoBehaviour {
 
   }
   GameObject createStaff(){
-    GameObject staffNode = Instantiate(staffPrefab) as GameObject;
-    StaffData data = new StaffData ();
+    StaffData data = createStaffData ();
+    staffDataList [lastStaffId] = data;
+
+    GameObject staffNode = createStaffNode ();
     StaffNodePresenter node = staffNode.GetComponent<StaffNodePresenter> ();
+    node.staffId.Value = lastStaffId;
+
+    lastStaffId++;
+    return staffNode;
+  }
+  public GameObject createStaffNode(){
+    return Instantiate(staffNodePrefab) as GameObject;
+  }
+  StaffData createStaffData(){
+    StaffData data = new StaffData ();
     int age = Random.Range(0,45);
     float baseSkill = 0;
     for(int i = 0; i < age; i++){
@@ -119,15 +141,10 @@ public class GameController : MonoBehaviour {
     data.tieColor = HSVToRGB (tieHue, Random.value * .2F + .2F, tieV);
     data.suitsColor = HSVToRGB (suitsHue, Random.value * .3F, suitsV);
 
-    staffDataList [lastStaffId] = data;
-    node.staffId.Value = lastStaffId;
-
-    lastStaffId++;
-
-    return staffNode;
+    return data;
   }
   GameObject createStaff0(){
-    GameObject staff = Instantiate(staffPrefab) as GameObject;
+    GameObject staff = Instantiate(staffNodePrefab) as GameObject;
     StaffController sc = staff.GetComponent<StaffController>();
     int age = Random.Range(0,45);
     float baseSkill = 0;

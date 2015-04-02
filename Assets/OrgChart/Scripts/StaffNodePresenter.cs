@@ -1,18 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UniRx;
+using UnityEngine.EventSystems;
 
 public class StaffNodePresenter : NodePresenter {
 
   //view
-  [SerializeField] GameObject assignedNode;
-  [SerializeField] GameObject emptyNode;
+  [SerializeField] GameObject contentUI;
+  [SerializeField] GameObject staffUI;
+  [SerializeField] GameObject emptyUI;
   [SerializeField] UILineRenderer familyLine;
   private float familyLineHeight = 19.0F;
 
   //model
   public ReactiveProperty<int?> staffId =  new ReactiveProperty<int?>();  
   public IntReactiveProperty tier = new IntReactiveProperty();
+  public ReactiveProperty<bool> isAssigned = new ReactiveProperty<bool> ();
   IObservable<Vector2> parentDelta;
   IObservable<Vector2> thisDelta;
 
@@ -20,14 +23,24 @@ public class StaffNodePresenter : NodePresenter {
 
 	void Start () {
     StaffDataPresenter staff = gameObject.GetComponentInChildren<StaffDataPresenter> ();
+    CanvasGroup cg = contentUI.GetComponent<CanvasGroup> ();
 
     staffId
       .Subscribe(x => {
         if(x.HasValue){
           staff.staffData = GameController.staffDataList[x.Value];
         }
-        assignedNode.SetActive(x.HasValue);
-        emptyNode.SetActive(!x.HasValue);
+        isAssigned.Value = x.HasValue;
+      })
+      .AddTo(eventResources);
+
+    isAssigned
+      .Subscribe (x => {
+        staffUI.SetActive(x);
+        emptyUI.SetActive(!x);
+
+        //hide view if no assign no children
+        cg.alpha = (!x && 0 == childNodes.childCount ) ? 0 : 1;
       })
       .AddTo(eventResources);
 
@@ -49,8 +62,29 @@ public class StaffNodePresenter : NodePresenter {
     ))
       .Subscribe (drawFamilyLine)
       .AddTo(eventResources);
-
 	}
+  public void onDrop(PointerEventData eventData){
+    Debug.Log ("on drop");
+
+    GameObject draggedItem = eventData.pointerDrag;
+    if(draggedItem.transform.parent == childNodes){
+      return;
+    }
+
+
+
+    StaffPresenter sp = draggedItem.GetComponent<StaffPresenter>();
+    sp.dragPointer.transform.SetParent(childNodes, false);
+    sp.dragPointer.GetComponent<StaffPresenter>().setPointer(false);
+    if(sp.childrenContainer.childCount == 0){
+      Destroy(draggedItem);
+    }
+    //    draggedItem.transform.SetParent(chindrenContainer, true);
+
+    EventManager.Instance.TriggerEvent (new ChartChangeEvent() );
+
+
+  }
   void OnDestroy()
   {
     eventResources.Dispose();
