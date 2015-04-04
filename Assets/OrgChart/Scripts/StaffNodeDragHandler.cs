@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class StaffDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
+public class StaffNodeDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
   private GameObject dragPointer;
 
@@ -27,6 +27,8 @@ public class StaffDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     dragPointer = GameController.Instance.createStaffNode ();
     StaffNodePresenter node = dragPointer.GetComponent<StaffNodePresenter> ();
     node.staffId.Value = GetComponentInParent<StaffNodePresenter> ().staffId.Value;
+
+    GameController.Instance.staffDataList [node.staffId.Value.Value].age++;
 
     //set size
     dragPointer.GetComponent<ContentSizeFitter>().enabled = true;
@@ -99,7 +101,7 @@ public class StaffDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
     EventManager.Instance.TriggerEvent (new StaffEndDragEvent ());
 
     StaffNodePresenter node = GetComponentInParent<StaffNodePresenter> ();
-    if (node.moved) {
+    if (node.isMoved) {
       if (!node.hasChild()) {
         Destroy (node.gameObject);
       }

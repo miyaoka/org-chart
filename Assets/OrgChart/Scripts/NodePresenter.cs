@@ -14,11 +14,14 @@ public class NodePresenter : MonoBehaviour {
 
   void Awake(){
     //define model
+
     childCountStream = 
       Observable
         .EveryUpdate ()
         .Select (_ => childNodes.childCount)
         .DistinctUntilChanged ();
+  }
+  void Start(){
   }
   public bool hasChild(){
     return 0 < childNodes.childCount;
