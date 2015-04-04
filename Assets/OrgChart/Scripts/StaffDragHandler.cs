@@ -103,6 +103,7 @@ public class StaffDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, 
       if (!node.hasChild()) {
         Destroy (node.gameObject);
       }
+      enabled = false;
     } else {
       node.isAssigned.Value = true;
     }

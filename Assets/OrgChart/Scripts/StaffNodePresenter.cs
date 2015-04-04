@@ -9,13 +9,15 @@ public class StaffNodePresenter : NodePresenter {
   [SerializeField] GameObject contentUI;
   [SerializeField] GameObject staffUI;
   [SerializeField] GameObject emptyUI;
-  [SerializeField] UILineRenderer familyLine;
+  [SerializeField] GameObject familyLineUI;
+  private UILineRenderer familyLine;
   private float familyLineHeight = 19.0F;
 
   //model
   public ReactiveProperty<int?> staffId =  new ReactiveProperty<int?>();  
   public IntReactiveProperty tier = new IntReactiveProperty();
-  public bool moved;
+  public bool isMoved;
+  public bool isHired;
   IObservable<Vector2> parentDelta;
   IObservable<Vector2> thisDelta;
 
@@ -24,6 +26,7 @@ public class StaffNodePresenter : NodePresenter {
 	void Start () {
     StaffDataPresenter staff = gameObject.GetComponentInChildren<StaffDataPresenter> ();
     CanvasGroup cg = contentUI.GetComponent<CanvasGroup> ();
+    familyLine = familyLineUI.GetComponent<UILineRenderer> ();
 
     staffId
       .Subscribe(x => {
@@ -41,11 +44,12 @@ public class StaffNodePresenter : NodePresenter {
       })
       .AddTo(eventResources);
 
-    //hide content view if no assign & no children
+    //hide if no assign & no children
     isAssigned
       .CombineLatest (childCountStream, (a, c) => (a || 0 < c ))
       .Subscribe (hasContent => {
         cg.alpha = hasContent ? 1 : 0;
+        showFamilyLine(isHired && hasContent);
       })
       .AddTo(eventResources);
 
@@ -71,6 +75,9 @@ public class StaffNodePresenter : NodePresenter {
   void OnDestroy()
   {
     eventResources.Dispose();
+  }
+  void showFamilyLine(bool b){
+    familyLineUI.SetActive (b);
   }
 
   void drawFamilyLine(Vector2 lineDelta){

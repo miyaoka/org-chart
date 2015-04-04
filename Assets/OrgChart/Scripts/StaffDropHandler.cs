@@ -17,6 +17,9 @@ public class StaffDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHandle
 	public void OnDrop (PointerEventData eventData)
 	{
     StaffNodePresenter pointerNode = eventData.pointerDrag.GetComponentInParent<StaffNodePresenter> ();
+    if (!pointerNode) {
+      return;
+    }
     if (thisNode && !thisNode.isAssigned.Value) {
       thisNode.staffId.Value = pointerNode.staffId.Value;
       thisNode.moved = false;
@@ -28,6 +31,7 @@ public class StaffDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHandle
       GameObject newNodeObj = GameController.Instance.createStaffNode ();
       StaffNodePresenter newNode = newNodeObj.GetComponent<StaffNodePresenter> ();
       newNode.staffId.Value = pointerNode.staffId.Value;
+      newNode.isHired = true;
 
       newNodeObj.transform.SetParent (childContainer);
     }
@@ -42,7 +46,7 @@ public class StaffDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHandle
 
 	public void OnPointerEnter (PointerEventData eventData)
 	{
-		if (isRoot && !eventData.pointerDrag) {
+    if (!eventData.pointerDrag && (isRoot || !thisNode.isAssigned.Value) ) {
 			return;
 		}
     outline.enabled = true;
