@@ -9,6 +9,7 @@ public class GameController : MonoBehaviour {
   [SerializeField] RectTransform recruitContainer;
   [SerializeField] RectTransform staffContainer;
   [SerializeField] GameObject staffNodePrefab;
+  [SerializeField] Canvas canvas;
 
   private float shirtsV = .9F;
   private float tieV = .6F;
@@ -16,8 +17,6 @@ public class GameController : MonoBehaviour {
 
   public Dictionary<int, StaffRxData> staffRxDataList = new Dictionary<int, StaffRxData>();
   private int lastStaffId = 0;
-
-  public ReactiveProperty<int> rxint = new ReactiveProperty<int> (1);
 
   private static GameController s_Instance;
   public static GameController Instance {
@@ -126,6 +125,28 @@ public class GameController : MonoBehaviour {
   }
   public GameObject createStaffNode(){
     return Instantiate(staffNodePrefab) as GameObject;
+  }
+  public GameObject createStaffCursor(int? staffId){
+
+    //clone
+    GameObject cursor = createStaffNode ();
+    StaffNodePresenter dragNode = cursor.GetComponent<StaffNodePresenter> ();
+    dragNode.staffId.Value = staffId;
+
+    //set size
+    cursor.GetComponent<ContentSizeFitter>().enabled = true;
+
+    //set canvas
+    CanvasGroup dcg = cursor.GetComponent<CanvasGroup>();
+    dcg.blocksRaycasts = false;
+    dcg.alpha = .75F; 
+
+    //add to canvas
+    cursor.transform.SetParent(canvas.transform);
+    cursor.transform.SetAsLastSibling();
+
+    return cursor;
+
   }
   StaffData createStaffData(){
     StaffData data = new StaffData ();
