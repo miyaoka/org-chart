@@ -190,11 +190,11 @@ GameObject:
   m_Component:
   - 224: {fileID: 22445284}
   - 222: {fileID: 22278684}
+  - 225: {fileID: 22584436}
   - 114: {fileID: 11405760}
   - 114: {fileID: 11441940}
-  - 225: {fileID: 22584436}
   - 114: {fileID: 11469868}
-  - 114: {fileID: 11457682}
+  - 114: {fileID: 11461382}
   m_Layer: 5
   m_Name: staffNode
   m_TagString: Untagged
@@ -286,13 +286,13 @@ GameObject:
   m_Component:
   - 224: {fileID: 22452564}
   - 114: {fileID: 11400856}
-  - 114: {fileID: 11472900}
-  - 114: {fileID: 11496978}
   - 222: {fileID: 22299656}
+  - 225: {fileID: 22591064}
   - 114: {fileID: 11413932}
+  - 114: {fileID: 11496978}
   - 114: {fileID: 11455014}
   - 114: {fileID: 11406796}
-  - 225: {fileID: 22591064}
+  - 114: {fileID: 11425112}
   m_Layer: 5
   m_Name: content
   m_TagString: Untagged
@@ -621,6 +621,17 @@ MonoBehaviour:
   m_Spacing: 6
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
+--- !u!114 &11425112
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 181782}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cd537815654d940228f85446d6e89d7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &11426226
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -715,11 +726,6 @@ MonoBehaviour:
   face: {fileID: 11427526}
   hair: {fileID: 11476940}
   hairPrefab: {fileID: 11400614, guid: 4f24a916f4fc44213abd351c0a93feec, type: 2}
-  baseSkill:
-    value: 0
-  age:
-    value: 0
-  dragPointer: {fileID: 0}
 --- !u!114 &11438068
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -876,7 +882,7 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: .5}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 0
---- !u!114 &11457682
+--- !u!114 &11461382
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -887,14 +893,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 029b4f3c64e41459cbdc2921c08149bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  childNodes: {fileID: 0}
-  contentUI: {fileID: 0}
-  staffUI: {fileID: 0}
-  emptyUI: {fileID: 0}
-  familyLineUI: {fileID: 0}
+  childNodes: {fileID: 22407812}
+  contentUI: {fileID: 181782}
+  staffUI: {fileID: 148290}
+  emptyUI: {fileID: 185600}
+  familyLineUI: {fileID: 129134}
   tier:
     value: 0
-  moved: 0
+  isMoved: 0
   isHired: 0
 --- !u!114 &11461880
 MonoBehaviour:
@@ -1009,18 +1015,6 @@ MonoBehaviour:
   m_Spacing: 0
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
---- !u!114 &11472900
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 181782}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cd537815654d940228f85446d6e89d7f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isRoot: 0
 --- !u!114 &11476940
 MonoBehaviour:
   m_ObjectHideFlags: 1

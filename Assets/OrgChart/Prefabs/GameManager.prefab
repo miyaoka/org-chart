@@ -55,7 +55,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   recruitContainer: {fileID: 0}
   staffContainer: {fileID: 0}
-  staffNodePrefab: {fileID: 160634, guid: 54729bb5b5a8f4c52a7e79de6cc06fd6, type: 2}
+  staffNodePrefab: {fileID: 160150, guid: f77c330499aeb4fadadb5f92fd16cd7c, type: 2}
+  canvas: {fileID: 0}
 --- !u!1001 &100100000
 Prefab:
   m_ObjectHideFlags: 1
