@@ -6,8 +6,11 @@ using UnityEngine.UI;
 public class StaffNodeDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
   private GameObject dragPointer;
+  private StaffNodePresenter node;
+
 
   void Start(){
+    node = GetComponentInParent<StaffNodePresenter> ();
   }
 
   #region IBeginDragHandler implementation
@@ -20,15 +23,17 @@ public class StaffNodeDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandl
       return;
     }
 
+    node.isDragging.Value = true;
     GameSounds.auSelect.Play ();
 
 
     //clone item
     dragPointer = GameController.Instance.createStaffNode ();
-    StaffNodePresenter node = dragPointer.GetComponent<StaffNodePresenter> ();
-    node.staffId.Value = GetComponentInParent<StaffNodePresenter> ().staffId.Value;
+    StaffNodePresenter dragNode = dragPointer.GetComponent<StaffNodePresenter> ();
+    dragNode.staffId.Value = node.staffId.Value;
 
-    GameController.Instance.staffDataList [node.staffId.Value.Value].age++;
+    GameController.Instance.staffRxDataList [node.staffId.Value.Value].age.Value++;
+    GameController.Instance.rxint.Value++;
 
     //set size
     dragPointer.GetComponent<ContentSizeFitter>().enabled = true;
@@ -97,26 +102,18 @@ public class StaffNodeDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandl
 
   public void OnEndDrag (PointerEventData eventData)
   {
-    Destroy(dragPointer);
-    EventManager.Instance.TriggerEvent (new StaffEndDragEvent ());
 
-    StaffNodePresenter node = GetComponentInParent<StaffNodePresenter> ();
+    Destroy(dragPointer);
+
+//    EventManager.Instance.TriggerEvent (new StaffEndDragEvent ());
+
     if (node.isMoved) {
-      if (!node.hasChild()) {
-        Destroy (node.gameObject);
-      }
+      node.isMoved = false;
       enabled = false;
     } else {
       node.isAssigned.Value = true;
     }
-
-    /*
-    //show original
-    //    GetComponent<CanvasGroup>().alpha = 1.0F;
-    GetComponent<StaffPresenter>().isAssigned.Value = true;
-    //    GetComponent<StaffDropHandler>().enabled = true;
-    */
-
+    node.isDragging.Value = false;
 
   }
 

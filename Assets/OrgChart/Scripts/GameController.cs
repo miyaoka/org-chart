@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using UniRx;
 
 public class GameController : MonoBehaviour {
 
@@ -13,8 +14,10 @@ public class GameController : MonoBehaviour {
   private float tieV = .6F;
   private float suitsV = .6F;
 
-  public Dictionary<int, StaffData> staffDataList = new Dictionary<int, StaffData>();
+  public Dictionary<int, StaffRxData> staffRxDataList = new Dictionary<int, StaffRxData>();
   private int lastStaffId = 0;
+
+  public ReactiveProperty<int> rxint = new ReactiveProperty<int> (1);
 
   private static GameController s_Instance;
   public static GameController Instance {
@@ -110,7 +113,9 @@ public class GameController : MonoBehaviour {
   }
   GameObject createStaff(){
     StaffData data = createStaffData ();
-    staffDataList [lastStaffId] = data;
+    StaffRxData srd = new StaffRxData ();
+    srd.staffData = data;
+    staffRxDataList [lastStaffId] = srd;
 
     GameObject staffNode = createStaffNode ();
     StaffNodePresenter node = staffNode.GetComponent<StaffNodePresenter> ();
@@ -143,34 +148,6 @@ public class GameController : MonoBehaviour {
     data.suitsColor = HSVToRGB (suitsHue, Random.value * .3F, suitsV);
 
     return data;
-  }
-  GameObject createStaff0(){
-    GameObject staff = Instantiate(staffNodePrefab) as GameObject;
-    StaffController sc = staff.GetComponent<StaffController>();
-    int age = Random.Range(0,45);
-    float baseSkill = 0;
-    for(int i = 0; i < age; i++){
-      if(.5F <= Random.value){
-        baseSkill++;
-      }
-    }
-    StaffData sd = new StaffData();
-    sd.baseSkill = Mathf.FloorToInt(baseSkill * .8F);
-    sd.age = age + 20;
-
-    float shirtsHue = Random.value;
-    float tieHue = (.5F > Random.value) ? nearHue(shirtsHue) : compHue(shirtsHue);
-    float suitsHue = (.5F > Random.value) ? nearHue(shirtsHue) : compHue(shirtsHue);
-
-    sd.shirtsColor = HSVToRGB (shirtsHue, Random.value * .2F, shirtsV);
-    sd.tieColor = HSVToRGB (tieHue, Random.value * .2F + .2F, tieV);
-    sd.suitsColor = HSVToRGB (suitsHue, Random.value * .3F, suitsV);
-
-//    sd.skillType = Random.Range(1,4);
-
-
-    return staff;
-
   }
   float nearHue(float hue){
     return (hue + Random.value * 1F/6F - 1F/12F + 1F ) % 1F;

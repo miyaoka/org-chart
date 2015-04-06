@@ -10,6 +10,7 @@ public class NodePresenter : MonoBehaviour {
   //model
   public ReactiveProperty<bool> isAssigned = new ReactiveProperty<bool> (true);
   public IObservable<int> childCountStream;
+  public ReadOnlyReactiveProperty<bool> hasChild { get; private set; }
   CompositeDisposable eventResources = new CompositeDisposable();
 
   void Awake(){
@@ -20,11 +21,13 @@ public class NodePresenter : MonoBehaviour {
         .EveryUpdate ()
         .Select (_ => childNodes.childCount)
         .DistinctUntilChanged ();
+
+    hasChild = 
+      childCountStream
+        .Select(c => 0 < c)
+        .ToReadOnlyReactiveProperty ();
   }
   void Start(){
-  }
-  public bool hasChild(){
-    return 0 < childNodes.childCount;
   }
 
 }

@@ -18,6 +18,7 @@ public class StaffNodePresenter : NodePresenter {
   public IntReactiveProperty tier = new IntReactiveProperty();
   public bool isMoved;
   public bool isHired;
+  public ReactiveProperty<bool> isDragging = new ReactiveProperty<bool> (false);
   IObservable<Vector2> parentDelta;
   IObservable<Vector2> thisDelta;
 
@@ -28,14 +29,7 @@ public class StaffNodePresenter : NodePresenter {
     CanvasGroup cg = contentUI.GetComponent<CanvasGroup> ();
     familyLine = familyLineUI.GetComponent<UILineRenderer> ();
 
-    staffId
-      .Subscribe(x => {
-        if(x.HasValue){
-          staff.staffData = GameController.Instance.staffDataList[x.Value];
-        }
-        isAssigned.Value = x.HasValue;
-      })
-      .AddTo(eventResources);
+
 
     isAssigned
       .Subscribe (_ => {
@@ -44,19 +38,32 @@ public class StaffNodePresenter : NodePresenter {
       })
       .AddTo(eventResources);
 
-    //hide if no assign & no children
-    isAssigned
-      .CombineLatest (childCountStream, (a, c) => (a || 0 < c ))
-      .Subscribe (hasContent => {
-        cg.alpha = hasContent ? 1 : 0;
-        showFamilyLine(isHired && hasContent);
+    //observe content (assign or children)
+    IObservable<bool> hasContent =
+      isAssigned
+        .CombineLatest (hasChild, (assign, child) => (assign || child));
+
+    //destory if no content & no dragging
+    hasContent
+      .CombineLatest (isDragging, (c, d) => c || d)
+      .Where(exist => exist == false)
+      .Subscribe (_ => {
+        Destroy (gameObject);
+      })
+      .AddTo (eventResources);
+
+    //hide if no content
+    hasContent
+      .Subscribe (c => {
+        cg.alpha = c ? 1 : 0;
+        showFamilyLine(isHired && c);
       })
       .AddTo(eventResources);
 
     thisDelta = 
       Observable
         .EveryUpdate()
-        .Select(_ => (this.transform as RectTransform).sizeDelta)
+        .Select(_ => (transform as RectTransform).sizeDelta)
         .DistinctUntilChanged();
     parentDelta = 
       Observable

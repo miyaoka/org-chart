@@ -24,91 +24,24 @@ public class StaffDataPresenter : MonoBehaviour {
   public ReadOnlyReactiveProperty<int> currentSkill { get; private set; }
   public ReactiveProperty<int?> parentSkill = new ReactiveProperty<int?> ();
 
-  public IntReactiveProperty baseSkill =  new IntReactiveProperty();  
-  public IntReactiveProperty age = new IntReactiveProperty();
-  public ReactiveProperty<Color> shirtsColor = new ReactiveProperty<Color>();
-  public ReactiveProperty<Color> tieColor = new ReactiveProperty<Color>();
-  public ReactiveProperty<Color> suitsColor = new ReactiveProperty<Color>();
-  public ReactiveProperty<Color> faceColor = new ReactiveProperty<Color>();
-  public ReactiveProperty<Color> hairColor = new ReactiveProperty<Color>();
-
   CompositeDisposable eventResources = new CompositeDisposable();
+  CompositeDisposable staffResources = new CompositeDisposable();
 
-  public GameObject dragPointer;
 
-
-  public StaffData staffData{
-    get {
-      var sd = new StaffData();        
-      foreach(FieldInfo fi in sd.GetType().GetFields()){
-        object reactiveProp = this.GetType ().GetField (fi.Name).GetValue (this);
-        sd.GetType().GetField(fi.Name).SetValue(
-          sd, 
-          reactiveProp.GetType ().GetProperty ("Value").GetValue(reactiveProp, null)
-        );
-      }
-      return sd;
-    }
-    set {
-      foreach(FieldInfo fi in value.GetType().GetFields()){
-        object reactiveProp = this.GetType ().GetField (fi.Name).GetValue (this);
-        reactiveProp.GetType ().GetProperty ("Value").SetValue(
-          reactiveProp,
-          value.GetType ().GetField (fi.Name).GetValue (value),
-          null
-        );
-      }
-    }
-  }
-
+  private StaffNodePresenter node;
+  private Image bg;
 
   void Start(){
-    StaffNodePresenter node = GetComponentInParent<StaffNodePresenter> ();
-    Image bg = GetComponent<Image> ();
+    node = GetComponentInParent<StaffNodePresenter> ();
+    bg = GetComponent<Image> ();
 
-    //define prop
-    currentSkill = 
-      baseSkill
-        .CombineLatest(node.childCountStream, (s, c) => s - c )
-        .ToReadOnlyReactiveProperty();
-
-    //model to view
-    currentSkill
-      .SubscribeToText(currentSkillText)
+    node.staffId
+      .Where(id => id.HasValue)
+      .Subscribe(id => {
+        bindToView( GameController.Instance.staffRxDataList [id.Value] );
+      })
       .AddTo(eventResources);
 
-    baseSkill
-      .CombineLatest(node.childCountStream, (s, c) => 0 < c ? "/" + s : "" )
-      .SubscribeToText(baseSkillText)
-      .AddTo(eventResources);
-    currentSkill
-      .CombineLatest (parentSkill, (c, p) => p.HasValue ? p.Value - c : 10)
-      .Subscribe (diff => {
-        if(0 > diff){
-          bg.color = new Color(1,0,0);
-        }
-        else if(0 == diff){
-          bg.color = new Color(1,1,0);
-        }
-        else if(1 == diff){
-          bg.color = new Color(1,1,.75f);
-        }
-        else {
-          bg.color = new Color(1,1,1);
-        }
-    })
-      .AddTo (eventResources);
-    age
-      .SubscribeToText(ageText, x => "(" + x.ToString() + ")" )
-      .AddTo(eventResources);
-    age
-      .Subscribe(x => hair.sprite = hairPrefab.hairByAge(x) );
-    shirtsColor
-      .Subscribe(x => shirts.color = x);
-    tieColor
-      .Subscribe(x => tie.color = x);
-    suitsColor
-      .Subscribe(x => suits.color = x);
 
     /*
     node.tier
@@ -129,9 +62,65 @@ public class StaffDataPresenter : MonoBehaviour {
 
 */
   }
+
+  void bindToView(StaffRxData srd){
+    staffResources.Dispose ();
+    staffResources = new CompositeDisposable();
+
+    //define prop
+    currentSkill = 
+      srd.baseSkill
+        .CombineLatest(node.childCountStream, (s, c) => s - c )
+        .ToReadOnlyReactiveProperty();
+
+    //model to view
+    currentSkill
+      .SubscribeToText(currentSkillText)
+      .AddTo(staffResources);
+    currentSkill
+      .CombineLatest (parentSkill, (c, p) => p.HasValue ? p.Value - c : 10)
+      .Subscribe (diff => {
+        if(0 > diff){
+          bg.color = new Color(1,0,0);
+        }
+        else if(0 == diff){
+          bg.color = new Color(1,1,0);
+        }
+        else if(1 == diff){
+          bg.color = new Color(1,1,.75f);
+        }
+        else {
+          bg.color = new Color(1,1,1);
+        }
+      })
+      .AddTo(staffResources);
+
+
+    srd.baseSkill
+      .CombineLatest(node.childCountStream, (s, c) => 0 < c ? "/" + s : "" )
+      .SubscribeToText(baseSkillText)
+      .AddTo(staffResources);
+    srd.age
+      .SubscribeToText(ageText, x => "(" + x.ToString() + ")" )
+      .AddTo(staffResources);
+    srd.age
+      .Subscribe(x => hair.sprite = hairPrefab.hairByAge(x) )
+      .AddTo(staffResources);
+    srd.shirtsColor
+      .Subscribe(x => shirts.color = x)
+      .AddTo(staffResources);
+    srd.tieColor
+      .Subscribe(x => tie.color = x)
+      .AddTo(staffResources);
+    srd.suitsColor
+      .Subscribe(x => suits.color = x)
+      .AddTo(staffResources);
+
+  }
   void OnDestroy()
   {
     eventResources.Dispose();
+    staffResources.Dispose ();
   }
 
 
