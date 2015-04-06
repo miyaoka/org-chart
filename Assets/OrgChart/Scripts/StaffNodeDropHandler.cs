@@ -20,6 +20,7 @@ public class StaffNodeDropHandler : NodeDropHandler {
       thisNode.staffId.Value = pointerNode.staffId.Value;
       thisNode.isAssigned.Value = true;
       thisNode.isMoved = false;
+      GetComponent<StaffNodeDragHandler> ().enabled = true;
     } 
     else {
       if(pointerNode.transform.parent == childContainer){
