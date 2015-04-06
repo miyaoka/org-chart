@@ -1,16 +1,12 @@
 ﻿using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 using UniRx;
-using Unity.Linq;
-using UnityEngine.EventSystems;
-using System.Reflection;
-using System;
 
 public class StaffDataPresenter : MonoBehaviour {
   //view
   [SerializeField] Text currentSkillText;
   [SerializeField] Text baseSkillText;
+  [SerializeField] GameObject diffSkill;
   [SerializeField] Text ageText;
 
   [SerializeField] Image shirts;
@@ -30,10 +26,14 @@ public class StaffDataPresenter : MonoBehaviour {
 
   private StaffNodePresenter node;
   private Image bg;
+  private Image diffBg;
+  private Text diffText;
 
   void Start(){
     node = GetComponentInParent<StaffNodePresenter> ();
     bg = GetComponent<Image> ();
+    diffBg = diffSkill.GetComponent<Image> ();
+    diffText = diffSkill.GetComponentInChildren<Text> ();
 
     node.staffId
       .Where(id => id.HasValue)
@@ -100,9 +100,34 @@ public class StaffDataPresenter : MonoBehaviour {
       .CombineLatest(node.childCountStream, (s, c) => 0 < c ? "/" + s : "" )
       .SubscribeToText(baseSkillText)
       .AddTo(staffResources);
+    srd.baseSkill
+      .CombineLatest (srd.lastSkill, (b, l) => b - l)
+      .Subscribe (diff => {
+        if(0 == diff){
+          diffSkill.gameObject.SetActive(false);
+        }
+        else{
+          diffSkill.gameObject.SetActive(true);
+          if(0 < diff){
+            diffBg.color = new Color(.9f,.9f,.5f);
+            diffText.text = "+" + diff.ToString();
+          }
+          else{
+            diffBg.color = new Color(.9f,.0f,.0f);
+            diffText.text = diff.ToString();
+          }
+        }
+      })
+      .AddTo (staffResources);
+    
     srd.age
       .SubscribeToText(ageText, x => "(" + x.ToString() + ")" )
       .AddTo(staffResources);
+    srd.age
+      .Subscribe (age => {
+        ageText.color = (GameController.Instance.retirementAge > age) ? new Color (0, 0, 0) : new Color(1,0,0);
+      })
+      .AddTo (staffResources);
     srd.age
       .Subscribe(x => hair.sprite = hairPrefab.hairByAge(x) )
       .AddTo(staffResources);

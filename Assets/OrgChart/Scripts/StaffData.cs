@@ -4,7 +4,7 @@ using System.Collections;
 public class StaffData {
 
 	public int baseSkill;
-  //public int lastSkill;
+  public int lastSkill;
   public int age;
 //  public int tier = 3;
 //	public int skillDiff = 0;

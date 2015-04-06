@@ -18,6 +18,8 @@ public class GameController : MonoBehaviour {
   public Dictionary<int, StaffRxData> staffRxDataList = new Dictionary<int, StaffRxData>();
   private int lastStaffId = 0;
 
+  public int retirementAge = 60;
+
   private static GameController s_Instance;
   public static GameController Instance {
     get {
@@ -51,52 +53,31 @@ public class GameController : MonoBehaviour {
     }
   }
   void onEndTurn(EndTurnEvent e){
+
+    foreach (KeyValuePair<int, StaffRxData> pair in staffRxDataList) {
+      addAge (pair.Value);
+    }
+
     updateRecruits ();  
+  }
+  void addAge(StaffRxData staff){
+    staff.age.Value++;
+    staff.lastSkill.Value = staff.baseSkill.Value;
+    if (retirementAge > staff.age.Value) {
+      if (.5 > Random.value) {
+        staff.baseSkill.Value++;
+      }
+    } else {
+      if (.5 > Random.value) {
+        staff.baseSkill.Value-=2;
+      } else {
+        staff.baseSkill.Value--;
+      }
+    }
   }
   void onChartChange(ChartChangeEvent evt){
     //    StaffData[] sd = data;
     //    data = sd;
-  }
-  public StaffData[] data{
-    get{
-      int count = 0;
-      return getChildren(staffContainer);     
-    }
-    set{
-      foreach(Transform child in staffContainer){
-        Destroy(child.gameObject);
-      }
-      for(int i = 0; i < value.Length; i++){
-        addChild(value[i], staffContainer, 0);
-      }
-    }
-  }
-
-  StaffData[] getChildren(Transform parent){
-    StaffData[] sds = new StaffData[parent.childCount];
-    for(int i = 0; i < parent.childCount; i++){
-      Transform child = parent.GetChild(i);
-      StaffController sc = child.GetComponent<StaffController>();
-      sds[i] = sc.data;
-      //      sds[i].children = getChildren(sc.childrenContainer);
-    }
-    return sds;
-  }
-
-  void addChild(StaffData sd, Transform parent, int tier){
-    GameObject child = Instantiate(staffNodePrefab) as GameObject;
-    StaffController sc = child.GetComponent<StaffController>();
-//    sd.tier = tier;
-//    sd.isHired = true;
-    sc.data = sd;
-    child.transform.SetParent(parent);
-    tier++;
-    /*
-    for(int i = 0; i < sd.children.Length; i++){
-      addChild(sd.children[i], sc.childrenContainer, tier);
-    }
-  */  
-    sc.updateInfo();
   }
 
 
@@ -157,7 +138,8 @@ public class GameController : MonoBehaviour {
         baseSkill++;
       }
     }
-    data.baseSkill = Mathf.FloorToInt(baseSkill * .8F);
+    data.baseSkill = 
+      data.lastSkill = Mathf.FloorToInt(baseSkill * .8F);
     data.age = age + 20;
 
     float shirtsHue = Random.value;

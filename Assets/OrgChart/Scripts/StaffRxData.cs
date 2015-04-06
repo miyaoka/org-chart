@@ -5,6 +5,7 @@ using System.Reflection;
 
 public class StaffRxData {
   public ReactiveProperty<int> baseSkill =  new ReactiveProperty<int> ();  
+  public ReactiveProperty<int> lastSkill =  new ReactiveProperty<int> ();  
   public ReactiveProperty<int> age = new ReactiveProperty<int> ();
   public ReactiveProperty<Color> shirtsColor = new ReactiveProperty<Color>();
   public ReactiveProperty<Color> tieColor = new ReactiveProperty<Color>();

@@ -18,6 +18,7 @@ public class StaffNodeDropHandler : NodeDropHandler {
     }
     if (thisNode && !thisNode.isAssigned.Value) {
       thisNode.staffId.Value = pointerNode.staffId.Value;
+      thisNode.isAssigned.Value = true;
       thisNode.isMoved = false;
     } 
     else {
