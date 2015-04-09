@@ -131,7 +131,7 @@ public class GameController : MonoBehaviour {
   }
   StaffData createStaffData(){
     StaffData data = new StaffData ();
-    int age = Random.Range(0,45);
+    int age = Random.Range(0,40);
     float baseSkill = 0;
     for(int i = 0; i < age; i++){
       if(.5F <= Random.value){
