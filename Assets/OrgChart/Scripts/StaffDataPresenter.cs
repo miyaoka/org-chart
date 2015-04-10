@@ -44,15 +44,21 @@ public class StaffDataPresenter : MonoBehaviour {
     node.tier
       .CombineLatest(node.childCountStream, (t, c) => (0 < c) ? Mathf.Min(t, 2) : t)
       .Subscribe(t => {
-        if(t < 2){
-          tie.enabled = true;
-          suits.enabled = true;
-        } else if(t == 2){
-          tie.enabled = true;
-          suits.enabled = false;      
-        } else {
+        if(node.isHired.Value){
+          if(t < 2){
+            tie.enabled = true;
+            suits.enabled = true;
+          } else if(t == 2){
+            tie.enabled = true;
+            suits.enabled = false;      
+          } else {
+            tie.enabled = false;
+            suits.enabled = false;            
+          }
+        }
+        else{
           tie.enabled = false;
-          suits.enabled = false;            
+          suits.enabled = true;
         }
       })
       .AddTo(eventResources);

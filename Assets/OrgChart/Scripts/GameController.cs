@@ -114,9 +114,27 @@ public class GameController : MonoBehaviour {
     return staffNode;
   }
   public void moveStaffNode(StaffNodePresenter staff, NodePresenter parentNode){
-    createStaffNode (staff.staffId.Value, parentNode.childNodes, true, 
-      parentNode is StaffNodePresenter ? parentNode as StaffNodePresenter : null);
-    Destroy (staff.gameObject);
+    if (parentNode is StaffNodePresenter) {
+      moveStaffToStaff (staff, parentNode as StaffNodePresenter);
+    } else {
+      createStaffNode (staff.staffId.Value, parentNode.childNodes, true);
+    }
+    staff.isMoved = true;
+    //    Destroy (staff.gameObject);
+    GameSounds.auDrop.Play();
+  }
+  private void moveStaffToStaff(StaffNodePresenter staff, StaffNodePresenter parentStaff){
+    if (parentStaff.isAssigned.Value) {
+      createStaffNode (staff.staffId.Value, parentStaff.childNodes, true, parentStaff);
+    } else {
+      parentStaff.staffId.Value = staff.staffId.Value;
+      parentStaff.isAssigned.Value = true;
+      parentStaff.isMoved = false;
+      parentStaff.gameObject.GetComponentInChildren<StaffNodeDragHandler> ().enabled = true;
+    }
+
+    staff.isMoved = true;
+    //    Destroy (staff.gameObject);
     GameSounds.auDrop.Play();
   }
   public void destroyNode(StaffNodePresenter snp){

@@ -13,7 +13,7 @@ public class MenuPresenter : MonoBehaviour {
     GameController.Instance.draggingNode
       .Where (n => n != null)
       .Subscribe (n => {
-        Debug.Log(n.isHired);
+//        Debug.Log(n.isHired);
     });
 
 	}

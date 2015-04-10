@@ -16,18 +16,7 @@ public class StaffNodeDropHandler : NodeDropHandler, IDropHandler {
     if (!pointerNode) {
       return;
     }
-    if (staffNode && !staffNode.isAssigned.Value) {
-      staffNode.staffId.Value = pointerNode.staffId.Value;
-      staffNode.isAssigned.Value = true;
-      staffNode.isMoved = false;
-      GetComponent<StaffNodeDragHandler> ().enabled = true;
-    } 
-    else {
-      if(pointerNode.transform.parent == staffNode.childNodes){
-        return;
-      }
-      GameController.Instance.moveStaffNode (pointerNode, staffNode);
-    }
+    GameController.Instance.moveStaffNode (pointerNode, staffNode);
 	}
 	#endregion
 
