@@ -11,12 +11,15 @@ public class GameController : MonoBehaviour {
   [SerializeField] GameObject staffNodePrefab;
   [SerializeField] Canvas canvas;
 
+  public ReactiveProperty<bool> isDragging = new ReactiveProperty<bool> (false);
+
   private float shirtsV = .9F;
   private float tieV = .6F;
   private float suitsV = .6F;
 
-  public Dictionary<int, StaffRxData> staffRxDataList = new Dictionary<int, StaffRxData>();
+  public Dictionary<int?, StaffRxData> staffRxDataList = new Dictionary<int?, StaffRxData>();
   private int lastStaffId = 0;
+  public ReactiveProperty<StaffNodePresenter> draggingNode = new ReactiveProperty<StaffNodePresenter> ();
 
   public int retirementAge = 60;
 
@@ -40,7 +43,7 @@ public class GameController : MonoBehaviour {
     updateRecruits ();
   }
   public void SetupListeners(){
-    EventManager.Instance.AddListener<ChartChangeEvent>(onChartChange);
+//    EventManager.Instance.AddListener<ChartChangeEvent>(onChartChange);
     EventManager.Instance.AddListener<EndTurnEvent>(onEndTurn);
   }
   void OnDestroy(){
@@ -48,13 +51,13 @@ public class GameController : MonoBehaviour {
   }
   public void DisposeListeners(){
     if(EventManager.Instance){
-      EventManager.Instance.RemoveListener<ChartChangeEvent>(onChartChange);
+//      EventManager.Instance.RemoveListener<ChartChangeEvent>(onChartChange);
       EventManager.Instance.RemoveListener<EndTurnEvent>(onEndTurn);
     }
   }
   void onEndTurn(EndTurnEvent e){
 
-    foreach (KeyValuePair<int, StaffRxData> pair in staffRxDataList) {
+    foreach (KeyValuePair<int?, StaffRxData> pair in staffRxDataList) {
       addAge (pair.Value);
     }
 
@@ -75,10 +78,6 @@ public class GameController : MonoBehaviour {
       }
     }
   }
-  void onChartChange(ChartChangeEvent evt){
-    //    StaffData[] sd = data;
-    //    data = sd;
-  }
 
 
   void updateRecruits(){
@@ -87,7 +86,7 @@ public class GameController : MonoBehaviour {
     }
     int count = Random.Range (3, 7);
     for(int i = 0; i < count; i++){
-      createStaff().transform.SetParent(recruitContainer);
+      createStaff();
     }
 
   }
@@ -97,22 +96,38 @@ public class GameController : MonoBehaviour {
     srd.staffData = data;
     staffRxDataList [lastStaffId] = srd;
 
-    GameObject staffNode = createStaffNode ();
-    StaffNodePresenter node = staffNode.GetComponent<StaffNodePresenter> ();
-    node.staffId.Value = lastStaffId;
+    GameObject staffNode = createStaffNode (lastStaffId, recruitContainer);
 
     lastStaffId++;
     return staffNode;
   }
-  public GameObject createStaffNode(){
-    return Instantiate(staffNodePrefab) as GameObject;
+  private GameObject createStaffNode(int? staffId, Transform parentContainer, bool isHired = false, StaffNodePresenter parentStaff = null){
+    GameObject staffNode = Instantiate(staffNodePrefab) as GameObject;
+    StaffNodePresenter node = staffNode.GetComponent<StaffNodePresenter> ();
+    node.staffId.Value = staffId;
+    node.isHired.Value = isHired;
+    if (parentStaff) {
+      node.parentId.Value = parentStaff.staffId.Value;
+      node.tier.Value = parentStaff.tier.Value + 1;
+    }
+    staffNode.transform.SetParent (parentContainer);
+    return staffNode;
+  }
+  public void moveStaffNode(StaffNodePresenter staff, NodePresenter parentNode){
+    createStaffNode (staff.staffId.Value, parentNode.childNodes, true, 
+      parentNode is StaffNodePresenter ? parentNode as StaffNodePresenter : null);
+    Destroy (staff.gameObject);
+    GameSounds.auDrop.Play();
+  }
+  public void destroyNode(StaffNodePresenter snp){
+    
   }
   public GameObject createStaffCursor(int? staffId){
 
     //clone
-    GameObject cursor = createStaffNode ();
-    StaffNodePresenter dragNode = cursor.GetComponent<StaffNodePresenter> ();
-    dragNode.staffId.Value = staffId;
+    GameObject cursor = createStaffNode (staffId, canvas.transform);
+    //add to canvas
+    cursor.transform.SetAsLastSibling();
 
     //set size
     cursor.GetComponent<ContentSizeFitter>().enabled = true;
@@ -122,13 +137,11 @@ public class GameController : MonoBehaviour {
     dcg.blocksRaycasts = false;
     dcg.alpha = .75F; 
 
-    //add to canvas
-    cursor.transform.SetParent(canvas.transform);
-    cursor.transform.SetAsLastSibling();
 
     return cursor;
 
   }
+
   StaffData createStaffData(){
     StaffData data = new StaffData ();
     int age = Random.Range(0,40);

@@ -8,7 +8,6 @@ public class StaffNodeDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandl
   private GameObject dragPointer;
   private StaffNodePresenter node;
 
-
   void Start(){
     node = GetComponentInParent<StaffNodePresenter> ();
   }
@@ -21,6 +20,8 @@ public class StaffNodeDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandl
 
     //clone item
     dragPointer = GameController.Instance.createStaffCursor(node.staffId.Value);
+
+    GameController.Instance.draggingNode.Value = node;
 
     //begin drag
     node.isDragging.Value = true;
@@ -49,6 +50,7 @@ public class StaffNodeDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandl
 
   public void OnEndDrag (PointerEventData eventData)
   {
+    GameController.Instance.draggingNode.Value = null;
 
     Destroy(dragPointer);
 

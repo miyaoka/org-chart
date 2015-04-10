@@ -11,13 +11,15 @@ public class StaffNodePresenter : NodePresenter {
   [SerializeField] GameObject emptyUI;
   [SerializeField] GameObject familyLineUI;
   private UILineRenderer familyLine;
-  private float familyLineHeight = 19.0F;
+  private const float familyLineHeight = 19.0F;
 
   //model
+  public ReactiveProperty<bool> isAssigned = new ReactiveProperty<bool> (true);
   public ReactiveProperty<int?> staffId =  new ReactiveProperty<int?>();  
-  public IntReactiveProperty tier = new IntReactiveProperty();
+  public ReactiveProperty<int?> parentId =  new ReactiveProperty<int?>();  
+  public ReactiveProperty<int> tier = new ReactiveProperty<int> (0);
+  public ReactiveProperty<bool> isHired = new ReactiveProperty<bool> (false);
   public bool isMoved;
-  public bool isHired;
   public ReactiveProperty<bool> isDragging = new ReactiveProperty<bool> (false);
   IObservable<Vector2> parentDelta;
   IObservable<Vector2> thisDelta;
@@ -25,7 +27,7 @@ public class StaffNodePresenter : NodePresenter {
   CompositeDisposable eventResources = new CompositeDisposable();
 
 	void Start () {
-    StaffDataPresenter staff = gameObject.GetComponentInChildren<StaffDataPresenter> ();
+//    StaffDataPresenter staff = gameObject.GetComponentInChildren<StaffDataPresenter> ();
     CanvasGroup cg = contentUI.GetComponent<CanvasGroup> ();
     familyLine = familyLineUI.GetComponent<UILineRenderer> ();
 
@@ -47,16 +49,14 @@ public class StaffNodePresenter : NodePresenter {
     hasContent
       .CombineLatest (isDragging, (c, d) => c || d)
       .Where(exist => exist == false)
-      .Subscribe (_ => {
-        Destroy (gameObject);
-      })
+      .Subscribe (_ => Destroy (gameObject))
       .AddTo (eventResources);
 
     //hide if no content
     hasContent
       .Subscribe (c => {
         cg.alpha = c ? 1 : 0;
-        showFamilyLine(isHired && c);
+        showFamilyLine(isHired.Value && c);
       })
       .AddTo(eventResources);
 
@@ -79,12 +79,8 @@ public class StaffNodePresenter : NodePresenter {
       .Subscribe (drawFamilyLine)
       .AddTo(eventResources);
 	}
-  void OnDestroy()
-  {
-    eventResources.Dispose();
-  }
-  void showFamilyLine(bool b){
-    familyLineUI.SetActive (b);
+  void showFamilyLine(bool show){
+    familyLineUI.SetActive (show);
   }
 
   void drawFamilyLine(Vector2 lineDelta){
@@ -96,6 +92,10 @@ public class StaffNodePresenter : NodePresenter {
       new Vector2(lineDelta.y, familyLineHeight)
     };
     familyLine.SetVerticesDirty();    
+  }
+  void OnDestroy()
+  {
+    eventResources.Dispose();
   }
 
 }

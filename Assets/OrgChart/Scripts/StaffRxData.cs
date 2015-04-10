@@ -13,6 +13,10 @@ public class StaffRxData {
   public ReactiveProperty<Color> faceColor = new ReactiveProperty<Color>();
   public ReactiveProperty<Color> hairColor = new ReactiveProperty<Color>();
 
+  public ReactiveProperty<int?> parentStaffId =  new ReactiveProperty<int?> ();  
+  public ReactiveProperty<bool> isHired =  new ReactiveProperty<bool> ();  
+  public ReactiveProperty<int> tier = new ReactiveProperty<int> ();
+
   public StaffData staffData{
     get {
       var sd = new StaffData();        

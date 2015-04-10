@@ -2,41 +2,32 @@
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class StaffNodeDropHandler : NodeDropHandler {
-  protected StaffNodePresenter thisNode;
+public class StaffNodeDropHandler : NodeDropHandler, IDropHandler {
+  protected StaffNodePresenter staffNode;
 
   void Awake(){
     base.Awake ();
-    thisNode = GetComponentInParent<StaffNodePresenter> ();
+    staffNode = GetComponentInParent<StaffNodePresenter> ();
   }
 	#region IDropHandler implementation
-	public override void OnDrop (PointerEventData eventData)
+	public void OnDrop (PointerEventData eventData)
 	{
     StaffNodePresenter pointerNode = getPointerStaffNode (eventData);
     if (!pointerNode) {
       return;
     }
-    if (thisNode && !thisNode.isAssigned.Value) {
-      thisNode.staffId.Value = pointerNode.staffId.Value;
-      thisNode.isAssigned.Value = true;
-      thisNode.isMoved = false;
+    if (staffNode && !staffNode.isAssigned.Value) {
+      staffNode.staffId.Value = pointerNode.staffId.Value;
+      staffNode.isAssigned.Value = true;
+      staffNode.isMoved = false;
       GetComponent<StaffNodeDragHandler> ().enabled = true;
     } 
     else {
-      if(pointerNode.transform.parent == childContainer){
+      if(pointerNode.transform.parent == staffNode.childNodes){
         return;
       }
-      GameObject newNodeObj = GameController.Instance.createStaffNode ();
-      StaffNodePresenter newNode = newNodeObj.GetComponent<StaffNodePresenter> ();
-      newNode.staffId.Value = pointerNode.staffId.Value;
-      newNode.isHired = true;
-
-      newNodeObj.transform.SetParent (childContainer);
+      GameController.Instance.moveStaffNode (pointerNode, staffNode);
     }
-
-
-    GameSounds.auDrop.Play();
-    pointerNode.isMoved = true;
 	}
 	#endregion
 
@@ -44,7 +35,7 @@ public class StaffNodeDropHandler : NodeDropHandler {
 
   public override void OnPointerEnter (PointerEventData eventData)
 	{
-    if (thisNode.isAssigned.Value || getPointerStaffNode(eventData) ) {
+    if (staffNode.isAssigned.Value || getPointerStaffNode(eventData) ) {
       outline.enabled = true;
 		}
 	}

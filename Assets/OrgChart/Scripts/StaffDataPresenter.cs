@@ -37,17 +37,14 @@ public class StaffDataPresenter : MonoBehaviour {
 
     node.staffId
       .Where(id => id.HasValue)
-      .Subscribe(id => {
-        bindToView( GameController.Instance.staffRxDataList [id.Value] );
-      })
+      .Subscribe(id => bindToView (GameController.Instance.staffRxDataList [id.Value]))
       .AddTo(eventResources);
 
 
-    /*
     node.tier
-      .CombineLatest(node.childCountStream, (t, c) => (0 < c) ? Mathf.Min(t, 1) : t)
+      .CombineLatest(node.childCountStream, (t, c) => (0 < c) ? Mathf.Min(t, 2) : t)
       .Subscribe(t => {
-        if(t == 1){
+        if(t < 2){
           tie.enabled = true;
           suits.enabled = true;
         } else if(t == 2){
@@ -60,7 +57,6 @@ public class StaffDataPresenter : MonoBehaviour {
       })
       .AddTo(eventResources);
 
-*/
   }
 
   void bindToView(StaffRxData srd){
