@@ -4,6 +4,7 @@ using UniRx;
 using System.Reflection;
 
 public class StaffRxData {
+//  public ReadOnlyReactiveProperty<int> currentSkill { get; private set; }
   public ReactiveProperty<int> baseSkill =  new ReactiveProperty<int> ();  
   public ReactiveProperty<int> lastSkill =  new ReactiveProperty<int> ();  
   public ReactiveProperty<int> age = new ReactiveProperty<int> ();

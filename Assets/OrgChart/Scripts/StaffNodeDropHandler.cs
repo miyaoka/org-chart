@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class StaffNodeDropHandler : NodeDropHandler, IDropHandler {
   protected StaffNodePresenter staffNode;
 
-  void Awake(){
+  new void Awake(){
     base.Awake ();
     staffNode = GetComponentInParent<StaffNodePresenter> ();
   }

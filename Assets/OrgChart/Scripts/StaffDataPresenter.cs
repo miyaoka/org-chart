@@ -17,28 +17,19 @@ public class StaffDataPresenter : MonoBehaviour {
   [SerializeField] HairSprites hairPrefab;
 
   //model
-  public ReadOnlyReactiveProperty<int> currentSkill { get; private set; }
-  public ReactiveProperty<int?> parentSkill = new ReactiveProperty<int?> ();
-
-  CompositeDisposable eventResources = new CompositeDisposable();
-  CompositeDisposable staffResources = new CompositeDisposable();
-
-
   private StaffNodePresenter node;
   private Image bg;
   private Image diffBg;
   private Text diffText;
+  CompositeDisposable eventResources = new CompositeDisposable();
+
+
 
   void Start(){
     node = GetComponentInParent<StaffNodePresenter> ();
     bg = GetComponent<Image> ();
     diffBg = diffSkill.GetComponent<Image> ();
     diffText = diffSkill.GetComponentInChildren<Text> ();
-
-    node.staffId
-      .Where(id => id.HasValue)
-      .Subscribe(id => bindToView (GameController.Instance.staffRxDataList [id.Value]))
-      .AddTo(eventResources);
 
 
     node.tier
@@ -63,47 +54,32 @@ public class StaffDataPresenter : MonoBehaviour {
       })
       .AddTo(eventResources);
 
-  }
-
-  void bindToView(StaffRxData srd){
-    staffResources.Dispose ();
-    staffResources = new CompositeDisposable();
-
-    //define prop
-    currentSkill = 
-      srd.baseSkill
-        .CombineLatest(node.childCountStream, (s, c) => s - c )
-        .ToReadOnlyReactiveProperty();
-
-    //model to view
-    currentSkill
+    node.currentSkill
       .SubscribeToText(currentSkillText)
-      .AddTo(staffResources);
-    currentSkill
-      .CombineLatest (parentSkill, (c, p) => p.HasValue ? p.Value - c : 10)
-      .Subscribe (diff => {
-        if(0 > diff){
-          bg.color = new Color(1,0,0);
-        }
-        else if(0 == diff){
-          bg.color = new Color(1,1,0);
-        }
-        else if(1 == diff){
-          bg.color = new Color(1,1,.75f);
-        }
-        else {
-          bg.color = new Color(1,1,1);
+      .AddTo(eventResources);
+    node.parentDiff
+      .Subscribe(diff => {
+        if(diff.HasValue)
+        {
+          if (diff.Value < 0) {
+            bg.color = new Color (1, 0, 0);
+          } else if (diff.Value < 3) {
+            bg.color = new Color (1, 1, Mathf.Pow(diff.Value/3f, .5f));
+          } else {
+            bg.color = new Color (1, 1, 1);
+          }
+        }else{
+          bg.color = new Color (1, 1, 1);
         }
       })
-      .AddTo(staffResources);
+      .AddTo(eventResources);    
 
-
-    srd.baseSkill
+    node.baseSkill
       .CombineLatest(node.childCountStream, (s, c) => 0 < c ? "/" + s : "" )
       .SubscribeToText(baseSkillText)
-      .AddTo(staffResources);
-    srd.baseSkill
-      .CombineLatest (srd.lastSkill, (b, l) => b - l)
+      .AddTo(eventResources);
+    node.baseSkill
+      .CombineLatest (node.lastSkill, (b, l) => b - l)
       .Subscribe (diff => {
         if(0 == diff){
           diffSkill.gameObject.SetActive(false);
@@ -120,36 +96,31 @@ public class StaffDataPresenter : MonoBehaviour {
           }
         }
       })
-      .AddTo (staffResources);
-    
-    srd.age
+      .AddTo (eventResources);
+
+    node.age
       .SubscribeToText(ageText, x => "(" + x.ToString() + ")" )
-      .AddTo(staffResources);
-    srd.age
+      .AddTo(eventResources);
+    node.age
       .Subscribe (age => {
         ageText.color = (GameController.Instance.retirementAge > age) ? new Color (0, 0, 0) : new Color(1,0,0);
       })
-      .AddTo (staffResources);
-    srd.age
+      .AddTo (eventResources);
+    node.age
       .Subscribe(x => hair.sprite = hairPrefab.hairByAge(x) )
-      .AddTo(staffResources);
-    srd.shirtsColor
+      .AddTo(eventResources);
+    node.shirtsColor
       .Subscribe(x => shirts.color = x)
-      .AddTo(staffResources);
-    srd.tieColor
+      .AddTo(eventResources);
+    node.tieColor
       .Subscribe(x => tie.color = x)
-      .AddTo(staffResources);
-    srd.suitsColor
+      .AddTo(eventResources);
+    node.suitsColor
       .Subscribe(x => suits.color = x)
-      .AddTo(staffResources);
-
+      .AddTo(eventResources);
   }
   void OnDestroy()
   {
-    eventResources.Dispose();
-    staffResources.Dispose ();
+    eventResources.Dispose ();
   }
-
-
-
 }

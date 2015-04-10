@@ -2,6 +2,8 @@
 using System.Collections;
 using UniRx;
 using UnityEngine.EventSystems;
+using System.Reflection;
+
 
 public class StaffNodePresenter : NodePresenter {
 
@@ -14,24 +16,84 @@ public class StaffNodePresenter : NodePresenter {
   private const float familyLineHeight = 19.0F;
 
   //model
+  public int id;
   public ReactiveProperty<bool> isAssigned = new ReactiveProperty<bool> (true);
-  public ReactiveProperty<int?> staffId =  new ReactiveProperty<int?>();  
-  public ReactiveProperty<int?> parentId =  new ReactiveProperty<int?>();  
   public ReactiveProperty<int> tier = new ReactiveProperty<int> (0);
   public ReactiveProperty<bool> isHired = new ReactiveProperty<bool> (false);
   public bool isMoved;
   public ReactiveProperty<bool> isDragging = new ReactiveProperty<bool> (false);
+
+  public ReactiveProperty<int> currentSkill = new ReactiveProperty<int>();
+
+  public ReactiveProperty<int> baseSkill =  new ReactiveProperty<int> ();  
+  public ReactiveProperty<int> lastSkill =  new ReactiveProperty<int> ();  
+  public ReactiveProperty<int> age = new ReactiveProperty<int> ();
+  public ReactiveProperty<Color> shirtsColor = new ReactiveProperty<Color>();
+  public ReactiveProperty<Color> tieColor = new ReactiveProperty<Color>();
+  public ReactiveProperty<Color> suitsColor = new ReactiveProperty<Color>();
+  public ReactiveProperty<Color> faceColor = new ReactiveProperty<Color>();
+  public ReactiveProperty<Color> hairColor = new ReactiveProperty<Color>();
+
+  public ReactiveProperty<StaffNodePresenter> parentNode = new ReactiveProperty<StaffNodePresenter>();
+  public ReactiveProperty<int?> parentDiff = new ReactiveProperty<int?>();
+
   IObservable<Vector2> parentDelta;
   IObservable<Vector2> thisDelta;
 
   CompositeDisposable eventResources = new CompositeDisposable();
 
+
+  public StaffData staffData{
+    get {
+      var sd = new StaffData();        
+      foreach(FieldInfo fi in sd.GetType().GetFields()){
+        object reactiveProp = this.GetType ().GetField (fi.Name).GetValue (this);
+        sd.GetType().GetField(fi.Name).SetValue(
+          sd, 
+          reactiveProp.GetType ().GetProperty ("Value").GetValue(reactiveProp, null)
+        );
+      }
+      return sd;
+    }
+    set {
+      foreach(FieldInfo fi in value.GetType().GetFields()){
+        object reactiveProp = this.GetType ().GetField (fi.Name).GetValue (this);
+        reactiveProp.GetType ().GetProperty ("Value").SetValue(
+          reactiveProp,
+          value.GetType ().GetField (fi.Name).GetValue (value),
+          null
+        );
+      }
+    }
+  }
+
+
+
+
 	void Start () {
-//    StaffDataPresenter staff = gameObject.GetComponentInChildren<StaffDataPresenter> ();
     CanvasGroup cg = contentUI.GetComponent<CanvasGroup> ();
     familyLine = familyLineUI.GetComponent<UILineRenderer> ();
 
+    currentSkill = baseSkill
+      .CombineLatest (childCountStream, (s, c) =>  s - c )
+      .ToReactiveProperty ();
 
+    parentNode
+      .Where (pn => pn != null)
+      .Subscribe (pn => {
+        parentDiff = pn.currentSkill
+          .CombineLatest(currentSkill, (l, r) => (int?)l - r)
+          .CombineLatest(pn.isAssigned, (l, r) => r ? l : null)
+          .ToReactiveProperty ();
+      })
+      .AddTo(eventResources);
+    /*
+    parentDiff = parentNode
+      .Where(pn => pn != null)
+      .Select(pn => pn.currentSkill.Value)
+      .CombineLatest(currentSkill, (l, r) => (int?)l - r)
+      .ToReactiveProperty ();
+*/
 
     isAssigned
       .Subscribe (_ => {

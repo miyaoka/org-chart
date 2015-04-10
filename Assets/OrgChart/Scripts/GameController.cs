@@ -18,6 +18,8 @@ public class GameController : MonoBehaviour {
   private float suitsV = .6F;
 
   public Dictionary<int?, StaffRxData> staffRxDataList = new Dictionary<int?, StaffRxData>();
+  public Dictionary<int?, NodeRxData> nodeRxDataList = new Dictionary<int?, NodeRxData>();
+  public Dictionary<int, StaffNodePresenter> nodeList = new Dictionary<int, StaffNodePresenter>();
   private int lastStaffId = 0;
   public ReactiveProperty<StaffNodePresenter> draggingNode = new ReactiveProperty<StaffNodePresenter> ();
 
@@ -57,13 +59,14 @@ public class GameController : MonoBehaviour {
   }
   void onEndTurn(EndTurnEvent e){
 
-    foreach (KeyValuePair<int?, StaffRxData> pair in staffRxDataList) {
+    foreach (KeyValuePair<int, StaffNodePresenter> pair in nodeList) {
       addAge (pair.Value);
     }
 
     updateRecruits ();  
   }
-  void addAge(StaffRxData staff){
+  void addAge(StaffNodePresenter staff){
+    Debug.Log (staff.age.Value);
     staff.age.Value++;
     staff.lastSkill.Value = staff.baseSkill.Value;
     if (retirementAge > staff.age.Value) {
@@ -86,64 +89,58 @@ public class GameController : MonoBehaviour {
     }
     int count = Random.Range (3, 7);
     for(int i = 0; i < count; i++){
-      createStaff();
+      createStaffNode (createStaffData (), recruitContainer);
     }
-
   }
-  GameObject createStaff(){
-    StaffData data = createStaffData ();
-    StaffRxData srd = new StaffRxData ();
-    srd.staffData = data;
-    staffRxDataList [lastStaffId] = srd;
-
-    GameObject staffNode = createStaffNode (lastStaffId, recruitContainer);
-
-    lastStaffId++;
-    return staffNode;
-  }
-  private GameObject createStaffNode(int? staffId, Transform parentContainer, bool isHired = false, StaffNodePresenter parentStaff = null){
+  private StaffNodePresenter createStaffNode(StaffData staffData, Transform parentContainer, bool isHired = false, StaffNodePresenter parentNode = null){
     GameObject staffNode = Instantiate(staffNodePrefab) as GameObject;
     StaffNodePresenter node = staffNode.GetComponent<StaffNodePresenter> ();
-    node.staffId.Value = staffId;
+//    node.staffId.Value = staffId;
+    node.staffData = staffData;
     node.isHired.Value = isHired;
-    if (parentStaff) {
-      node.parentId.Value = parentStaff.staffId.Value;
-      node.tier.Value = parentStaff.tier.Value + 1;
+    if (parentNode) {
+      node.parentNode.Value = parentNode;
+//      node.parentSkill = parentNode.currentSkill;
+      node.tier.Value = parentNode.tier.Value + 1;
     }
     staffNode.transform.SetParent (parentContainer);
-    return staffNode;
+
+    node.id = lastStaffId;
+    nodeList [lastStaffId] = node;
+    lastStaffId++;
+    return node;
   }
-  public void moveStaffNode(StaffNodePresenter staff, NodePresenter parentNode){
+  public void moveStaffNode(StaffNodePresenter node, NodePresenter parentNode){
     if (parentNode is StaffNodePresenter) {
-      moveStaffToStaff (staff, parentNode as StaffNodePresenter);
+      moveStaffToStaff (node, parentNode as StaffNodePresenter);
     } else {
-      createStaffNode (staff.staffId.Value, parentNode.childNodes, true);
+      createStaffNode (node.staffData, parentNode.childNodes, true);
     }
-    staff.isMoved = true;
+    node.isMoved = true;
     //    Destroy (staff.gameObject);
     GameSounds.auDrop.Play();
   }
-  private void moveStaffToStaff(StaffNodePresenter staff, StaffNodePresenter parentStaff){
+  private void moveStaffToStaff(StaffNodePresenter node, StaffNodePresenter parentStaff){
     if (parentStaff.isAssigned.Value) {
-      createStaffNode (staff.staffId.Value, parentStaff.childNodes, true, parentStaff);
+      createStaffNode (node.staffData, parentStaff.childNodes, true, parentStaff);
     } else {
-      parentStaff.staffId.Value = staff.staffId.Value;
+      parentStaff.staffData = node.staffData;
       parentStaff.isAssigned.Value = true;
       parentStaff.isMoved = false;
       parentStaff.gameObject.GetComponentInChildren<StaffNodeDragHandler> ().enabled = true;
     }
 
-    staff.isMoved = true;
+    node.isMoved = true;
     //    Destroy (staff.gameObject);
     GameSounds.auDrop.Play();
   }
   public void destroyNode(StaffNodePresenter snp){
     
   }
-  public GameObject createStaffCursor(int? staffId){
+  public GameObject createStaffCursor(StaffData staffData){
 
     //clone
-    GameObject cursor = createStaffNode (staffId, canvas.transform);
+    GameObject cursor = createStaffNode (staffData, canvas.transform).gameObject;
     //add to canvas
     cursor.transform.SetAsLastSibling();
 

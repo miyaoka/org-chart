@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 public class OrgNodeDropHandler : NodeDropHandler, IDropHandler{
   protected NodePresenter orgNode;
 
-  protected void Awake(){
+  new void Awake(){
     base.Awake ();
     orgNode = GetComponentInParent<NodePresenter> ();
   }
