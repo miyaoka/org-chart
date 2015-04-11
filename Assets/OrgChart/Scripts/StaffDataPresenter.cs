@@ -65,7 +65,7 @@ public class StaffDataPresenter : MonoBehaviour {
           if (diff.Value < 0) {
             relation.color = new Color (1, 0, 0);
           } else if (diff.Value < 3) {
-            relation.color = new Color (1, 1, Mathf.Pow(diff.Value/3f, .5f));
+            relation.color = new Color (1, 1, Mathf.Pow(diff.Value/3f, .2f));
           } else {
             relation.color = new Color (1, 1, 1);
           }
