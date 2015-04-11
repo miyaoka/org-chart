@@ -13,9 +13,9 @@ public class GameController : MonoBehaviour {
 
   public ReactiveProperty<bool> isDragging = new ReactiveProperty<bool> (false);
 
-  private float shirtsV = .9F;
-  private float tieV = .6F;
-  private float suitsV = .6F;
+  private float shirtsV = .8F;
+  private float tieV = .3F;
+  private float suitsV = .5F;
 
   public Dictionary<int?, StaffRxData> staffRxDataList = new Dictionary<int?, StaffRxData>();
   public Dictionary<int?, NodeRxData> nodeRxDataList = new Dictionary<int?, NodeRxData>();

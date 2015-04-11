@@ -7,13 +7,18 @@ public class MenuPresenter : MonoBehaviour {
   [SerializeField] GameObject endTurnBtn;
   [SerializeField] GameObject resetBtn;
   [SerializeField] GameObject info;
+  [SerializeField] CanvasGroup recruits;
 
 
 	void Start () {
     GameController.Instance.draggingNode
-      .Where (n => n != null)
       .Subscribe (n => {
-//        Debug.Log(n.isHired);
+        bool d = n != null;
+        dismissArea.SetActive(d && n.isHired.Value);
+        endTurnBtn.SetActive(!d);
+//        info.SetActive(!d);
+        recruits.alpha = d ? 0 : 1;
+        recruits.blocksRaycasts = !d;
     });
 
 	}
