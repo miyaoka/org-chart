@@ -16,7 +16,7 @@ public class StaffNodePresenter : NodePresenter {
   private const float familyLineHeight = 19.0F;
 
   //model
-  public int id;
+  public int nodeId;
   public ReactiveProperty<bool> isAssigned = new ReactiveProperty<bool> (true);
   public ReactiveProperty<int> tier = new ReactiveProperty<int> (0);
   public ReactiveProperty<bool> isHired = new ReactiveProperty<bool> (false);
@@ -111,7 +111,7 @@ public class StaffNodePresenter : NodePresenter {
     hasContent
       .CombineLatest (isDragging, (c, d) => c || d)
       .Where(exist => exist == false)
-      .Subscribe (_ => Destroy (gameObject))
+      .Subscribe (_ => GameController.Instance.destroyNode(gameObject))
       .AddTo (eventResources);
 
     //hide if no content
@@ -148,9 +148,8 @@ public class StaffNodePresenter : NodePresenter {
   void drawFamilyLine(Vector2 lineDelta){
     familyLine.Points = new Vector2[] { 
       new Vector2(lineDelta.x, 0), 
-      new Vector2(lineDelta.x, 8),//familyLineHeight * .4F),
-      new Vector2(lineDelta.y, 8),//familyLineHeight * .4F),
-      //      new Vector2(pt.y, familyLineHeight * .6F),      
+      new Vector2(lineDelta.x, 10),//familyLineHeight * .4F),
+      new Vector2(lineDelta.y, 10),//familyLineHeight * .4F),
       new Vector2(lineDelta.y, familyLineHeight)
     };
     familyLine.SetVerticesDirty();    

@@ -16,7 +16,7 @@ public class StaffNodeDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandl
 
   public void OnBeginDrag (PointerEventData eventData)
   {
-    GameSounds.auSelect.Play ();
+    GameSounds.select.Play ();
 
     //clone item
     dragPointer = GameController.Instance.createStaffCursor(node.staffData);
@@ -52,7 +52,7 @@ public class StaffNodeDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandl
   {
     GameController.Instance.draggingNode.Value = null;
 
-    Destroy(dragPointer);
+    GameController.Instance.destroyNode (dragPointer);
 
 //    EventManager.Instance.TriggerEvent (new StaffEndDragEvent ());
 

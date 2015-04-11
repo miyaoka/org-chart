@@ -15,10 +15,11 @@ public class StaffDataPresenter : MonoBehaviour {
   [SerializeField] Image face;
   [SerializeField] Image hair;
   [SerializeField] HairSprites hairPrefab;
+//  [SerializeField] Image relation;
 
   //model
   private StaffNodePresenter node;
-  private Image bg;
+  private Image relation;
   private Image diffBg;
   private Text diffText;
   CompositeDisposable eventResources = new CompositeDisposable();
@@ -27,7 +28,7 @@ public class StaffDataPresenter : MonoBehaviour {
 
   void Start(){
     node = GetComponentInParent<StaffNodePresenter> ();
-    bg = GetComponent<Image> ();
+    relation = GetComponent<Image> ();
     diffBg = diffSkill.GetComponent<Image> ();
     diffText = diffSkill.GetComponentInChildren<Text> ();
 
@@ -62,14 +63,14 @@ public class StaffDataPresenter : MonoBehaviour {
         if(diff.HasValue)
         {
           if (diff.Value < 0) {
-            bg.color = new Color (1, 0, 0);
+            relation.color = new Color (1, 0, 0);
           } else if (diff.Value < 3) {
-            bg.color = new Color (1, 1, Mathf.Pow(diff.Value/3f, .5f));
+            relation.color = new Color (1, 1, Mathf.Pow(diff.Value/3f, .5f));
           } else {
-            bg.color = new Color (1, 1, 1);
+            relation.color = new Color (1, 1, 1);
           }
         }else{
-          bg.color = new Color (1, 1, 1);
+          relation.color = new Color (1, 1, 1);
         }
       })
       .AddTo(eventResources);    
@@ -87,7 +88,7 @@ public class StaffDataPresenter : MonoBehaviour {
         else{
           diffSkill.gameObject.SetActive(true);
           if(0 < diff){
-            diffBg.color = new Color(.9f,.9f,.5f);
+            diffBg.color = new Color(.1f,.5f,.2f);
             diffText.text = "+" + diff.ToString();
           }
           else{
@@ -97,16 +98,28 @@ public class StaffDataPresenter : MonoBehaviour {
         }
       })
       .AddTo (eventResources);
+    node.baseSkill
+      .CombineLatest(node.age, (skill,age) => age == 0 ? .5f : (float)skill/age/.8f)
+      .Subscribe (rate => {
+        currentSkillText.color = Util.HSVToRGB(rate * 100f/360f, .9f, .7f);
+    });
 
     node.age
-      .SubscribeToText(ageText, x => "(" + x.ToString() + ")" )
+      .Select(age => age + 20)
+      .SubscribeToText(ageText, age => "(" + age.ToString() + ")" )
       .AddTo(eventResources);
     node.age
       .Subscribe (age => {
-        ageText.color = (GameController.Instance.retirementAge > age) ? new Color (0, 0, 0) : new Color(1,0,0);
+        if(age < GameController.retirementAge)
+        {
+          ageText.color =  Util.HSVToRGB(.3f, 1, (1f - (float)age / GameController.retirementAge) * .6f );
+        } else{
+          ageText.color = new Color(1,0,0);
+        }
       })
       .AddTo (eventResources);
     node.age
+      .Select(age => age + 20)
       .Subscribe(x => hair.sprite = hairPrefab.hairByAge(x) )
       .AddTo(eventResources);
     node.shirtsColor
