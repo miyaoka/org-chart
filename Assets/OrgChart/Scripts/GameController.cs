@@ -128,6 +128,9 @@ public class GameController : MonoBehaviour {
       tierDiff -= 1;
       createStaffNode (node.staffData, parentStaff.childNodes, true, parentStaff);
     } else {
+      if (0 == parentStaff.tier.Value) {
+        tierDiff = 1;
+      }
       parentStaff.staffData = node.staffData;
       parentStaff.isAssigned.Value = true;
       parentStaff.isMoved = false;

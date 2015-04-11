@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UniRx;
 
 public class StaffNodeDropHandler : NodeDropHandler, IDropHandler {
   protected StaffNodePresenter staffNode;
@@ -13,7 +14,7 @@ public class StaffNodeDropHandler : NodeDropHandler, IDropHandler {
 	public void OnDrop (PointerEventData eventData)
 	{
     StaffNodePresenter pointerNode = getPointerStaffNode (eventData);
-    if (!pointerNode) {
+    if (!pointerNode || pointerNode == staffNode) {
       return;
     }
     GameController.Instance.moveStaffNode (pointerNode, staffNode);
@@ -30,5 +31,4 @@ public class StaffNodeDropHandler : NodeDropHandler, IDropHandler {
 	}
 
 	#endregion
-
 }
