@@ -70,17 +70,21 @@ public class GameController : MonoBehaviour {
   void addAge(StaffNodePresenter staff){
     staff.age.Value++;
     staff.lastSkill.Value = staff.baseSkill.Value;
-    if (retirementAge > staff.age.Value) {
-      if (.5 > Random.value) {
-        staff.baseSkill.Value++;
+    staff.baseSkill.Value = growSkill(staff.age.Value, staff.baseSkill.Value);
+  }
+  int growSkill(int age, int skill){
+    
+    if (retirementAge > age) {
+      if (.4 > Random.value) {
+        skill++;
       }
     } else {
-      if (.5 > Random.value) {
-        staff.baseSkill.Value-=2;
+      if (.6 > Random.value) {
+        skill-=1;
       } else {
-        staff.baseSkill.Value--;
       }
     }
+    return skill;
   }
 
 
@@ -161,13 +165,11 @@ public class GameController : MonoBehaviour {
   StaffData createStaffData(){
     StaffData data = new StaffData ();
     int age = Random.Range(0,40);
-    float baseSkill = 0;
+    int baseSkill = Random.Range(0,5);
     for(int i = 0; i < age; i++){
-      if(.5F <= Random.value){
-        baseSkill++;
-      }
+      baseSkill = growSkill (i, baseSkill);
     }
-    data.baseSkill = data.lastSkill = Mathf.FloorToInt(baseSkill * .8f);
+    data.baseSkill = data.lastSkill = Mathf.FloorToInt((float)baseSkill * .8f);
     data.age = age;
 
     float shirtsHue = Random.value;

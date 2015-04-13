@@ -34,7 +34,7 @@ public class StaffDataPresenter : MonoBehaviour {
 
 
     node.tier
-      .CombineLatest(node.childCountStream, (t, c) => (0 < c) ? Mathf.Min(t, 2) : t)
+      .CombineLatest(node.childCount, (t, c) => (0 < c) ? Mathf.Min(t, 2) : t)
       .Subscribe(t => {
         if(node.isHired.Value){
           if(t < 2){
@@ -76,7 +76,7 @@ public class StaffDataPresenter : MonoBehaviour {
       .AddTo(eventResources);    
 
     node.baseSkill
-      .CombineLatest(node.childCountStream, (s, c) => 0 < c ? "/" + s : "" )
+      .CombineLatest(node.hasChild, (s, c) => c ? "/" + s : "" )
       .SubscribeToText(baseSkillText)
       .AddTo(eventResources);
     node.baseSkill
@@ -99,7 +99,7 @@ public class StaffDataPresenter : MonoBehaviour {
       })
       .AddTo (eventResources);
     node.baseSkill
-      .CombineLatest(node.age, (skill,age) => age == 0 ? .5f : (float)skill/age/.8f)
+      .CombineLatest(node.age, (skill,age) => age == 0 ? .5f : Mathf.Min(1, (float)skill/age/.8f))
       .Subscribe (rate => {
         currentSkillText.color = Util.HSVToRGB(rate * 100f/360f, .9f, .7f);
     });

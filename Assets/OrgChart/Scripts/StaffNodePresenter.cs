@@ -3,7 +3,8 @@ using System.Collections;
 using UniRx;
 using UnityEngine.EventSystems;
 using System.Reflection;
-
+using UnityEngine.UI;
+using UniRx.Triggers;
 
 public class StaffNodePresenter : NodePresenter {
 
@@ -12,6 +13,7 @@ public class StaffNodePresenter : NodePresenter {
   [SerializeField] GameObject staffUI;
   [SerializeField] GameObject emptyUI;
   [SerializeField] GameObject familyLineUI;
+  [SerializeField] Text childCountUI;
   private UILineRenderer familyLine;
   private const float familyLineHeight = 19.0F;
 
@@ -71,11 +73,13 @@ public class StaffNodePresenter : NodePresenter {
 
 
 	void Start () {
+    base.Start ();
     CanvasGroup cg = contentUI.GetComponent<CanvasGroup> ();
     familyLine = familyLineUI.GetComponent<UILineRenderer> ();
+    Image bg = GetComponent<Image> ();
 
     currentSkill = baseSkill
-      .CombineLatest (childCountStream, (s, c) =>  s - c )
+      .CombineLatest (childCount, (s, c) =>  s - c )
       .ToReactiveProperty ();
 
     parentNode
@@ -140,6 +144,28 @@ public class StaffNodePresenter : NodePresenter {
     ))
       .Subscribe (drawFamilyLine)
       .AddTo(eventResources);
+
+    childCount
+      .CombineLatest(childCountTotal, (l,r) => l + "/" + r)
+      .SubscribeToText (childCountUI)
+      .AddTo (eventResources);
+
+    childCountTotal
+      .Subscribe (c => {
+        if(3 <= c){
+          isSection.Value = true;
+        }else {
+          isSection.Value = false;
+        }
+      })
+      .AddTo (eventResources);
+
+    isSection
+      .Subscribe (s => {
+        bg.enabled = s;
+      })
+      .AddTo (eventResources);
+        
 	}
   void showFamilyLine(bool show){
     familyLineUI.SetActive (show);

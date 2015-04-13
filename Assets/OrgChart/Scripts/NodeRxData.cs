@@ -18,9 +18,9 @@ public class NodeRxData {
 
   public NodeRxData(StaffNodePresenter node){
 
-    childCount = 
-      node.childCountStream
-        .ToReadOnlyReactiveProperty ();
+//    childCount = 
+//      node.childCountStream
+//        .ToReadOnlyReactiveProperty ();
 
     staffData
       .Where (staff => staff != null)
