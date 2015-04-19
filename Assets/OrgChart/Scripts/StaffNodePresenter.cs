@@ -35,6 +35,7 @@ public class StaffNodePresenter : NodePresenter {
   public ReactiveProperty<Color> suitsColor = new ReactiveProperty<Color>();
   public ReactiveProperty<Color> faceColor = new ReactiveProperty<Color>();
   public ReactiveProperty<Color> hairColor = new ReactiveProperty<Color>();
+  public ReactiveProperty<int> job = new ReactiveProperty<int>();
 
   public ReactiveProperty<StaffNodePresenter> parentNode = new ReactiveProperty<StaffNodePresenter>();
   public ReactiveProperty<int?> parentDiff = new ReactiveProperty<int?>();
@@ -152,7 +153,7 @@ public class StaffNodePresenter : NodePresenter {
 
     childCountTotal
       .Subscribe (c => {
-        if(3 <= c){
+        if(3 < c && tier.Value == 1){
           isSection.Value = true;
         }else {
           isSection.Value = false;

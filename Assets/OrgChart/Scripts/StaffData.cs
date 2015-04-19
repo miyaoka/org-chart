@@ -14,8 +14,10 @@ public class StaffData {
 	public Color suitsColor;
 	public Color hairColor;
 	public Color faceColor;
+
+  public int job;
 //	public bool isHired = false;
 //	public bool isAssigned = false;
 //	public int skillType;
-	
+  public enum Jobs {Research, Develop, Market};
 }

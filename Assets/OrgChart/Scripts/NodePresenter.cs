@@ -51,11 +51,11 @@ public class NodePresenter : MonoBehaviour {
 
   }
   void getTotal(){
-    int total = childNodes.childCount;
+    int total = 0;
     foreach(Transform child in childNodes){
       total += child.GetComponent<NodePresenter> ().childCountTotal.Value;
     }
-    childCountTotal.Value = total;
+    childCountTotal.Value = total + 1;
   }
   protected void Start(){
 

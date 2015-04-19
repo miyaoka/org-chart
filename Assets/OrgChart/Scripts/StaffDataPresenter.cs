@@ -16,6 +16,9 @@ public class StaffDataPresenter : MonoBehaviour {
   [SerializeField] Image hair;
   [SerializeField] HairSprites hairPrefab;
 //  [SerializeField] Image relation;
+  [SerializeField] GameObject researchUI;
+  [SerializeField] GameObject developUI;
+  [SerializeField] GameObject marketUI;
 
   //model
   private StaffNodePresenter node;
