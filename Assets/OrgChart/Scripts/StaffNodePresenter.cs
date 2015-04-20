@@ -25,17 +25,17 @@ public class StaffNodePresenter : NodePresenter {
   public bool isMoved;
   public ReactiveProperty<bool> isDragging = new ReactiveProperty<bool> (false);
 
-  public ReactiveProperty<int> currentSkill = new ReactiveProperty<int>();
+  public ReactiveProperty<int> currentLevel = new ReactiveProperty<int>();
 
-  public ReactiveProperty<int> baseSkill =  new ReactiveProperty<int> ();  
-  public ReactiveProperty<int> lastSkill =  new ReactiveProperty<int> ();  
+  public ReactiveProperty<int> baseLevel =  new ReactiveProperty<int> ();  
+  public ReactiveProperty<int> lastLevel =  new ReactiveProperty<int> ();  
   public ReactiveProperty<int> age = new ReactiveProperty<int> ();
   public ReactiveProperty<Color> shirtsColor = new ReactiveProperty<Color>();
   public ReactiveProperty<Color> tieColor = new ReactiveProperty<Color>();
   public ReactiveProperty<Color> suitsColor = new ReactiveProperty<Color>();
   public ReactiveProperty<Color> faceColor = new ReactiveProperty<Color>();
   public ReactiveProperty<Color> hairColor = new ReactiveProperty<Color>();
-  public ReactiveProperty<int> job = new ReactiveProperty<int>();
+  public ReactiveProperty<Jobs> job = new ReactiveProperty<Jobs>();
 
   public ReactiveProperty<StaffNodePresenter> parentNode = new ReactiveProperty<StaffNodePresenter>();
   public ReactiveProperty<int?> parentDiff = new ReactiveProperty<int?>();
@@ -79,15 +79,15 @@ public class StaffNodePresenter : NodePresenter {
     familyLine = familyLineUI.GetComponent<UILineRenderer> ();
     Image bg = GetComponent<Image> ();
 
-    currentSkill = baseSkill
+    currentLevel = baseLevel
       .CombineLatest (childCount, (s, c) =>  s - c )
       .ToReactiveProperty ();
 
     parentNode
       .Where (pn => pn != null)
       .Subscribe (pn => {
-        parentDiff = pn.currentSkill
-          .CombineLatest(currentSkill, (l, r) => (int?)l - r)
+        parentDiff = pn.currentLevel
+          .CombineLatest(currentLevel, (l, r) => (int?)l - r)
           .CombineLatest(pn.isAssigned, (l, r) => r ? l : null)
           .ToReactiveProperty ();
       })

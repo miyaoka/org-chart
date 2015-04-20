@@ -3,8 +3,8 @@ using System.Collections;
 
 public class StaffData {
 
-	public int baseSkill;
-  public int lastSkill;
+	public int baseLevel;
+  public int lastLevel;
   public int age;
 //  public int tier = 3;
 //	public int skillDiff = 0;
@@ -15,9 +15,16 @@ public class StaffData {
 	public Color hairColor;
 	public Color faceColor;
 
-  public int job;
+  public Jobs job;
+//  public StaffSkill staffSkill;
 //	public bool isHired = false;
 //	public bool isAssigned = false;
 //	public int skillType;
-  public enum Jobs {Research, Develop, Market};
+}
+public enum Jobs {Research, Develop, Market};
+
+public class StaffSkill{
+  public int research;
+  public int develop;
+  public int market;
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UniRx;
+using System;
 
 public class GameController : MonoBehaviour {
 
@@ -69,17 +70,17 @@ public class GameController : MonoBehaviour {
   }
   void addAge(StaffNodePresenter staff){
     staff.age.Value++;
-    staff.lastSkill.Value = staff.baseSkill.Value;
-    staff.baseSkill.Value = growSkill(staff.age.Value, staff.baseSkill.Value);
+    staff.lastLevel.Value = staff.baseLevel.Value;
+    staff.baseLevel.Value = growSkill(staff.age.Value, staff.baseLevel.Value);
   }
   int growSkill(int age, int skill){
     
     if (retirementAge > age) {
-      if (.4 > Random.value) {
+      if (.4 > UnityEngine.Random.value) {
         skill++;
       }
     } else {
-      if (.6 > Random.value) {
+      if (.6 > UnityEngine.Random.value) {
         skill-=1;
       } else {
       }
@@ -92,7 +93,7 @@ public class GameController : MonoBehaviour {
     foreach( Transform child in recruitContainer){
       destroyNode (child.gameObject);
     }
-    int count = Random.Range (3, 7);
+    int count = UnityEngine.Random.Range (3, 7);
     for(int i = 0; i < count; i++){
       createStaffNode (createStaffData (), recruitContainer);
     }
@@ -164,25 +165,27 @@ public class GameController : MonoBehaviour {
 
   StaffData createStaffData(){
     StaffData data = new StaffData ();
-    int age = Random.Range(0,40);
-    int baseSkill = Random.Range(0,5);
+    int age = UnityEngine.Random.Range(0,40);
+    int baseSkill = UnityEngine.Random.Range(0,5);
     for(int i = 0; i < age; i++){
       baseSkill = growSkill (i, baseSkill);
     }
-    data.baseSkill = data.lastSkill = Mathf.FloorToInt((float)baseSkill * .8f);
+    data.baseLevel = data.lastLevel = Mathf.FloorToInt((float)baseSkill * .8f);
     data.age = age;
 
-    float shirtsHue = Random.value;
-    float tieHue = (.5F > Random.value) ? nearHue(shirtsHue) : compHue(shirtsHue);
-    float suitsHue = (.5F > Random.value) ? nearHue(shirtsHue) : compHue(shirtsHue);
+    float shirtsHue = UnityEngine.Random.value;
+    float tieHue = (.5F > UnityEngine.Random.value) ? nearHue(shirtsHue) : compHue(shirtsHue);
+    float suitsHue = (.5F > UnityEngine.Random.value) ? nearHue(shirtsHue) : compHue(shirtsHue);
 
-    data.shirtsColor = Util.HSVToRGB (shirtsHue, Random.value * .2F, shirtsV);
-    data.tieColor = Util.HSVToRGB (tieHue, Random.value * .2F + .2F, tieV);
-    data.suitsColor = Util.HSVToRGB (suitsHue, Random.value * .3F, suitsV);
+    data.shirtsColor = Util.HSVToRGB (shirtsHue, UnityEngine.Random.value * .2F, shirtsV);
+    data.tieColor = Util.HSVToRGB (tieHue, UnityEngine.Random.value * .2F + .2F, tieV);
+    data.suitsColor = Util.HSVToRGB (suitsHue, UnityEngine.Random.value * .3F, suitsV);
+
+    data.job = (Jobs)Enum.ToObject( typeof(Jobs), UnityEngine.Random.Range (0, Enum.GetValues (typeof(Jobs)).Length));
     return data;
   }
   float nearHue(float hue){
-    return (hue + Random.value * 1F/6F - 1F/12F + 1F ) % 1F;
+    return (hue + UnityEngine.Random.value * 1F/6F - 1F/12F + 1F ) % 1F;
   }
   float compHue(float hue){
     return (hue + .5F) % 1F;

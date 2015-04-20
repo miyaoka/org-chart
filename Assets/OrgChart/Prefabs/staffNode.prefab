@@ -54,7 +54,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &117146
 GameObject:
   m_ObjectHideFlags: 1
@@ -103,7 +103,7 @@ GameObject:
   - 114: {fileID: 11446602}
   - 114: {fileID: 11489214}
   m_Layer: 5
-  m_Name: skill
+  m_Name: level
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -126,7 +126,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &138928
 GameObject:
   m_ObjectHideFlags: 1
@@ -374,11 +374,11 @@ GameObject:
   - 224: {fileID: 22421830}
   - 114: {fileID: 11476814}
   - 114: {fileID: 11466764}
-  - 114: {fileID: 11499210}
   - 222: {fileID: 22298496}
   - 114: {fileID: 11406490}
+  - 114: {fileID: 11449968}
   m_Layer: 5
-  m_Name: type
+  m_Name: skill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -414,7 +414,7 @@ GameObject:
   - 114: {fileID: 11469822}
   - 114: {fileID: 11499938}
   m_Layer: 5
-  m_Name: baseSkillText
+  m_Name: baseLevelText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -431,7 +431,7 @@ GameObject:
   - 222: {fileID: 22293772}
   - 114: {fileID: 11479696}
   m_Layer: 5
-  m_Name: diffSkillText
+  m_Name: diffLevelText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -450,7 +450,7 @@ GameObject:
   - 114: {fileID: 11471324}
   - 114: {fileID: 11459836}
   m_Layer: 5
-  m_Name: currentSkillText
+  m_Name: currentLevelText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1041,6 +1041,26 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &11449968
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 174196}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1297475563, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Padding:
+    m_Left: 4
+    m_Right: 4
+    m_Top: 4
+    m_Bottom: 4
+  m_ChildAlignment: 0
+  m_Spacing: 2
+  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandHeight: 1
 --- !u!114 &11453442
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1070,9 +1090,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23bdead14af3346fbb550681d6991ba8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentSkillText: {fileID: 11467708}
-  baseSkillText: {fileID: 11436344}
-  diffSkill: {fileID: 147434}
+  currentLevelText: {fileID: 11467708}
+  baseLevelText: {fileID: 11436344}
+  diffLevelUI: {fileID: 147434}
   ageText: {fileID: 11440538}
   shirts: {fileID: 11488712}
   tie: {fileID: 11422354}
@@ -1675,26 +1695,6 @@ MonoBehaviour:
   m_Spacing: 0
   m_ChildForceExpandWidth: 1
   m_ChildForceExpandHeight: 0
---- !u!114 &11499210
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 174196}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -405508275, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Padding:
-    m_Left: 4
-    m_Right: 4
-    m_Top: 4
-    m_Bottom: 4
-  m_ChildAlignment: 0
-  m_Spacing: 0
-  m_ChildForceExpandWidth: 1
-  m_ChildForceExpandHeight: 1
 --- !u!114 &11499556
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1974,11 +1974,11 @@ RectTransform:
   - {fileID: 22481674}
   m_Father: {fileID: 22424882}
   m_RootOrder: 2
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -2, y: -2}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: -20, y: 4}
   m_SizeDelta: {x: 0, y: 0}
-  m_Pivot: {x: 0, y: 0}
+  m_Pivot: {x: 0, y: 1}
 --- !u!224 &22424882
 RectTransform:
   m_ObjectHideFlags: 1
@@ -2244,10 +2244,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 22421830}
   m_RootOrder: 2
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 44, y: -12}
-  m_SizeDelta: {x: 16, y: 16}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: .5, y: .5}
 --- !u!224 &22484718
 RectTransform:
@@ -2296,10 +2296,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 22421830}
   m_RootOrder: 1
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 28, y: -12}
-  m_SizeDelta: {x: 16, y: 16}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: .5, y: .5}
 --- !u!224 &22493870
 RectTransform:

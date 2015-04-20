@@ -4,9 +4,9 @@ using UniRx;
 
 public class StaffDataPresenter : MonoBehaviour {
   //view
-  [SerializeField] Text currentSkillText;
-  [SerializeField] Text baseSkillText;
-  [SerializeField] GameObject diffSkill;
+  [SerializeField] Text currentLevelText;
+  [SerializeField] Text baseLevelText;
+  [SerializeField] GameObject diffLevelUI;
   [SerializeField] Text ageText;
 
   [SerializeField] Image shirts;
@@ -32,8 +32,8 @@ public class StaffDataPresenter : MonoBehaviour {
   void Start(){
     node = GetComponentInParent<StaffNodePresenter> ();
     relation = GetComponent<Image> ();
-    diffBg = diffSkill.GetComponent<Image> ();
-    diffText = diffSkill.GetComponentInChildren<Text> ();
+    diffBg = diffLevelUI.GetComponent<Image> ();
+    diffText = diffLevelUI.GetComponentInChildren<Text> ();
 
 
     node.tier
@@ -58,8 +58,8 @@ public class StaffDataPresenter : MonoBehaviour {
       })
       .AddTo(eventResources);
 
-    node.currentSkill
-      .SubscribeToText(currentSkillText)
+    node.currentLevel
+      .SubscribeToText(currentLevelText)
       .AddTo(eventResources);
     node.parentDiff
       .Subscribe(diff => {
@@ -78,18 +78,18 @@ public class StaffDataPresenter : MonoBehaviour {
       })
       .AddTo(eventResources);    
 
-    node.baseSkill
+    node.baseLevel
       .CombineLatest(node.hasChild, (s, c) => c ? "/" + s : "" )
-      .SubscribeToText(baseSkillText)
+      .SubscribeToText(baseLevelText)
       .AddTo(eventResources);
-    node.baseSkill
-      .CombineLatest (node.lastSkill, (b, l) => b - l)
+    node.baseLevel
+      .CombineLatest (node.lastLevel, (b, l) => b - l)
       .Subscribe (diff => {
         if(0 == diff){
-          diffSkill.gameObject.SetActive(false);
+          diffLevelUI.gameObject.SetActive(false);
         }
         else{
-          diffSkill.gameObject.SetActive(true);
+          diffLevelUI.gameObject.SetActive(true);
           if(0 < diff){
             diffBg.color = new Color(.1f,.5f,.2f);
             diffText.text = "+" + diff.ToString();
@@ -101,10 +101,10 @@ public class StaffDataPresenter : MonoBehaviour {
         }
       })
       .AddTo (eventResources);
-    node.baseSkill
+    node.baseLevel
       .CombineLatest(node.age, (skill,age) => age == 0 ? .5f : Mathf.Min(1, (float)skill/age/.8f))
       .Subscribe (rate => {
-        currentSkillText.color = Util.HSVToRGB(rate * 100f/360f, .9f, .7f);
+        currentLevelText.color = Util.HSVToRGB(rate * 100f/360f, .9f, .7f);
     });
 
     node.age
@@ -134,6 +134,15 @@ public class StaffDataPresenter : MonoBehaviour {
     node.suitsColor
       .Subscribe(x => suits.color = x)
       .AddTo(eventResources);
+
+    node.job
+      .Subscribe(j => {
+        researchUI.SetActive(j == Jobs.Research);
+        developUI.SetActive(j == Jobs.Develop);
+        marketUI.SetActive(j == Jobs.Market);
+      })
+      .AddTo(eventResources);
+
   }
   void OnDestroy()
   {
