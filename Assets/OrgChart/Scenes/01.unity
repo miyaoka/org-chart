@@ -2268,6 +2268,18 @@ Prefab:
       propertyPath: m_Spacing
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 11477046, guid: e3f4a2d20befc431691623028071c22a, type: 2}
+      propertyPath: m_Color.r
+      value: .761130095
+      objectReference: {fileID: 0}
+    - target: {fileID: 11477046, guid: e3f4a2d20befc431691623028071c22a, type: 2}
+      propertyPath: m_Color.g
+      value: .816176474
+      objectReference: {fileID: 0}
+    - target: {fileID: 11477046, guid: e3f4a2d20befc431691623028071c22a, type: 2}
+      propertyPath: m_Color.b
+      value: .606131077
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e3f4a2d20befc431691623028071c22a, type: 2}
   m_IsPrefabParent: 0

@@ -18,8 +18,6 @@ public class GameController : MonoBehaviour {
   private float tieV = .3F;
   private float suitsV = .5F;
 
-  public Dictionary<int?, StaffRxData> staffRxDataList = new Dictionary<int?, StaffRxData>();
-  public Dictionary<int?, NodeRxData> nodeRxDataList = new Dictionary<int?, NodeRxData>();
   public Dictionary<int, StaffNodePresenter> nodeList = new Dictionary<int, StaffNodePresenter>();
   private int lastStaffId = 0;
   public ReactiveProperty<StaffNodePresenter> draggingNode = new ReactiveProperty<StaffNodePresenter> ();
