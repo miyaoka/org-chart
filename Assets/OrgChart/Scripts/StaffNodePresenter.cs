@@ -13,37 +13,17 @@ public class StaffNodePresenter : NodePresenter {
   [SerializeField] GameObject staffUI;
   [SerializeField] GameObject emptyUI;
   [SerializeField] GameObject familyLineUI;
-  [SerializeField] Text childCountUI;
+  [SerializeField] Text childCountText;
+  [SerializeField] Text levelCountText;
   private UILineRenderer familyLine;
   private const float familyLineHeight = 19.0F;
 
   //model
-  public int nodeId;
-  public ReactiveProperty<bool> isAssigned = new ReactiveProperty<bool> (true);
-  public ReactiveProperty<int> tier = new ReactiveProperty<int> (0);
-  public ReactiveProperty<bool> isHired = new ReactiveProperty<bool> (false);
-  public bool isMoved;
-  public ReactiveProperty<bool> isDragging = new ReactiveProperty<bool> (false);
 
-  public ReactiveProperty<int> currentLevel = new ReactiveProperty<int>();
-
-  public ReactiveProperty<int> baseLevel =  new ReactiveProperty<int> ();  
-  public ReactiveProperty<int> lastLevel =  new ReactiveProperty<int> ();  
-  public ReactiveProperty<int> age = new ReactiveProperty<int> ();
-  public ReactiveProperty<Color> shirtsColor = new ReactiveProperty<Color>();
-  public ReactiveProperty<Color> tieColor = new ReactiveProperty<Color>();
-  public ReactiveProperty<Color> suitsColor = new ReactiveProperty<Color>();
-  public ReactiveProperty<Color> faceColor = new ReactiveProperty<Color>();
-  public ReactiveProperty<Color> hairColor = new ReactiveProperty<Color>();
-  public ReactiveProperty<Jobs> job = new ReactiveProperty<Jobs>();
-
-  public ReactiveProperty<StaffNodePresenter> parentNode = new ReactiveProperty<StaffNodePresenter>();
-  public ReactiveProperty<int?> parentDiff = new ReactiveProperty<int?>();
 
   IObservable<Vector2> parentDelta;
   IObservable<Vector2> thisDelta;
 
-  CompositeDisposable eventResources = new CompositeDisposable();
 
 
   public StaffData staffData{
@@ -74,14 +54,12 @@ public class StaffNodePresenter : NodePresenter {
 
 
 	void Start () {
-    base.Start ();
+//    base.Start ();
     CanvasGroup cg = contentUI.GetComponent<CanvasGroup> ();
     familyLine = familyLineUI.GetComponent<UILineRenderer> ();
     Image bg = GetComponent<Image> ();
 
-    currentLevel = baseLevel
-      .CombineLatest (childCount, (s, c) =>  s - c )
-      .ToReactiveProperty ();
+
 
     parentNode
       .Where (pn => pn != null)
@@ -148,7 +126,11 @@ public class StaffNodePresenter : NodePresenter {
 
     childCount
       .CombineLatest(childCountTotal, (l,r) => l + "/" + r)
-      .SubscribeToText (childCountUI)
+      .SubscribeToText (childCountText)
+      .AddTo (eventResources);
+
+    currentLevelTotal
+      .SubscribeToText (levelCountText)
       .AddTo (eventResources);
 
     childCountTotal
