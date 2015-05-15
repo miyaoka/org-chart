@@ -157,8 +157,8 @@ public class StaffNodePresenter : NodePresenter {
   void drawFamilyLine(Vector2 lineDelta){
     familyLine.Points = new Vector2[] { 
       new Vector2(lineDelta.x, 0), 
-      new Vector2(lineDelta.x, 10),//familyLineHeight * .4F),
-      new Vector2(lineDelta.y, 10),//familyLineHeight * .4F),
+      new Vector2(lineDelta.x, 4),//familyLineHeight * .4F),
+      new Vector2(lineDelta.y, 4),//familyLineHeight * .4F),
       new Vector2(lineDelta.y, familyLineHeight)
     };
     familyLine.SetVerticesDirty();    

@@ -20,7 +20,6 @@ public class NodePresenter : MonoBehaviour {
   public ReactiveProperty<int> currentLevelTotal = new ReactiveProperty<int>();
 
 
-  public int nodeId;
   public ReactiveProperty<bool> isAssigned = new ReactiveProperty<bool> (true);
   public ReactiveProperty<int> tier = new ReactiveProperty<int> (0);
   public ReactiveProperty<bool> isHired = new ReactiveProperty<bool> (false);

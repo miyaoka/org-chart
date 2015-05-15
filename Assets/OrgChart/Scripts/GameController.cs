@@ -8,8 +8,15 @@ using System;
 public class GameController : MonoBehaviour {
 
   [SerializeField] RectTransform recruitContainer;
-  [SerializeField] RectTransform staffContainer;
+  [SerializeField] NodePresenter orgRoot;
+  [SerializeField] Text manPowerText;
+  [SerializeField] Text moneyText;
+  [SerializeField] RectTransform workingProjectContainer;
+  [SerializeField] RectTransform planningProjectContainer;
+
+  private RectTransform staffContainer;
   [SerializeField] GameObject staffNodePrefab;
+  [SerializeField] GameObject projectPrefab;
   [SerializeField] Canvas canvas;
 
   public ReactiveProperty<bool> isDragging = new ReactiveProperty<bool> (false);
@@ -19,8 +26,13 @@ public class GameController : MonoBehaviour {
   private float suitsV = .5F;
 
   public Dictionary<int, StaffNodePresenter> nodeList = new Dictionary<int, StaffNodePresenter>();
-  private int lastStaffId = 0;
+  public Dictionary<int, ProjectPresenter> projectList = new Dictionary<int, ProjectPresenter>();
+
+
   public ReactiveProperty<StaffNodePresenter> draggingNode = new ReactiveProperty<StaffNodePresenter> ();
+
+  public ReactiveProperty<int> money = new ReactiveProperty<int> ();
+  public ReactiveProperty<int> manPower = new ReactiveProperty<int> ();
 
   public const int retirementAge = 40;
 
@@ -38,10 +50,21 @@ public class GameController : MonoBehaviour {
   // Use this for initialization
   void Start () {
     SetupListeners();
+    staffContainer = orgRoot.childNodes;
     foreach( Transform child in staffContainer){
       Destroy(child.gameObject);
     }
     updateRecruits ();
+    updateProjects ();
+
+    money.Value = 500;
+
+    manPower = 
+      orgRoot.currentLevelTotal.ToReactiveProperty ();
+
+    manPower.SubscribeToText (manPowerText);
+    money.SubscribeToText (moneyText);
+
   }
   public void SetupListeners(){
 //    EventManager.Instance.AddListener<ChartChangeEvent>(onChartChange);
@@ -62,7 +85,10 @@ public class GameController : MonoBehaviour {
       addAge (pair.Value);
     }
 
-    updateRecruits ();  
+    updateRecruits ();
+    updateProjects ();
+
+    money.Value -= manPower.Value;
 
     GameSounds.accounting.Play ();
   }
@@ -86,6 +112,25 @@ public class GameController : MonoBehaviour {
     return skill;
   }
 
+  void updateProjects(){
+    foreach( Transform t in planningProjectContainer){
+      destroyProject (t.gameObject);
+    }
+    foreach( Transform t in workingProjectContainer){
+      ProjectPresenter proj = t.GetComponent<ProjectPresenter>();
+      if (proj.chance.Value > UnityEngine.Random.value) {
+        money.Value += proj.reward.Value;
+//        destroyProject (t.gameObject);
+      }
+      proj.reward.Value = (int)Mathf.Floor((float)proj.reward.Value * .9f);
+    }
+    int count = UnityEngine.Random.Range (2, 6);
+    for(int i = 0; i < count; i++){
+      GameObject obj = createProject ();
+      obj.transform.SetParent (planningProjectContainer);
+    }
+  }
+
 
   void updateRecruits(){
     foreach( Transform child in recruitContainer){
@@ -107,9 +152,7 @@ public class GameController : MonoBehaviour {
     }
     obj.transform.SetParent (parentContainer);
 
-    node.nodeId = lastStaffId;
-    nodeList [lastStaffId] = node;
-    lastStaffId++;
+    nodeList [obj.GetInstanceID()] = node;
     return obj;
   }
   public void moveStaffNode(StaffNodePresenter node, NodePresenter parentNode = null){
@@ -144,9 +187,31 @@ public class GameController : MonoBehaviour {
     }
   }
   public void destroyNode(GameObject obj){
-    nodeList.Remove (obj.GetComponent<StaffNodePresenter> ().nodeId);
+    nodeList.Remove (obj.GetInstanceID());
     Destroy(obj);
   }
+  private GameObject createProject(){
+    GameObject obj = Instantiate(projectPrefab) as GameObject;
+    ProjectPresenter proj = obj.GetComponent<ProjectPresenter> ();
+
+    int id = obj.GetInstanceID();
+    proj.title.Value = "proj" + id.ToString ();
+    proj.manPower.Value = UnityEngine.Random.Range ((int)Mathf.Floor(manPower.Value * .2f) + 5, (int)Math.Max(20, manPower.Value)  );
+    proj.chance.Value = UnityEngine.Random.value;
+    proj.reward.Value = (int)Mathf.Floor(proj.manPower.Value / proj.chance.Value * UnityEngine.Random.Range(1,3));
+
+    proj.isSelected
+      .Subscribe (v => proj.transform.SetParent (v ? workingProjectContainer : planningProjectContainer))
+      .AddTo (proj);
+
+    projectList [id] = proj;
+    return obj;
+  }
+  public void destroyProject(GameObject obj){
+    projectList.Remove (obj.GetInstanceID());
+    Destroy(obj);
+  }
+
   public GameObject createStaffCursor(StaffData staffData){
     //clone
     GameObject cursor = createStaffNode (staffData, canvas.transform);
@@ -163,7 +228,7 @@ public class GameController : MonoBehaviour {
 
   StaffData createStaffData(){
     StaffData data = new StaffData ();
-    int age = UnityEngine.Random.Range(0,40);
+    int age = UnityEngine.Random.Range(0,30);
     int baseSkill = UnityEngine.Random.Range(0,5);
     for(int i = 0; i < age; i++){
       baseSkill = growSkill (i, baseSkill);
