@@ -13,6 +13,7 @@ public class StaffNodePresenter : NodePresenter {
   [SerializeField] GameObject staffUI;
   [SerializeField] GameObject emptyUI;
   [SerializeField] GameObject familyLineUI;
+
   [SerializeField] Text childCountText;
   [SerializeField] Text levelCountText;
   private UILineRenderer familyLine;
@@ -59,6 +60,11 @@ public class StaffNodePresenter : NodePresenter {
     familyLine = familyLineUI.GetComponent<UILineRenderer> ();
     Image bg = GetComponent<Image> ();
 
+
+    health
+      .Where (h => 0 >= h)
+      .Subscribe (_ => isAssigned.Value = false)
+      .AddTo (eventResources);
 
 
     parentNode

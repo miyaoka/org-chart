@@ -80,9 +80,13 @@ public class GameController : MonoBehaviour {
     }
   }
   void onEndTurn(EndTurnEvent e){
-
-    foreach (KeyValuePair<int, StaffNodePresenter> pair in nodeList) {
-      addAge (pair.Value);
+    StaffNodePresenter[] nodes = new StaffNodePresenter [nodeList.Count];
+    nodeList.Values.CopyTo (nodes, 0);
+    foreach (StaffNodePresenter node in nodes) {
+      addAge (node);
+      if (node.isHired.Value && (.2f > UnityEngine.Random.value) ) {
+        node.health.Value -= UnityEngine.Random.value * .5f;
+      }
     }
 
     updateRecruits ();
@@ -170,6 +174,7 @@ public class GameController : MonoBehaviour {
   }
   private void moveStaffToStaff(StaffNodePresenter node, StaffNodePresenter parentStaff){
     int tierDiff = node.tier.Value - parentStaff.tier.Value;
+    node.health.Value = 1.0f;
     if (parentStaff.isAssigned.Value) {
       tierDiff -= 1;
       createStaffNode (node.staffData, parentStaff.childNodes, true, parentStaff);
@@ -228,12 +233,12 @@ public class GameController : MonoBehaviour {
 
   StaffData createStaffData(){
     StaffData data = new StaffData ();
-    int age = UnityEngine.Random.Range(0,30);
-    int baseSkill = UnityEngine.Random.Range(0,5);
+    int age = UnityEngine.Random.Range(0,35);
+    int baseSkill = UnityEngine.Random.Range(1,5);
     for(int i = 0; i < age; i++){
       baseSkill = growSkill (i, baseSkill);
     }
-    data.baseLevel = data.lastLevel = Mathf.FloorToInt((float)baseSkill * .8f);
+    data.baseLevel = data.lastLevel = Mathf.CeilToInt((float)baseSkill * .5f);
     data.age = age;
 
     float shirtsHue = UnityEngine.Random.value;

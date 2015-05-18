@@ -36,6 +36,7 @@ public class NodePresenter : MonoBehaviour {
   public ReactiveProperty<Color> faceColor = new ReactiveProperty<Color>();
   public ReactiveProperty<Color> hairColor = new ReactiveProperty<Color>();
   public ReactiveProperty<Jobs> job = new ReactiveProperty<Jobs>();
+  public ReactiveProperty<float> health =  new ReactiveProperty<float> ();  
 
   public ReactiveProperty<StaffNodePresenter> parentNode = new ReactiveProperty<StaffNodePresenter>();
   public ReactiveProperty<int?> parentDiff = new ReactiveProperty<int?>();

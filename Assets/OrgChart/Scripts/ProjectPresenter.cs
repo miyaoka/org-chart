@@ -34,12 +34,12 @@ public class ProjectPresenter : MonoBehaviour, IPointerDownHandler {
       .AddTo (eventResources);
 
     manPower
-      .Select (v => "require: " + v.ToString ("N0"))
+      .Select (v => "mp: " + v.ToString ("N0"))
       .SubscribeToText (manPowerText)
       .AddTo (eventResources);
 
     reward
-      .Select (v => "+" + v.ToString ("N0"))
+      .Select (v => "" + v.ToString ("N0"))
       .SubscribeToText (rewardText)
       .AddTo (eventResources);
 

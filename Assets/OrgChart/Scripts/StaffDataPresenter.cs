@@ -8,6 +8,7 @@ public class StaffDataPresenter : MonoBehaviour {
   [SerializeField] Text baseLevelText;
   [SerializeField] GameObject diffLevelUI;
   [SerializeField] Text ageText;
+  [SerializeField] RectTransform healthUI;
 
   [SerializeField] Image shirts;
   [SerializeField] Image tie;
@@ -34,6 +35,13 @@ public class StaffDataPresenter : MonoBehaviour {
     relation = GetComponent<Image> ();
     diffBg = diffLevelUI.GetComponent<Image> ();
     diffText = diffLevelUI.GetComponentInChildren<Text> ();
+
+    node.health
+      .Subscribe (h => {
+        healthUI.sizeDelta = new Vector2 (4, 52 * h);
+        healthUI.GetComponent<Image>().color = Util.HSVToRGB(h * 100f/360f, 1f, 1f);
+      })
+      .AddTo (eventResources);
 
 
     node.tier

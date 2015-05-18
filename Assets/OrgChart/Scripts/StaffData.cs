@@ -6,6 +6,7 @@ public class StaffData {
 	public int baseLevel;
   public int lastLevel;
   public int age;
+  public float health = 1.0f;
 //  public int tier = 3;
 //	public int skillDiff = 0;
 //	public StaffData[] children = new StaffData[0];
