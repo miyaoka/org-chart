@@ -57,7 +57,7 @@ public class GameController : MonoBehaviour {
     updateRecruits ();
     updateProjects ();
 
-    money.Value = 500;
+    money.Value = 100;
 
     manPower = 
       orgRoot.currentLevelTotal.ToReactiveProperty ();
@@ -234,11 +234,14 @@ public class GameController : MonoBehaviour {
   StaffData createStaffData(){
     StaffData data = new StaffData ();
     int age = UnityEngine.Random.Range(0,35);
-    int baseSkill = UnityEngine.Random.Range(1,5);
+
+    age = (int)(UDFs.BetaInv (UnityEngine.Random.value, 2.0d, 1d, 0, 0) * 40);
+
+    int baseSkill = UnityEngine.Random.Range(1,1);
     for(int i = 0; i < age; i++){
       baseSkill = growSkill (i, baseSkill);
     }
-    data.baseLevel = data.lastLevel = Mathf.CeilToInt((float)baseSkill * .5f);
+    data.baseLevel = data.lastLevel = Mathf.CeilToInt((float)baseSkill * .625f);
     data.age = age;
 
     float shirtsHue = UnityEngine.Random.value;
