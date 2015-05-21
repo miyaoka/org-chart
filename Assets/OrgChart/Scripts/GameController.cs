@@ -128,7 +128,7 @@ public class GameController : MonoBehaviour {
       }
       proj.reward.Value = (int)Mathf.Floor((float)proj.reward.Value * .9f);
     }
-    int count = UnityEngine.Random.Range (2, 6);
+    int count = UnityEngine.Random.Range (2, 4);
     for(int i = 0; i < count; i++){
       GameObject obj = createProject ();
       obj.transform.SetParent (planningProjectContainer);
