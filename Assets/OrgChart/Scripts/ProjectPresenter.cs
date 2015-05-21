@@ -17,12 +17,18 @@ public class ProjectPresenter : MonoBehaviour, IPointerDownHandler {
   [SerializeField] Text manPowerText;
   [SerializeField] Text rewardText;
   [SerializeField] Text chanceText;
+  [SerializeField] Text durationText;
+  [SerializeField] Text doneText;
+  [SerializeField] RectTransform durationUI;
+  [SerializeField] RectTransform doneUI;
 
   public ReactiveProperty<bool> isSelected = new ReactiveProperty<bool>();
   public ReactiveProperty<string> title = new ReactiveProperty<string>();
   public ReactiveProperty<int> manPower = new ReactiveProperty<int>();
   public ReactiveProperty<int> reward = new ReactiveProperty<int>();
   public ReactiveProperty<float> chance = new ReactiveProperty<float>();
+  public ReactiveProperty<int> duration = new ReactiveProperty<int>();
+  public ReactiveProperty<int> done = new ReactiveProperty<int>();
 
   CompositeDisposable eventResources = new CompositeDisposable();
 
@@ -46,6 +52,22 @@ public class ProjectPresenter : MonoBehaviour, IPointerDownHandler {
     chance
       .Select (v => "" + v.ToString("P0") )
       .SubscribeToText (chanceText)
+      .AddTo (eventResources);
+
+    duration
+      .SubscribeToText (durationText)
+      .AddTo (eventResources);
+
+    done
+      .SubscribeToText (doneText)
+      .AddTo (eventResources);
+
+    duration
+      .Subscribe (v => durationUI.sizeDelta = new Vector2( (float)duration.Value * 10, 10) )
+      .AddTo (eventResources);
+
+    done
+      .Subscribe (v => doneUI.sizeDelta = new Vector2( (float)done.Value * 10, 10) )
       .AddTo (eventResources);
 
 	

@@ -122,11 +122,19 @@ public class GameController : MonoBehaviour {
     }
     foreach( Transform t in workingProjectContainer){
       ProjectPresenter proj = t.GetComponent<ProjectPresenter>();
+
+      proj.done.Value++;
+      if (proj.done.Value >= proj.duration.Value) {
+        money.Value += proj.reward.Value;
+        destroyProject (t.gameObject);
+      }
+      /*
       if (proj.chance.Value > UnityEngine.Random.value) {
         money.Value += proj.reward.Value;
 //        destroyProject (t.gameObject);
       }
       proj.reward.Value = (int)Mathf.Floor((float)proj.reward.Value * .9f);
+      */
     }
     int count = UnityEngine.Random.Range (2, 4);
     for(int i = 0; i < count; i++){
@@ -140,7 +148,7 @@ public class GameController : MonoBehaviour {
     foreach( Transform child in recruitContainer){
       destroyNode (child.gameObject);
     }
-    int count = UnityEngine.Random.Range (3, 7);
+    int count = UnityEngine.Random.Range (3, 4);
     for(int i = 0; i < count; i++){
       createStaffNode (createStaffData (), recruitContainer);
     }
@@ -203,7 +211,9 @@ public class GameController : MonoBehaviour {
     proj.title.Value = "proj" + id.ToString ();
     proj.manPower.Value = UnityEngine.Random.Range ((int)Mathf.Floor(manPower.Value * .2f) + 5, (int)Math.Max(20, manPower.Value)  );
     proj.chance.Value = UnityEngine.Random.value;
-    proj.reward.Value = (int)Mathf.Floor(proj.manPower.Value / proj.chance.Value * UnityEngine.Random.Range(1,3));
+    proj.duration.Value = (int)System.Math.Ceiling (UDFs.BetaInv (UnityEngine.Random.value, .2d, 1d, 0, 0) * 5);
+//    proj.reward.Value = (int)Mathf.Floor(proj.manPower.Value / proj.chance.Value * UnityEngine.Random.Range(1,3));
+    proj.reward.Value = (int)Mathf.Floor(proj.manPower.Value * Mathf.Pow( (float) proj.duration.Value, 1.5f) * ( 1 + UnityEngine.Random.value * 2));
 
     proj.isSelected
       .Subscribe (v => proj.transform.SetParent (v ? workingProjectContainer : planningProjectContainer))
