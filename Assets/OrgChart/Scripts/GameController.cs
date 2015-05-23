@@ -84,9 +84,11 @@ public class GameController : MonoBehaviour {
     nodeList.Values.CopyTo (nodes, 0);
     foreach (StaffNodePresenter node in nodes) {
       addAge (node);
+      /*
       if (node.isHired.Value && (.2f > UnityEngine.Random.value) ) {
         node.health.Value -= UnityEngine.Random.value * .5f;
       }
+      */
     }
 
     updateRecruits ();
@@ -120,11 +122,15 @@ public class GameController : MonoBehaviour {
     foreach( Transform t in planningProjectContainer){
       destroyProject (t.gameObject);
     }
+
+    var projects = new List<ProjectPresenter>();
+    workingProjectContainer.GetComponentsInChildren<ProjectPresenter> (projects);
+
+
     foreach( Transform t in workingProjectContainer){
       ProjectPresenter proj = t.GetComponent<ProjectPresenter>();
 
-      proj.done.Value++;
-      if (proj.done.Value >= proj.duration.Value) {
+      if (0 >= proj.health.Value) {
         money.Value += proj.reward.Value;
         destroyProject (t.gameObject);
       }
@@ -209,11 +215,20 @@ public class GameController : MonoBehaviour {
 
     int id = obj.GetInstanceID();
     proj.title.Value = "proj" + id.ToString ();
-    proj.manPower.Value = UnityEngine.Random.Range ((int)Mathf.Floor(manPower.Value * .2f) + 5, (int)Math.Max(20, manPower.Value)  );
-    proj.chance.Value = UnityEngine.Random.value;
-    proj.duration.Value = (int)System.Math.Ceiling (UDFs.BetaInv (UnityEngine.Random.value, .2d, 1d, 0, 0) * 5);
-//    proj.reward.Value = (int)Mathf.Floor(proj.manPower.Value / proj.chance.Value * UnityEngine.Random.Range(1,3));
-    proj.reward.Value = (int)Mathf.Floor(proj.manPower.Value * Mathf.Pow( (float) proj.duration.Value, 1.5f) * ( 1 + UnityEngine.Random.value * 2));
+
+    float mp = (float)manPower.Value;
+
+    float healthFactor = 5f;
+    float healthLevel = UnityEngine.Random.value;
+    float attackLevel = UnityEngine.Random.value;
+    float minHealth = 5f;
+    int health = (int)Math.Max (minHealth, Mathf.Ceil (Mathf.Pow (healthFactor, healthLevel - .5f) * mp));
+    proj.maxHealth.Value = health;
+    proj.health.Value = health;
+
+    proj.attack.Value = (int)Mathf.Floor( attackLevel * mp );
+
+    proj.reward.Value = (int)Mathf.Floor(mp * (1f + healthLevel)  * ( 1f + UnityEngine.Random.value * 2f));
 
     proj.isSelected
       .Subscribe (v => proj.transform.SetParent (v ? workingProjectContainer : planningProjectContainer))
