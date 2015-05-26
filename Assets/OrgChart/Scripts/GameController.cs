@@ -25,6 +25,7 @@ public class GameController : MonoBehaviour {
 
   public ReactiveProperty<StaffNodePresenter> draggingNode = new ReactiveProperty<StaffNodePresenter> ();
 
+  public ReactiveProperty<int> year = new ReactiveProperty<int> (0);
   public ReactiveProperty<int> money = new ReactiveProperty<int> ();
   public ReactiveProperty<int> manPower = new ReactiveProperty<int> ();
 
@@ -83,6 +84,7 @@ public class GameController : MonoBehaviour {
   }
 
   void startYear(){
+    year.Value++;
     updateRecruits ();
     updateProjects ();
   }
