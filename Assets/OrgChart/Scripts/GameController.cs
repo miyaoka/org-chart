@@ -11,12 +11,8 @@ public class GameController : MonoBehaviour {
   [SerializeField] NodePresenter orgRoot;
   [SerializeField] Text manPowerText;
   [SerializeField] Text moneyText;
-  [SerializeField] RectTransform workingProjectContainer;
-  [SerializeField] RectTransform planningProjectContainer;
 
-  private RectTransform staffContainer;
   [SerializeField] GameObject staffNodePrefab;
-  [SerializeField] GameObject projectPrefab;
   [SerializeField] Canvas canvas;
 
   public ReactiveProperty<bool> isDragging = new ReactiveProperty<bool> (false);
@@ -25,8 +21,6 @@ public class GameController : MonoBehaviour {
   private float tieV = .3F;
   private float suitsV = .5F;
 
-  public Dictionary<int, StaffNodePresenter> nodeList = new Dictionary<int, StaffNodePresenter>();
-  public Dictionary<int, ProjectPresenter> projectList = new Dictionary<int, ProjectPresenter>();
 
 
   public ReactiveProperty<StaffNodePresenter> draggingNode = new ReactiveProperty<StaffNodePresenter> ();
@@ -49,13 +43,8 @@ public class GameController : MonoBehaviour {
 
   // Use this for initialization
   void Start () {
-    SetupListeners();
-    staffContainer = orgRoot.childNodes;
-    foreach( Transform child in staffContainer){
-      Destroy(child.gameObject);
-    }
-    updateRecruits ();
-    updateProjects ();
+
+    startYear ();
 
     money.Value = 100;
 
@@ -66,30 +55,49 @@ public class GameController : MonoBehaviour {
     money.SubscribeToText (moneyText);
 
   }
-  public void SetupListeners(){
-//    EventManager.Instance.AddListener<ChartChangeEvent>(onChartChange);
-    EventManager.Instance.AddListener<EndTurnEvent>(onEndTurn);
+  public void nextPhase(){
+    doPlan ();
+    showResult ();
+    endYear ();
+    startYear ();
   }
-  void OnDestroy(){
-    DisposeListeners();
-  }
-  public void DisposeListeners(){
-    if(EventManager.Instance){
-//      EventManager.Instance.RemoveListener<ChartChangeEvent>(onChartChange);
-      EventManager.Instance.RemoveListener<EndTurnEvent>(onEndTurn);
-    }
-  }
-  void onEndTurn(EndTurnEvent e){
-    StaffNodePresenter[] nodes = new StaffNodePresenter [nodeList.Count];
-    nodeList.Values.CopyTo (nodes, 0);
-    foreach (StaffNodePresenter node in nodes) {
-      addAge (node);
-      /*
-      if (node.isHired.Value && (.2f > UnityEngine.Random.value) ) {
-        node.health.Value -= UnityEngine.Random.value * .5f;
+  void doPlan(){
+
+    /*
+    var projects = new List<ProjectPresenter>();
+    workingProjectContainer.GetComponentsInChildren<ProjectPresenter> (projects);
+
+
+    foreach( Transform t in workingProjectContainer){
+      ProjectPresenter proj = t.GetComponent<ProjectPresenter>();
+
+      if (0 >= proj.health.Value) {
+        money.Value += proj.reward.Value;
+        Destroy (t.gameObject);
       }
-      */
     }
+*/
+  }
+
+  void showResult(){
+  }
+
+  void startYear(){
+    updateRecruits ();
+    updateProjects ();
+  }
+  void endYear(){
+    StaffNodePresenter[] nodes = orgRoot.GetComponentsInChildren<StaffNodePresenter> ();
+    foreach (StaffNodePresenter staff in nodes) {
+      staff.age.Value++;
+      staff.lastLevel.Value = staff.baseLevel.Value;
+      staff.baseLevel.Value = growSkill(staff.age.Value, staff.baseLevel.Value);
+    }
+  }
+
+
+  void onEndTurn(EndTurnEvent e){
+    
 
     updateRecruits ();
     updateProjects ();
@@ -97,11 +105,6 @@ public class GameController : MonoBehaviour {
     money.Value -= manPower.Value;
 
     GameSounds.accounting.Play ();
-  }
-  void addAge(StaffNodePresenter staff){
-    staff.age.Value++;
-    staff.lastLevel.Value = staff.baseLevel.Value;
-    staff.baseLevel.Value = growSkill(staff.age.Value, staff.baseLevel.Value);
   }
   int growSkill(int age, int skill){
     
@@ -119,40 +122,15 @@ public class GameController : MonoBehaviour {
   }
 
   void updateProjects(){
-    foreach( Transform t in planningProjectContainer){
-      destroyProject (t.gameObject);
-    }
-
-    var projects = new List<ProjectPresenter>();
-    workingProjectContainer.GetComponentsInChildren<ProjectPresenter> (projects);
-
-
-    foreach( Transform t in workingProjectContainer){
-      ProjectPresenter proj = t.GetComponent<ProjectPresenter>();
-
-      if (0 >= proj.health.Value) {
-        money.Value += proj.reward.Value;
-        destroyProject (t.gameObject);
-      }
-      /*
-      if (proj.chance.Value > UnityEngine.Random.value) {
-        money.Value += proj.reward.Value;
-//        destroyProject (t.gameObject);
-      }
-      proj.reward.Value = (int)Mathf.Floor((float)proj.reward.Value * .9f);
-      */
-    }
+    ProjectManager.Instance.removePlanning ();
     int count = UnityEngine.Random.Range (2, 4);
     for(int i = 0; i < count; i++){
-      GameObject obj = createProject ();
-      obj.transform.SetParent (planningProjectContainer);
+      ProjectManager.Instance.createProject ((float)manPower.Value);
     }
   }
-
-
   void updateRecruits(){
-    foreach( Transform child in recruitContainer){
-      destroyNode (child.gameObject);
+    foreach( Transform t in recruitContainer){
+      Destroy (t.gameObject);
     }
     int count = UnityEngine.Random.Range (3, 4);
     for(int i = 0; i < count; i++){
@@ -168,9 +146,8 @@ public class GameController : MonoBehaviour {
       node.parentNode.Value = parentNode;
       node.tier.Value = parentNode.tier.Value + 1;
     }
-    obj.transform.SetParent (parentContainer);
+    obj.transform.SetParent (parentContainer, false);
 
-    nodeList [obj.GetInstanceID()] = node;
     return obj;
   }
   public void moveStaffNode(StaffNodePresenter node, NodePresenter parentNode = null){
@@ -205,42 +182,8 @@ public class GameController : MonoBehaviour {
       GameSounds.promote.Play ();
     }
   }
-  public void destroyNode(GameObject obj){
-    nodeList.Remove (obj.GetInstanceID());
-    Destroy(obj);
-  }
-  private GameObject createProject(){
-    GameObject obj = Instantiate(projectPrefab) as GameObject;
-    ProjectPresenter proj = obj.GetComponent<ProjectPresenter> ();
 
-    int id = obj.GetInstanceID();
-    proj.title.Value = "proj" + id.ToString ();
-
-    float mp = (float)manPower.Value;
-
-    float healthFactor = 5f;
-    float healthLevel = UnityEngine.Random.value;
-    float attackLevel = UnityEngine.Random.value;
-    float minHealth = 5f;
-    int health = (int)Math.Max (minHealth, Mathf.Ceil (Mathf.Pow (healthFactor, healthLevel - .5f) * mp));
-    proj.maxHealth.Value = health;
-    proj.health.Value = health;
-
-    proj.attack.Value = (int)Mathf.Floor( attackLevel * mp );
-
-    proj.reward.Value = (int)Mathf.Floor(mp * (1f + healthLevel)  * ( 1f + UnityEngine.Random.value * 2f));
-
-    proj.isSelected
-      .Subscribe (v => proj.transform.SetParent (v ? workingProjectContainer : planningProjectContainer))
-      .AddTo (proj);
-
-    projectList [id] = proj;
-    return obj;
-  }
-  public void destroyProject(GameObject obj){
-    projectList.Remove (obj.GetInstanceID());
-    Destroy(obj);
-  }
+ 
 
   public GameObject createStaffCursor(StaffData staffData){
     //clone

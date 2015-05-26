@@ -52,7 +52,7 @@ public class StaffNodeDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandl
   {
     GameController.Instance.draggingNode.Value = null;
 
-    GameController.Instance.destroyNode (dragPointer);
+    Destroy (dragPointer);
 
 //    EventManager.Instance.TriggerEvent (new StaffEndDragEvent ());
 

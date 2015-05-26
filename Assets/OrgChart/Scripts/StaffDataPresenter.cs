@@ -133,6 +133,8 @@ public class StaffDataPresenter : MonoBehaviour {
       .Select(age => age + 20)
       .Subscribe(x => hair.sprite = hairPrefab.hairByAge(x) )
       .AddTo(eventResources);
+
+    /*
     node.shirtsColor
       .Subscribe(x => shirts.color = x)
       .AddTo(eventResources);
@@ -150,6 +152,7 @@ public class StaffDataPresenter : MonoBehaviour {
         marketUI.SetActive(j == Jobs.Market);
       })
       .AddTo(eventResources);
+    */
 
   }
   void OnDestroy()

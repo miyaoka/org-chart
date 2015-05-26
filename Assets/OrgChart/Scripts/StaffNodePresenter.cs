@@ -100,7 +100,7 @@ public class StaffNodePresenter : NodePresenter {
     hasContent
       .CombineLatest (isDragging, (c, d) => c || d)
       .Where(exist => exist == false)
-      .Subscribe (_ => GameController.Instance.destroyNode(gameObject))
+      .Subscribe (_ => Destroy(gameObject))
       .AddTo (eventResources);
 
     //hide if no content
@@ -139,6 +139,7 @@ public class StaffNodePresenter : NodePresenter {
       .SubscribeToText (levelCountText)
       .AddTo (eventResources);
 
+    /*
     childCountTotal
       .Subscribe (c => {
         if(3 < c && tier.Value == 1){
@@ -154,6 +155,7 @@ public class StaffNodePresenter : NodePresenter {
         bg.enabled = s;
       })
       .AddTo (eventResources);
+    */
         
 	}
   void showFamilyLine(bool show){
