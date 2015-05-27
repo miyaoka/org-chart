@@ -9,6 +9,7 @@ public class StaffDataPresenter : MonoBehaviour {
   [SerializeField] GameObject diffLevelUI;
   [SerializeField] Text ageText;
   [SerializeField] RectTransform healthUI;
+  [SerializeField] Text nameText;
 
   [SerializeField] Image shirts;
   [SerializeField] Image tie;
@@ -75,8 +76,8 @@ public class StaffDataPresenter : MonoBehaviour {
         {
           if (diff.Value < 0) {
             relation.color = new Color (1, 0, 0);
-          } else if (diff.Value < 3) {
-            relation.color = new Color (1, 1, Mathf.Pow(diff.Value/3f, .2f));
+          } else if (diff.Value < 2) {
+            relation.color = new Color (1, 1, Mathf.Pow(diff.Value/2f, .8f));
           } else {
             relation.color = new Color (1, 1, 1);
           }
@@ -133,6 +134,10 @@ public class StaffDataPresenter : MonoBehaviour {
       .Select(age => age + 20)
       .Subscribe(x => hair.sprite = hairPrefab.hairByAge(x) )
       .AddTo(eventResources);
+
+    node.name
+      .SubscribeToText (nameText)
+      .AddTo (eventResources);
 
     /*
     node.shirtsColor

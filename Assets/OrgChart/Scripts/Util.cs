@@ -267,4 +267,3 @@ public static class UDFs
   }
 }
 
-

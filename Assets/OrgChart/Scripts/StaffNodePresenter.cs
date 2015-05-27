@@ -17,7 +17,7 @@ public class StaffNodePresenter : NodePresenter {
   [SerializeField] Text childCountText;
   [SerializeField] Text levelCountText;
   private UILineRenderer familyLine;
-  private const float familyLineHeight = 19.0F;
+  private const float familyLineHeight = 24.0F;
 
   //model
 
@@ -165,8 +165,8 @@ public class StaffNodePresenter : NodePresenter {
   void drawFamilyLine(Vector2 lineDelta){
     familyLine.Points = new Vector2[] { 
       new Vector2(lineDelta.x, 0), 
-      new Vector2(lineDelta.x, 4),//familyLineHeight * .4F),
-      new Vector2(lineDelta.y, 4),//familyLineHeight * .4F),
+      new Vector2(lineDelta.x, 10),//familyLineHeight * .4F),
+      new Vector2(lineDelta.y, 10),//familyLineHeight * .4F),
       new Vector2(lineDelta.y, familyLineHeight)
     };
     familyLine.SetVerticesDirty();    

@@ -214,6 +214,8 @@ public class GameController : MonoBehaviour {
     data.baseLevel = data.lastLevel = Mathf.CeilToInt((float)baseSkill * .625f);
     data.age = age;
 
+    data.name = Names.getRandomName ();
+
     float shirtsHue = UnityEngine.Random.value;
     float tieHue = (.5F > UnityEngine.Random.value) ? nearHue(shirtsHue) : compHue(shirtsHue);
     float suitsHue = (.5F > UnityEngine.Random.value) ? nearHue(shirtsHue) : compHue(shirtsHue);
