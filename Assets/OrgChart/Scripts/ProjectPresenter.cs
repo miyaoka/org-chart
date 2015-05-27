@@ -51,7 +51,7 @@ public class ProjectPresenter : MonoBehaviour, IPointerDownHandler {
       .AddTo (eventResources);
 
     health
-      .Subscribe (v => healthUI.sizeDelta = new Vector2( Mathf.Ceil( (float)health.Value / (float)maxHealth.Value ) * 126, 10) )
+      .Subscribe (v => healthUI.sizeDelta = new Vector2( Mathf.Ceil( (float)health.Value / (float)maxHealth.Value  * 126), 10) )
       .AddTo (eventResources);
 
 	

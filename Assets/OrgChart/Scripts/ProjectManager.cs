@@ -1,11 +1,20 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 using UniRx;
 
 public class ProjectManager : MonoBehaviour {
   [SerializeField] GameObject projectPrefab;
   [SerializeField] RectTransform workingProjectContainer;
   [SerializeField] RectTransform planningProjectContainer;
+
+  public List<ProjectPresenter> workingProject { 
+    get {
+      var list = new List<ProjectPresenter>();
+      workingProjectContainer.GetComponentsInChildren<ProjectPresenter> (list);
+      return list;
+    }
+  }
 
   private static ProjectManager s_Instance;
   public static ProjectManager Instance {
@@ -50,4 +59,5 @@ public class ProjectManager : MonoBehaviour {
       Destroy (t.gameObject);
     }
   }
+
 }

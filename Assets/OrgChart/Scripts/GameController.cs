@@ -21,6 +21,7 @@ public class GameController : MonoBehaviour {
   private float tieV = .3F;
   private float suitsV = .5F;
 
+  public ReactiveProperty<bool> onQuest = new ReactiveProperty<bool> ();
 
 
   public ReactiveProperty<StaffNodePresenter> draggingNode = new ReactiveProperty<StaffNodePresenter> ();
@@ -57,16 +58,39 @@ public class GameController : MonoBehaviour {
 
   }
   public void nextPhase(){
-    doPlan ();
-    showResult ();
-    endYear ();
-    startYear ();
+    if (onQuest.Value) {
+      startYear ();
+    } else {
+      doPlan ();
+      showResult ();
+      endYear ();
+    }
+    onQuest.Value = !onQuest.Value;
+  }
+  void setOnPhasePlan(){
+  }
+  void setOnPhaseDo(){
+
+
   }
   void doPlan(){
+    var staffs = new List<StaffNodePresenter> ();
+    orgRoot.GetComponentsInChildren<StaffNodePresenter> (staffs);
 
+    var wlist = ProjectManager.Instance.workingProject;
+    if (wlist.Count < 1) {
+      return;
+    }
+    var quest = wlist [0];
+
+
+    foreach (StaffNodePresenter s in staffs) {
+      if (.5f > UnityEngine.Random.value) {
+        quest.health.Value -= s.currentLevel.Value;
+        
+      }
+    }
     /*
-    var projects = new List<ProjectPresenter>();
-    workingProjectContainer.GetComponentsInChildren<ProjectPresenter> (projects);
 
 
     foreach( Transform t in workingProjectContainer){
