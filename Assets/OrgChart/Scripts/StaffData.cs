@@ -7,6 +7,8 @@ public class StaffData {
   public int lastLevel;
   public int age;
   public string name;
+  public int gender;
+
   public float health = 1.0f;
 //  public int tier = 3;
 //	public int skillDiff = 0;

@@ -139,6 +139,11 @@ public class StaffDataPresenter : MonoBehaviour {
       .SubscribeToText (nameText)
       .AddTo (eventResources);
 
+    node.gender
+      .Subscribe (g => {
+        nameText.color = ((g == 0) ? new Color(1f, .8f, .8f) : new Color(.9f, .9f, 1f));
+    })
+      .AddTo (eventResources);
     /*
     node.shirtsColor
       .Subscribe(x => shirts.color = x)

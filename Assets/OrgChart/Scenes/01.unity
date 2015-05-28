@@ -2011,6 +2011,10 @@ Prefab:
       propertyPath: m_SizeDelta.x
       value: 152
       objectReference: {fileID: 0}
+    - target: {fileID: 157026, guid: 372ec4dfd30844e6eab84e54f9c4f276, type: 2}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 372ec4dfd30844e6eab84e54f9c4f276, type: 2}
   m_IsPrefabParent: 0
@@ -3462,6 +3466,19 @@ Prefab:
     - target: {fileID: 22402176, guid: e3f4a2d20befc431691623028071c22a, type: 2}
       propertyPath: m_SizeDelta.y
       value: 285
+      objectReference: {fileID: 0}
+    - target: {fileID: 11477046, guid: e3f4a2d20befc431691623028071c22a, type: 2}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9763a3d66ed8b40208f60c199124c878,
+        type: 3}
+    - target: {fileID: 11477046, guid: e3f4a2d20befc431691623028071c22a, type: 2}
+      propertyPath: m_PreserveAspect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 11477046, guid: e3f4a2d20befc431691623028071c22a, type: 2}
+      propertyPath: m_Type
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: e3f4a2d20befc431691623028071c22a, type: 2}

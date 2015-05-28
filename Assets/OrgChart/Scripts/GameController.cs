@@ -229,7 +229,7 @@ public class GameController : MonoBehaviour {
     StaffData data = new StaffData ();
     int age = UnityEngine.Random.Range(0,35);
 
-    age = (int)(UDFs.BetaInv (UnityEngine.Random.value, 2.0d, 1d, 0, 0) * 40);
+    age = (int)(UDFs.BetaInv (UnityEngine.Random.value, 1.4d, 1d, 0, 0) * 40);
 
     int baseSkill = UnityEngine.Random.Range(1,1);
     for(int i = 0; i < age; i++){
@@ -237,8 +237,8 @@ public class GameController : MonoBehaviour {
     }
     data.baseLevel = data.lastLevel = Mathf.CeilToInt((float)baseSkill * .625f);
     data.age = age;
-
-    data.name = Names.getRandomName ();
+    data.gender = (.2f > UnityEngine.Random.value) ? 0 : 1;
+    data.name = Names.getRandomName (data.gender);
 
     float shirtsHue = UnityEngine.Random.value;
     float tieHue = (.5F > UnityEngine.Random.value) ? nearHue(shirtsHue) : compHue(shirtsHue);
