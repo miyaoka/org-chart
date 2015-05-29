@@ -1,15 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UniRx;
 
 public class BgmManager : MonoBehaviour {
+
+  public AudioClip townBGM;
+  public AudioClip battleBGM;
 
 	AudioClip[] acs;
 	AudioSource au;
 	// Use this for initialization
 	void Start () {
+
+    au = gameObject.AddComponent<AudioSource>();
+    GameController.Instance.onQuest
+      .Subscribe (q => {
+        au.clip = q ? battleBGM : townBGM;
+        au.Play();
+    });
+
+    /*
 		acs = Resources.LoadAll<AudioClip>("bgm");
-		au = gameObject.AddComponent<AudioSource>();
 		play();
+  */  
 	}
 	void play(){
 		if(acs.Length == 0){

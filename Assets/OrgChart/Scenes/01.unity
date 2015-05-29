@@ -1757,23 +1757,23 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 22475898, guid: 372ec4dfd30844e6eab84e54f9c4f276, type: 2}
       propertyPath: m_AnchoredPosition.y
-      value: -20
+      value: -15
       objectReference: {fileID: 0}
     - target: {fileID: 22475898, guid: 372ec4dfd30844e6eab84e54f9c4f276, type: 2}
       propertyPath: m_SizeDelta.x
-      value: 57
+      value: 42
       objectReference: {fileID: 0}
     - target: {fileID: 22475898, guid: 372ec4dfd30844e6eab84e54f9c4f276, type: 2}
       propertyPath: m_SizeDelta.y
-      value: 20
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 22407798, guid: 372ec4dfd30844e6eab84e54f9c4f276, type: 2}
       propertyPath: m_SizeDelta.x
-      value: 57
+      value: 42
       objectReference: {fileID: 0}
     - target: {fileID: 22407798, guid: 372ec4dfd30844e6eab84e54f9c4f276, type: 2}
       propertyPath: m_SizeDelta.y
-      value: 20
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 22456250, guid: 372ec4dfd30844e6eab84e54f9c4f276, type: 2}
       propertyPath: m_AnchorMin.y
@@ -2010,10 +2010,6 @@ Prefab:
     - target: {fileID: 22413658, guid: 372ec4dfd30844e6eab84e54f9c4f276, type: 2}
       propertyPath: m_SizeDelta.x
       value: 152
-      objectReference: {fileID: 0}
-    - target: {fileID: 157026, guid: 372ec4dfd30844e6eab84e54f9c4f276, type: 2}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 372ec4dfd30844e6eab84e54f9c4f276, type: 2}
@@ -2665,6 +2661,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d5ff5822054284fc0995374468a79acd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  townBGM: {fileID: 8300000, guid: 538ef985346854303ab51f18e8631c77, type: 3}
+  battleBGM: {fileID: 8300000, guid: 632f0181ccb064d16b8023627347c7f2, type: 3}
 --- !u!4 &900479777
 Transform:
   m_ObjectHideFlags: 0
@@ -3586,6 +3584,23 @@ MonoBehaviour:
   m_Spacing: 0
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
+--- !u!1 &1195767195 stripped
+GameObject:
+  m_PrefabParentObject: {fileID: 192218, guid: e3f4a2d20befc431691623028071c22a, type: 2}
+  m_PrefabInternal: {fileID: 1102026137}
+--- !u!114 &1195767200
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1195767195}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cac4c80c16df4e2485bcb369084de0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planBg: {fileID: 21300000, guid: 9763a3d66ed8b40208f60c199124c878, type: 3}
+  battleBg: {fileID: 21300000, guid: cf1b1053be3e24a64a3e97aec3db9f18, type: 3}
 --- !u!1 &1277323393
 GameObject:
   m_ObjectHideFlags: 0
