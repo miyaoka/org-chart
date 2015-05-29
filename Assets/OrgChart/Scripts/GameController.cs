@@ -59,11 +59,11 @@ public class GameController : MonoBehaviour {
   }
   public void nextPhase(){
     if (onQuest.Value) {
+      endYear ();
       startYear ();
     } else {
       doPlan ();
       showResult ();
-      endYear ();
     }
     onQuest.Value = !onQuest.Value;
   }

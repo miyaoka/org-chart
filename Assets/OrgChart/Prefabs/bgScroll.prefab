@@ -91,6 +91,7 @@ GameObject:
   - 114: {fileID: 11477046}
   - 114: {fileID: 11427760}
   - 114: {fileID: 11471656}
+  - 114: {fileID: 11448300}
   m_Layer: 5
   m_Name: bgScroll
   m_TagString: Untagged
@@ -333,6 +334,19 @@ MonoBehaviour:
   m_FillAmount: 1
   m_FillClockwise: 1
   m_FillOrigin: 0
+--- !u!114 &11448300
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 192218}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6cac4c80c16df4e2485bcb369084de0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  planBg: {fileID: 21300000, guid: 9763a3d66ed8b40208f60c199124c878, type: 3}
+  battleBg: {fileID: 21300000, guid: cf1b1053be3e24a64a3e97aec3db9f18, type: 3}
 --- !u!114 &11453544
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -443,10 +457,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Sprite: {fileID: 21300000, guid: cf1b1053be3e24a64a3e97aec3db9f18, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Type: 1
   m_PreserveAspect: 0
-  m_FillCenter: 1
+  m_FillCenter: 0
   m_FillMethod: 4
   m_FillAmount: 1
   m_FillClockwise: 1

@@ -13,6 +13,7 @@ public class BgmManager : MonoBehaviour {
 	void Start () {
 
     au = gameObject.AddComponent<AudioSource>();
+    au.loop = true;
     GameController.Instance.onQuest
       .Subscribe (q => {
         au.clip = q ? battleBGM : townBGM;
