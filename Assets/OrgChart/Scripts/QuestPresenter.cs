@@ -5,12 +5,20 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 
-public class QuestPresenter : MonoBehaviour, IPointerClickHandler {
+public class QuestPresenter : MonoBehaviour, IPointerClickHandler, IPointerDownHandler {
+  #region IPointerDownHandler implementation
+
+  public void OnPointerDown (PointerEventData eventData)
+  {
+    GameController.Instance.selectedQuest.Value = this;
+  }
+
+  #endregion
+
   #region IPointerClickHandler implementation
 
   public void OnPointerClick (PointerEventData eventData)
   {
-    GameController.Instance.selectedQuest.Value = this;
   }
 
   #endregion
@@ -29,10 +37,15 @@ public class QuestPresenter : MonoBehaviour, IPointerClickHandler {
 	// Use this for initialization
 	protected void Start () {
 
-    title.Value = "test quest";
-    maxHealth.Value = 100.5f;
-    health.Value = 80.2f;
-
+    GameController.Instance.selectedQuest
+      .Select (q => q == this)
+      .Subscribe (q => {
+        var olist = gameObject.GetComponents<Outline>();
+        foreach(Outline o in olist){
+          o.enabled = q;
+        };
+    })
+      .AddTo (this);
 
 
     health
@@ -56,4 +69,5 @@ public class QuestPresenter : MonoBehaviour, IPointerClickHandler {
 	void Update () {
 	
 	}
+
 }

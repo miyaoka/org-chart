@@ -13,6 +13,8 @@ GameObject:
   - 114: {fileID: 11473894}
   - 114: {fileID: 11475368}
   - 114: {fileID: 11459762}
+  - 114: {fileID: 11449112}
+  - 114: {fileID: 11474634}
   m_Layer: 5
   m_Name: questOrder
   m_TagString: Untagged
@@ -140,6 +142,20 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: .899999976
   m_Text: 5
+--- !u!114 &11449112
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 104258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -900027084, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 1, g: 0, b: 0, a: .501960814}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!114 &11455594
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -195,6 +211,20 @@ MonoBehaviour:
   m_Spacing: 0
   m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 0
+--- !u!114 &11474634
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 104258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -900027084, guid: f5f67c52d1564df4a8936ccd202a3bd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 1, g: 0, b: 0, a: .501960814}
+  m_EffectDistance: {x: 1, y: -1}
+  m_UseGraphicAlpha: 1
 --- !u!114 &11475368
 MonoBehaviour:
   m_ObjectHideFlags: 1

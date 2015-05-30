@@ -14,6 +14,8 @@ public class GameController : MonoBehaviour {
 
   [SerializeField] GameObject staffNodePrefab;
   [SerializeField] Canvas canvas;
+  [SerializeField] GameObject questPrefab;
+  [SerializeField] RectTransform questContainer;
 
   public ReactiveProperty<bool> isDragging = new ReactiveProperty<bool> (false);
 
@@ -149,12 +151,54 @@ public class GameController : MonoBehaviour {
     return skill;
   }
 
+  public void createQuest(float mp){
+    GameObject obj = Instantiate(questPrefab) as GameObject;
+    var q = obj.GetComponent<QuestPresenter> ();
+
+    int id = obj.GetInstanceID();
+    q.title.Value = "Quest " + id.ToString ();
+
+
+    float healthFactor = 5f;
+    float healthLevel = UnityEngine.Random.value;
+    float attackLevel = UnityEngine.Random.value;
+    float minHealth = 5f;
+    float health = Mathf.Max (minHealth, Mathf.Ceil (Mathf.Pow (healthFactor, healthLevel - .5f) * mp));
+    q.maxHealth.Value = health;
+    q.health.Value = health;
+
+    q.attack.Value = Mathf.Floor( attackLevel * mp );
+
+    q.reward.Value = (int)Mathf.Floor(mp * (1f + healthLevel)  * ( 1f + UnityEngine.Random.value * 2f));
+
+
+
+    q.transform.SetParent (questContainer);
+  }
+
   void updateProjects(){
+    foreach( Transform t in questContainer){
+      var q = t.GetComponent<QuestPresenter> ();
+      if(q == selectedQuest.Value) {
+
+      } else {
+        Destroy (t.gameObject);
+      }
+    }
+    int count = UnityEngine.Random.Range (2, 4);
+    for(int i = 0; i < count; i++){
+      createQuest((float)manPower.Value);
+      
+    }
+
+
+    /*
     ProjectManager.Instance.removePlanning ();
     int count = UnityEngine.Random.Range (2, 4);
     for(int i = 0; i < count; i++){
       ProjectManager.Instance.createProject ((float)manPower.Value);
     }
+    */
   }
   void updateRecruits(){
     foreach( Transform t in recruitContainer){
