@@ -30,6 +30,8 @@ public class GameController : MonoBehaviour {
   public ReactiveProperty<int> money = new ReactiveProperty<int> ();
   public ReactiveProperty<int> manPower = new ReactiveProperty<int> ();
 
+  public ReactiveProperty<QuestPresenter> selectedQuest = new ReactiveProperty<QuestPresenter> ();
+
   public const int retirementAge = 40;
 
   private static GameController s_Instance;
