@@ -11,7 +11,6 @@ public class SelectedQuestPresenter : MonoBehaviour {
   public Text rewardText;
   public Text titleText;
   public RectTransform healthUI;
-  public RectTransform healthContainerUI;
 
   public GameObject hasQuest;
   public GameObject noQuest;
@@ -30,12 +29,11 @@ public class SelectedQuestPresenter : MonoBehaviour {
     GameController.Instance.selectedQuest
       .Where(q => q)
       .Subscribe (q => {
-        healthContainerUI.OnRectTransformDimensionsChangeAsObservable ()
-          .CombineLatest (q.health, (l, r) => r)
-          .CombineLatest (q.maxHealth, (l, r) => Mathf.Max(0, r == 0 ? 0 : l / r * healthContainerUI.sizeDelta.x) )
-          .Subscribe (w => healthUI.sizeDelta = new Vector2 (w, healthUI.sizeDelta.y))
+        
+        q.health
+          .CombineLatest (q.maxHealth, (l, r) => Mathf.Max(0, r == 0 ? 0 : l / r ))
+          .Subscribe (w => healthUI.anchorMax = new Vector2(w, 1))
           .AddTo (q);
-
 
         q.title
           .SubscribeToText (titleText)
@@ -43,7 +41,8 @@ public class SelectedQuestPresenter : MonoBehaviour {
 
 
         q.health
-          .Select (v => v.ToString ("N0"))
+          .CombineLatest (q.maxHealth, (l, r) => l.ToString("N0") + "/" + r.ToString("N0") )
+//          .Select (v => v.ToString ("N0"))
           .SubscribeToText (healthText)
           .AddTo (q);
 

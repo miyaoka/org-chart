@@ -9,8 +9,6 @@ public class GameController : MonoBehaviour {
 
   [SerializeField] RectTransform recruitContainer;
   [SerializeField] NodePresenter orgRoot;
-  [SerializeField] Text manPowerText;
-  [SerializeField] Text moneyText;
 
   [SerializeField] GameObject staffNodePrefab;
   [SerializeField] Canvas canvas;
@@ -28,7 +26,7 @@ public class GameController : MonoBehaviour {
 
   public ReactiveProperty<StaffNodePresenter> draggingNode = new ReactiveProperty<StaffNodePresenter> ();
 
-  public ReactiveProperty<int> year = new ReactiveProperty<int> (0);
+  public ReactiveProperty<int> year = new ReactiveProperty<int> (1);
   public ReactiveProperty<int> money = new ReactiveProperty<int> ();
   public ReactiveProperty<int> manPower = new ReactiveProperty<int> ();
 
@@ -48,35 +46,30 @@ public class GameController : MonoBehaviour {
 
 
   // Use this for initialization
+  void Awake(){
+    manPower = 
+      orgRoot.currentLevelTotal.ToReactiveProperty ();
+  }
   void Start () {
 
     startYear ();
 
     money.Value = 100;
 
-    manPower = 
-      orgRoot.currentLevelTotal.ToReactiveProperty ();
 
-    manPower.SubscribeToText (manPowerText);
-    money.SubscribeToText (moneyText);
 
   }
   public void nextPhase(){
     if (onQuest.Value) {
       endYear ();
-      startYear ();
     } else {
-      doPlan ();
-      showResult ();
+      startBattle ();
     }
     onQuest.Value = !onQuest.Value;
   }
-  void setOnPhasePlan(){
-  }
-  void setOnPhaseDo(){
 
 
-  }
+
   void doPlan(){
     var staffs = new List<StaffNodePresenter> ();
     orgRoot.GetComponentsInChildren<StaffNodePresenter> (staffs);
@@ -108,14 +101,31 @@ public class GameController : MonoBehaviour {
 */
   }
 
-  void showResult(){
-  }
+
 
   void startYear(){
-    year.Value++;
     updateRecruits ();
     updateProjects ();
   }
+
+  void startPlan(){
+  }
+  void endPlan(){
+  }
+  void startBattle(){
+    var q = selectedQuest.Value;
+    if (!q) {
+      endBattle ();
+      return;
+    }
+
+
+  }
+  void retreatBattle(){
+  }
+  void endBattle(){
+  }
+
   void endYear(){
     StaffNodePresenter[] nodes = orgRoot.GetComponentsInChildren<StaffNodePresenter> ();
     foreach (StaffNodePresenter staff in nodes) {
@@ -123,6 +133,8 @@ public class GameController : MonoBehaviour {
       staff.lastLevel.Value = staff.baseLevel.Value;
       staff.baseLevel.Value = growSkill(staff.age.Value, staff.baseLevel.Value);
     }
+    year.Value++;
+    startYear ();
   }
 
 
@@ -165,7 +177,7 @@ public class GameController : MonoBehaviour {
     float minHealth = 5f;
     float health = Mathf.Max (minHealth, Mathf.Ceil (Mathf.Pow (healthFactor, healthLevel - .5f) * mp));
     q.maxHealth.Value = health;
-    q.health.Value = health;
+    q.health.Value = health * UnityEngine.Random.value;
 
     q.attack.Value = Mathf.Floor( attackLevel * mp );
 

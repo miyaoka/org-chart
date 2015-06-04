@@ -41,7 +41,7 @@ public class StaffNodeDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandl
   public void OnDrag (PointerEventData eventData)
   {
     RectTransform rect = dragPointer.transform as RectTransform;
-    rect.position = Input.mousePosition -  new Vector3(4, -4, 0);
+    rect.position = Input.mousePosition +  new Vector3(0, 40, 0);
   }
 
   #endregion

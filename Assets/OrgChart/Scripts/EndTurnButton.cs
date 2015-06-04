@@ -9,7 +9,7 @@ public class EndTurnButton : MonoBehaviour {
   void Start(){
     GameController.Instance.onQuest
       .Subscribe (q => {
-        btnText.text = q ? "Next Year" : "Go Quest";
+        btnText.text = q ? "帰還する" : "出発";
     });
   }
 	public void onClick(){
