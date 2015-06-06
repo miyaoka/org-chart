@@ -15,28 +15,24 @@ public class NodePresenter : MonoBehaviour {
 
 
   //model
-
-  public ReactiveProperty<StaffModel> staff = new ReactiveProperty<StaffModel> ();
-
-  public IObservable<Unit> childStream;
-  public ReadOnlyReactiveProperty<bool> hasChild { get; private set; }
   public ReactiveProperty<int> childCount { get; private set; }
   public ReactiveProperty<int> childCountTotal = new ReactiveProperty<int>();
-  public ReactiveProperty<bool> isSection = new ReactiveProperty<bool>();
-
   public ReactiveProperty<int> currentLevel = new ReactiveProperty<int>();
   public ReactiveProperty<int> currentLevelTotal = new ReactiveProperty<int>();
 
+  public ReadOnlyReactiveProperty<bool> hasChild { get; private set; }
+  public ReactiveProperty<bool> isSection = new ReactiveProperty<bool>();
 
-  public ReactiveProperty<bool> isAssigned = new ReactiveProperty<bool> (true);
+
+
   public ReactiveProperty<int> tier = new ReactiveProperty<int> (0);
+  public ReactiveProperty<bool> isAssigned = new ReactiveProperty<bool> (true);
   public ReactiveProperty<bool> isHired = new ReactiveProperty<bool> (false);
   public bool isMoved;
   public ReactiveProperty<bool> isDragging = new ReactiveProperty<bool> (false);
 
   public ReactiveProperty<string> name = new ReactiveProperty<string> ();
   public ReactiveProperty<int> gender = new ReactiveProperty<int> ();
-
   public ReactiveProperty<int> baseLevel =  new ReactiveProperty<int> ();  
   public ReactiveProperty<int> lastLevel =  new ReactiveProperty<int> ();  
   public ReactiveProperty<int> age = new ReactiveProperty<int> ();
@@ -46,12 +42,14 @@ public class NodePresenter : MonoBehaviour {
   public ReactiveProperty<int?> parentDiff = new ReactiveProperty<int?>();
 
   CompositeDisposable childResources = new CompositeDisposable();
-  protected CompositeDisposable eventResources = new CompositeDisposable();
+
+  public ReactiveProperty<StaffModel> staff = new ReactiveProperty<StaffModel> ();
+
 
   void Awake(){
     //define model
 
-    childStream = childNodes.gameObject.OnTransformChildrenChangedAsObservable ();
+    var childStream = childNodes.gameObject.OnTransformChildrenChangedAsObservable ();
 
     childCount = 
       childStream

@@ -58,13 +58,12 @@ public class StaffNodePresenter : NodePresenter {
 //    base.Start ();
     CanvasGroup cg = contentUI.GetComponent<CanvasGroup> ();
     familyLine = familyLineUI.GetComponent<UILineRenderer> ();
-    Image bg = GetComponent<Image> ();
 
 
     health
       .Where (h => 0 >= h)
       .Subscribe (_ => isAssigned.Value = false)
-      .AddTo (eventResources);
+      .AddTo (this);
 
 
     parentNode
@@ -75,7 +74,7 @@ public class StaffNodePresenter : NodePresenter {
           .CombineLatest(pn.isAssigned, (l, r) => r ? l : null)
           .ToReactiveProperty ();
       })
-      .AddTo(eventResources);
+      .AddTo(this);
     /*
     parentDiff = parentNode
       .Where(pn => pn != null)
@@ -89,7 +88,7 @@ public class StaffNodePresenter : NodePresenter {
         staffUI.SetActive(_);
         emptyUI.SetActive(!_);
       })
-      .AddTo(eventResources);
+      .AddTo(this);
 
     //observe content (assign or children)
     IObservable<bool> hasContent =
@@ -101,7 +100,7 @@ public class StaffNodePresenter : NodePresenter {
       .CombineLatest (isDragging, (c, d) => c || d)
       .Where(exist => exist == false)
       .Subscribe (_ => Destroy(gameObject))
-      .AddTo (eventResources);
+      .AddTo (this);
 
     //hide if no content
     hasContent
@@ -109,7 +108,7 @@ public class StaffNodePresenter : NodePresenter {
         cg.alpha = c ? 1 : 0;
         showFamilyLine(isHired.Value && c);
       })
-      .AddTo(eventResources);
+      .AddTo(this);
 
     thisDelta = 
       Observable
@@ -128,16 +127,16 @@ public class StaffNodePresenter : NodePresenter {
       pd.x / 2 - transform.position.x + (transform.parent ? transform.parent.transform.position.x : 0)
     ))
       .Subscribe (drawFamilyLine)
-      .AddTo(eventResources);
+      .AddTo(this);
 
     childCount
       .CombineLatest(childCountTotal, (l,r) => l + "/" + r)
       .SubscribeToText (childCountText)
-      .AddTo (eventResources);
+      .AddTo (this);
 
     currentLevelTotal
       .SubscribeToText (levelCountText)
-      .AddTo (eventResources);
+      .AddTo (this);
 
     /*
     childCountTotal
@@ -148,13 +147,13 @@ public class StaffNodePresenter : NodePresenter {
           isSection.Value = false;
         }
       })
-      .AddTo (eventResources);
+      .AddTo (this);
 
     isSection
       .Subscribe (s => {
         bg.enabled = s;
       })
-      .AddTo (eventResources);
+      .AddTo (this);
     */
         
 	}
@@ -170,10 +169,6 @@ public class StaffNodePresenter : NodePresenter {
       new Vector2(lineDelta.y, familyLineHeight)
     };
     familyLine.SetVerticesDirty();    
-  }
-  void OnDestroy()
-  {
-    eventResources.Dispose();
   }
 
 }

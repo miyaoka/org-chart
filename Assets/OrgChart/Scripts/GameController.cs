@@ -17,9 +17,6 @@ public class GameController : MonoBehaviour {
 
   public ReactiveProperty<bool> isDragging = new ReactiveProperty<bool> (false);
 
-  private float shirtsV = .8F;
-  private float tieV = .3F;
-  private float suitsV = .5F;
 
   public ReactiveProperty<bool> onQuest = new ReactiveProperty<bool> ();
 

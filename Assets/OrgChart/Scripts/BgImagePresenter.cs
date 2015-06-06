@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using UniRx;
 
-public class BgPresenter : MonoBehaviour {
+public class BgImagePresenter : MonoBehaviour {
 
   public Sprite planBg;
   public Sprite battleBg;

@@ -71,6 +71,7 @@ public class StaffDataPresenter : MonoBehaviour {
       .AddTo(eventResources);
     node.baseLevel
       .CombineLatest (node.lastLevel, (b, l) => b - l)
+      .CombineLatest(GameController.Instance.onQuest, (l, r) => r ? 0 : l)
       .Subscribe (diff => {
         if(0 == diff){
           diffLevelUI.gameObject.SetActive(false);
