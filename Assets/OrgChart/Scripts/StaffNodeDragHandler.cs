@@ -23,9 +23,6 @@ public class StaffNodeDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandl
 
     GameController.Instance.draggingNode.Value = node;
 
-    //begin drag
-    node.isDragging.Value = true;
-
     //hide original
     node.isAssigned.Value = false;
 
@@ -41,7 +38,7 @@ public class StaffNodeDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandl
   public void OnDrag (PointerEventData eventData)
   {
     RectTransform rect = dragPointer.transform as RectTransform;
-    rect.position = Input.mousePosition +  new Vector3(0, 40, 0);
+    rect.position = Input.mousePosition +  new Vector3(0, 0, 0);
   }
 
   #endregion
@@ -62,7 +59,6 @@ public class StaffNodeDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandl
     } else {
       node.isAssigned.Value = true;
     }
-    node.isDragging.Value = false;
 
   }
 

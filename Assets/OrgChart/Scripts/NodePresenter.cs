@@ -29,7 +29,6 @@ public class NodePresenter : MonoBehaviour {
   public ReactiveProperty<bool> isAssigned = new ReactiveProperty<bool> (true);
   public ReactiveProperty<bool> isHired = new ReactiveProperty<bool> (false);
   public bool isMoved;
-  public ReactiveProperty<bool> isDragging = new ReactiveProperty<bool> (false);
 
   public ReactiveProperty<string> name = new ReactiveProperty<string> ();
   public ReactiveProperty<int> gender = new ReactiveProperty<int> ();

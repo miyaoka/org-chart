@@ -3,7 +3,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class NodeDropHandler :MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
-  protected Outline outline;
+  private Outline outline;
 
   protected void Awake(){
     outline = GetComponent<Outline> ();
@@ -27,7 +27,7 @@ public class NodeDropHandler :MonoBehaviour, IPointerEnterHandler, IPointerExitH
 
   #region IPointerExitHandler implementation
 
-  public void OnPointerExit (PointerEventData eventData)
+  public virtual void OnPointerExit (PointerEventData eventData)
   {
     outline.enabled = false;
   }

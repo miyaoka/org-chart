@@ -27,12 +27,14 @@ public class StaffDataPresenter : MonoBehaviour {
     diffBg = diffLevelUI.GetComponent<Image> ();
     diffText = diffLevelUI.GetComponentInChildren<Text> ();
 
+    /*
     node.health
       .Subscribe (h => {
         healthUI.sizeDelta = new Vector2 (8, Mathf.Ceil(52f * h));
         healthUI.GetComponent<Image>().color = Util.HSVToRGB(h * 100f/360f, 1f, 1f);
       })
       .AddTo (eventResources);
+      */
 
 
     node.tier

@@ -56,6 +56,7 @@ public class StaffNodePresenter : NodePresenter {
 
 	void Start () {
 //    base.Start ();
+    var gc = GameController.Instance;
     CanvasGroup cg = contentUI.GetComponent<CanvasGroup> ();
     familyLine = familyLineUI.GetComponent<UILineRenderer> ();
 
@@ -96,11 +97,17 @@ public class StaffNodePresenter : NodePresenter {
         .CombineLatest (hasChild, (assign, child) => (assign || child));
 
     //destory if no content & no dragging
+    var isDragging =
+    gc.draggingNode
+      .Select (n => n == this)
+      .ToReactiveProperty ();
+    
     hasContent
       .CombineLatest (isDragging, (c, d) => c || d)
       .Where(exist => exist == false)
       .Subscribe (_ => Destroy(gameObject))
       .AddTo (this);
+
 
     //hide if no content
     hasContent
