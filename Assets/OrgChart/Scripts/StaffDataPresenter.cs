@@ -11,16 +11,6 @@ public class StaffDataPresenter : MonoBehaviour {
   [SerializeField] RectTransform healthUI;
   [SerializeField] Text nameText;
 
-  [SerializeField] Image shirts;
-  [SerializeField] Image tie;
-  [SerializeField] Image suits;
-  [SerializeField] Image face;
-  [SerializeField] Image hair;
-  [SerializeField] HairSprites hairPrefab;
-//  [SerializeField] Image relation;
-  [SerializeField] GameObject researchUI;
-  [SerializeField] GameObject developUI;
-  [SerializeField] GameObject marketUI;
 
   //model
   private StaffNodePresenter node;
@@ -49,20 +39,8 @@ public class StaffDataPresenter : MonoBehaviour {
       .CombineLatest(node.childCount, (t, c) => (0 < c) ? Mathf.Min(t, 2) : t)
       .Subscribe(t => {
         if(node.isHired.Value){
-          if(t < 2){
-            tie.enabled = true;
-            suits.enabled = true;
-          } else if(t == 2){
-            tie.enabled = true;
-            suits.enabled = false;      
-          } else {
-            tie.enabled = false;
-            suits.enabled = false;            
-          }
         }
         else{
-          tie.enabled = false;
-          suits.enabled = true;
         }
       })
       .AddTo(eventResources);
@@ -130,10 +108,6 @@ public class StaffDataPresenter : MonoBehaviour {
         }
       })
       .AddTo (eventResources);
-    node.age
-      .Select(age => age + 20)
-      .Subscribe(x => hair.sprite = hairPrefab.hairByAge(x) )
-      .AddTo(eventResources);
 
     node.name
       .SubscribeToText (nameText)

@@ -119,8 +119,30 @@ public class GameController : MonoBehaviour {
       return;
     }
 
+    /*
+    var staffs = new List<object>();
+    orgRoot.GetComponentsInChildren<StaffNodePresenter> (staffs);
+
+
+    var enemys = new List<object> { 0, 1, 2, 3 };
+
+    var attacks = new List<object> ();
+    attacks.AddRange (staffs);
+    attacks.AddRange (enemys);
+
+    attacks.Randomize ();
+//    var ra = Util.shuffleArrayList (attacks);
+
+    foreach(var r in attacks){
+      Debug.Log (r.GetType());
+    }
+    */
+
 
   }
+
+
+
   void retreatBattle(){
   }
   void endBattle(){
@@ -298,15 +320,6 @@ public class GameController : MonoBehaviour {
     data.gender = (.2f > UnityEngine.Random.value) ? 0 : 1;
     data.name = Names.getRandomName (data.gender);
 
-    float shirtsHue = UnityEngine.Random.value;
-    float tieHue = (.5F > UnityEngine.Random.value) ? nearHue(shirtsHue) : compHue(shirtsHue);
-    float suitsHue = (.5F > UnityEngine.Random.value) ? nearHue(shirtsHue) : compHue(shirtsHue);
-
-    data.shirtsColor = Util.HSVToRGB (shirtsHue, UnityEngine.Random.value * .2F, shirtsV);
-    data.tieColor = Util.HSVToRGB (tieHue, UnityEngine.Random.value * .2F + .2F, tieV);
-    data.suitsColor = Util.HSVToRGB (suitsHue, UnityEngine.Random.value * .3F, suitsV);
-
-    data.job = (Jobs)Enum.ToObject( typeof(Jobs), UnityEngine.Random.Range (0, Enum.GetValues (typeof(Jobs)).Length));
     return data;
   }
   float nearHue(float hue){

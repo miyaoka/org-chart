@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 public static class Util {
 
@@ -95,6 +97,41 @@ public static class Util {
     }
 
   }
+  public static ArrayList shuffleArrayList(ArrayList inputList0)
+  {
+    var inputList = inputList0.Clone () as ArrayList;
+    var randomList = new ArrayList();
+
+    var r = new System.Random();
+    int randomIndex = 0;
+    while (inputList.Count > 0)
+    {
+      randomIndex = r.Next(0, inputList.Count); //Choose a random object in the list
+      randomList.Add(inputList[randomIndex]); //add it to the new, random list
+      inputList.RemoveAt(randomIndex); //remove to avoid duplicates
+    }
+
+    return randomList; //return the new random list
+  }
+  public static IEnumerable<T> Randomize<T>(this IEnumerable<T> source)
+  {
+    var rnd = new System.Random();
+    return source.OrderBy<T, int>((item) => rnd.Next());
+  }
+  /*
+  public static void Shuffle<T>(this IList<T> list)  
+  {  
+    Random rng = new Random();  
+    int n = list.Count;  
+    while (n > 1) {  
+      n--;  
+      int k = rng.Next(n + 1);  
+      T value = list[k];  
+      list[k] = list[n];  
+      list[n] = value;  
+    }  
+  }
+  */
 }
 
 

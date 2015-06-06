@@ -6,14 +6,12 @@ public class BgmManager : MonoBehaviour {
 
   public AudioClip townBGM;
   public AudioClip battleBGM;
+  [SerializeField] AudioSource au;
 
-	AudioClip[] acs;
-	AudioSource au;
+//	AudioClip[] acs;
 	// Use this for initialization
 	void Start () {
 
-    au = gameObject.AddComponent<AudioSource>();
-    au.loop = true;
     GameController.Instance.onQuest
       .Subscribe (q => {
         au.clip = q ? battleBGM : townBGM;
@@ -25,6 +23,7 @@ public class BgmManager : MonoBehaviour {
 		play();
   */  
 	}
+  /*
 	void play(){
 		if(acs.Length == 0){
 			return;
@@ -41,4 +40,5 @@ public class BgmManager : MonoBehaviour {
 	void Update () {
 	
 	}
+ */
 }

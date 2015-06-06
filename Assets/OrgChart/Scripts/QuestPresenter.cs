@@ -5,7 +5,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 
-public class QuestPresenter : MonoBehaviour, IPointerClickHandler, IPointerDownHandler {
+public class QuestPresenter : MonoBehaviour, IPointerDownHandler {
   #region IPointerDownHandler implementation
 
   public void OnPointerDown (PointerEventData eventData)
@@ -15,20 +15,11 @@ public class QuestPresenter : MonoBehaviour, IPointerClickHandler, IPointerDownH
 
   #endregion
 
-  #region IPointerClickHandler implementation
-
-  public void OnPointerClick (PointerEventData eventData)
-  {
-  }
-
-  #endregion
-
   public Text healthText;
   public Text attackText;
   public Text rewardText;
 
 
-  public ReactiveProperty<bool> isSelected = new ReactiveProperty<bool>();
   public ReactiveProperty<string> title = new ReactiveProperty<string>();
   public ReactiveProperty<float> maxHealth = new ReactiveProperty<float>();
   public ReactiveProperty<float> health = new ReactiveProperty<float>();
