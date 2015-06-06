@@ -2,17 +2,25 @@
 using System.Collections;
 using UniRx;
 using UniRx.Triggers;
+using UnityEngine.UI;
+using System.Collections.Generic;
+using System.Linq;
 
 public class NodePresenter : MonoBehaviour {
 
   //view
   [SerializeField] public RectTransform childNodes;
 
+
+
+
   //model
-//  public IObservable<int> childCountStream;
+
+  public ReactiveProperty<StaffModel> staff = new ReactiveProperty<StaffModel> ();
+
   public IObservable<Unit> childStream;
   public ReadOnlyReactiveProperty<bool> hasChild { get; private set; }
-  public ReadOnlyReactiveProperty<int> childCount { get; private set; }
+  public ReactiveProperty<int> childCount { get; private set; }
   public ReactiveProperty<int> childCountTotal = new ReactiveProperty<int>();
   public ReactiveProperty<bool> isSection = new ReactiveProperty<bool>();
 
@@ -48,52 +56,47 @@ public class NodePresenter : MonoBehaviour {
     childCount = 
       childStream
         .Select (_ => childNodes.childCount)
-        .ToReadOnlyReactiveProperty ();
+        .ToReactiveProperty ();
+
+    currentLevel = baseLevel
+      .CombineLatest (childCount, (l, r) =>  l - r)
+      .CombineLatest(isAssigned, (l,r) => r ? l : 0)
+      .ToReactiveProperty ();
 
     childCount
       .Subscribe (x => {
-        childResources.Clear();
-        foreach(Transform child in childNodes){
-          NodePresenter node = child.GetComponent<NodePresenter>();
-          node.childCountTotal
-            .Subscribe(c => getChildTotal ())
-            .AddTo(childResources);
+        childResources.Clear ();
 
-          node.currentLevelTotal
-            .Subscribe(c => getLevelTotal ())
-            .AddTo(childResources);
+        var lvList = new List<ReactiveProperty<int>> {currentLevel};
+        var ccList = new List<ReactiveProperty<int>> {childCount};
+        foreach (Transform child in childNodes) {
+          var node = child.GetComponent<NodePresenter> ();
+          lvList.Add (node.currentLevelTotal);
+          ccList.Add (node.childCountTotal);
         }
-        getChildTotal();
-        getLevelTotal();
-      });
 
-    currentLevel = baseLevel
-      .CombineLatest (childCount, (s, c) =>  s - c )
-      .ToReactiveProperty ();
+        Observable
+          .CombineLatest (lvList.ToArray ())
+          .Select (list => list.Sum())
+          .Subscribe (v => currentLevelTotal.Value = v)
+          .AddTo (childResources);
 
-    currentLevel
-      .Subscribe (c => getLevelTotal ())
-      .AddTo (eventResources);
-    
+        Observable
+          .CombineLatest (ccList.ToArray ())
+          .Select (list => list.Sum())
+          .Subscribe (v => childCountTotal.Value = v)
+          .AddTo (childResources);
 
+      })
+      .AddTo (this);
+       
     hasChild = 
       childCount
         .Select (c => 0 < c)
         .ToReadOnlyReactiveProperty ();
+
   }
-  void getChildTotal(){
-    int total = 0;
-    foreach(Transform child in childNodes){
-      total += child.GetComponent<NodePresenter> ().childCountTotal.Value;
-    }
-    childCountTotal.Value = total + 1;
-  }
-  void getLevelTotal(){
-    int total = 0;
-    foreach(Transform child in childNodes){
-      total += child.GetComponent<NodePresenter> ().currentLevelTotal.Value;
-    }
-    currentLevelTotal.Value = total + currentLevel.Value;
-  }
+
+
 
 }
