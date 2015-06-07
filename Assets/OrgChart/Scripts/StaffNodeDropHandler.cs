@@ -6,14 +6,17 @@ using UniRx;
 public class StaffNodeDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler{
   protected StaffNodePresenter staffNode;
   [SerializeField] Outline outline;
-  [SerializeField] RectTransform panel;
+  [SerializeField] GameObject animUI;
+
+  private float enterAnimTime = .1f;
+  private float exitAnimTime = .02f;
+  private float submitAnimTime = .2f;
+  private float enlarge = 1.3f;
+  private Vector3 origScale;
 
   new void Awake(){
-//    base.Awake ();
     staffNode = GetComponentInParent<StaffNodePresenter> ();
-
-//    outline = GetComponentInParent<Outline> ();
-//    outline =  <Outline> ();
+    origScale = animUI.transform.localScale;
   }
   protected StaffNodePresenter getPointerStaffNode(PointerEventData eventData){
     return eventData.pointerDrag ? eventData.pointerDrag.GetComponentInParent<StaffNodePresenter> () : null;
@@ -37,7 +40,8 @@ public class StaffNodeDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHa
   public void OnPointerEnter (PointerEventData eventData)
 	{
     if (staffNode.isEmpty.Value || getPointerStaffNode(eventData) ) {
-      panel.localScale = new Vector3 (1.5f, 1.5f, 1f);
+      LeanTween.cancel (animUI);
+      LeanTween.scale (animUI, origScale * enlarge, submitAnimTime).setEase (LeanTweenType.easeOutBack);
       outline.enabled = true;
 		}
 	}
@@ -45,7 +49,8 @@ public class StaffNodeDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHa
 	#endregion
   public void OnPointerExit (PointerEventData eventData)
   {
-    panel.localScale = new Vector3 (1f, 1f, 1f);
+    LeanTween.cancel (animUI);
+    LeanTween.scale (animUI, origScale, exitAnimTime).setEase (LeanTweenType.easeOutQuint);
     outline.enabled = false;
   }
 }

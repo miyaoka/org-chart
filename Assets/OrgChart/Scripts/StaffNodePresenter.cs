@@ -9,10 +9,11 @@ using UniRx.Triggers;
 public class StaffNodePresenter : NodePresenter {
 
   //view
-  [SerializeField] GameObject contentUI;
+//  [SerializeField] GameObject contentUI;
   [SerializeField] GameObject staffUI;
   [SerializeField] GameObject emptyUI;
   [SerializeField] GameObject familyLineUI;
+  [SerializeField] CanvasGroup panelCG;
 
   [SerializeField] Text childCountText;
   [SerializeField] Text levelCountText;
@@ -57,9 +58,13 @@ public class StaffNodePresenter : NodePresenter {
 	void Start () {
 //    base.Start ();
     var gc = GameController.Instance;
-    CanvasGroup cg = contentUI.GetComponent<CanvasGroup> ();
     familyLine = familyLineUI.GetComponent<UILineRenderer> ();
 
+
+    GameController.Instance.draggingNode
+      .Select (d => d != null)
+      .Subscribe (d => panelCG.blocksRaycasts = d ? false : true)
+      .AddTo (this);
 
 
         /*
@@ -74,17 +79,12 @@ public class StaffNodePresenter : NodePresenter {
       .Subscribe (pn => {
         parentDiff = pn.currentLevel
           .CombineLatest(currentLevel, (l, r) => (int?)l - r)
-          .CombineLatest(pn.isEmpty, (l, r) => r ? l : null)
+          .CombineLatest(pn.isEmpty, (l, r) => r ? null : l)
           .ToReactiveProperty ();
       })
       .AddTo(this);
-    /*
-    parentDiff = parentNode
-      .Where(pn => pn != null)
-      .Select(pn => pn.currentSkill.Value)
-      .CombineLatest(currentSkill, (l, r) => (int?)l - r)
-      .ToReactiveProperty ();
-*/
+
+
 
     isEmpty
       .Subscribe (e => {
@@ -106,7 +106,7 @@ public class StaffNodePresenter : NodePresenter {
     isDragging
       .CombineLatest(hasChild, (l, r) => l && !r)
       .Subscribe (c => {
-        cg.alpha = c ? 0 : 1;
+        panelCG.alpha = c ? 0 : 1;
         showFamilyLine(isHired.Value && c);
       })
       .AddTo(this);

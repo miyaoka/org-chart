@@ -10,7 +10,7 @@ public class ButtonAnimator : MonoBehaviour, IPointerClickHandler, IPointerDownH
 
   public void OnPointerClick (PointerEventData eventData)
   {
-    GameSounds.select.Play ();
+    GameSounds.submit.Play ();
     onSubmit ();
   }
 
@@ -63,8 +63,8 @@ public class ButtonAnimator : MonoBehaviour, IPointerClickHandler, IPointerDownH
   [SerializeField] GameObject animUI;
 
   private float enterAnimTime = .1f;
-  private float exitAnimTime = .05f;
-  private float submitAnimTime = .3f;
+  private float exitAnimTime = .02f;
+  private float submitAnimTime = .2f;
   private float pushScale = .85f;
   private Vector3 origScale;
 
@@ -75,7 +75,7 @@ public class ButtonAnimator : MonoBehaviour, IPointerClickHandler, IPointerDownH
   }
   void onExit(){
     LeanTween.cancel (animUI);
-    LeanTween.scale (animUI, origScale, exitAnimTime).setEase (LeanTweenType.easeOutBounce);
+    LeanTween.scale (animUI, origScale, exitAnimTime).setEase (LeanTweenType.easeOutQuint);
   }
   void onSubmit(){
     LeanTween.cancel (animUI);
