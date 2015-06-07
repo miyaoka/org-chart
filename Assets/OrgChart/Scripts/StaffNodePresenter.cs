@@ -74,9 +74,32 @@ public class StaffNodePresenter : NodePresenter {
       .AddTo (this);
 */
 
+    var parentPos = 
+      transform.parent.transform.ObserveEveryValueChanged (t => t.position);
+    var familyPos = 
+      familyLineUI.transform.ObserveEveryValueChanged (t => t.position);
+
+    isHired
+      .Where(h => h)
+      .CombineLatest(parentPos, (l, r) => r)
+      .CombineLatest (familyPos, (l, r) => l - r)
+      .Subscribe (p => {
+        Debug.Log(p);
+        drawFamilyLine (new Vector2 (0, 0), new Vector2 (p.x, p.y));
+      })
+      .AddTo (this);
+
+    isHired
+      .CombineLatest (isRoot, (l, r) => l && !r)
+      .Subscribe (familyLineUI.SetActive)
+      .AddTo (this);
+
+
+
     parentNode
       .Where (pn => pn != null)
       .Subscribe (pn => {
+
         parentDiff = pn.currentLevel
           .CombineLatest(currentLevel, (l, r) => (int?)l - r)
           .CombineLatest(pn.isEmpty, (l, r) => r ? null : l)
@@ -107,7 +130,7 @@ public class StaffNodePresenter : NodePresenter {
       .CombineLatest(hasChild, (l, r) => l && !r)
       .Subscribe (c => {
         panelCG.alpha = c ? 0 : 1;
-        showFamilyLine(isHired.Value && c);
+//        showFamilyLine(isHired.Value && c);
       })
       .AddTo(this);
 
@@ -122,13 +145,21 @@ public class StaffNodePresenter : NodePresenter {
         .Select(_ => transform.parent ? (transform.parent.transform as RectTransform).sizeDelta : new Vector2())
         .DistinctUntilChanged();
 
+
+
+
+    /*
     thisDelta
       .CombineLatest (parentDelta, (td, pd) => new Vector2 (
-      td.x / 2, 
-      pd.x / 2 - transform.position.x + (transform.parent ? transform.parent.transform.position.x : 0)
-    ))
+        td.x / 2, 
+        pd.x / 2 - transform.position.x + (transform.parent ? transform.parent.transform.position.x : 0)
+      ))
       .Subscribe (drawFamilyLine)
       .AddTo(this);
+      */
+
+
+
 
     childCount
       .CombineLatest(childCountTotal, (l,r) => l + "/" + r)
@@ -156,18 +187,17 @@ public class StaffNodePresenter : NodePresenter {
       })
       .AddTo (this);
     */
-        
+//    familyLineUI.SetActive (true);
+          
 	}
-  void showFamilyLine(bool show){
-    familyLineUI.SetActive (show);
-  }
 
-  void drawFamilyLine(Vector2 lineDelta){
+  void drawFamilyLine(Vector2 from, Vector2 to){
+    var centerY = (from.y + to.y) * .3f;
     familyLine.Points = new Vector2[] { 
-      new Vector2(lineDelta.x, 0), 
-      new Vector2(lineDelta.x, 10),//familyLineHeight * .4F),
-      new Vector2(lineDelta.y, 10),//familyLineHeight * .4F),
-      new Vector2(lineDelta.y, familyLineHeight)
+      new Vector2(from.x, from.y), 
+      new Vector2(from.x, centerY),
+      new Vector2(to.x, centerY),
+      new Vector2(to.x, to.y)
     };
     familyLine.SetVerticesDirty();    
   }
