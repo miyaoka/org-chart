@@ -42,8 +42,6 @@ public class NodePresenter : MonoBehaviour {
 
   CompositeDisposable childResources = new CompositeDisposable();
 
-  public ReactiveProperty<StaffModel> staff = new ReactiveProperty<StaffModel> ();
-
 
   void Awake(){
     //define model
