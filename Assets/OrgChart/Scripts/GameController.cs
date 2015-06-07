@@ -263,7 +263,9 @@ public class GameController : MonoBehaviour {
       createStaffNode (node.staffData, parentNode.childNodes, true);
       GameSounds.promote.Play ();
     }
-    node.isMoved = true;
+
+    node.isAssigned.Value = false;
+//    node.isMoved = true;
     GameSounds.drop.Play();
   }
   private void moveStaffToStaff(StaffNodePresenter node, StaffNodePresenter parentStaff){
@@ -278,7 +280,8 @@ public class GameController : MonoBehaviour {
       }
       parentStaff.staffData = node.staffData;
       parentStaff.isAssigned.Value = true;
-      parentStaff.isMoved = false;
+//      parentStaff.isEmpty.Value = true;
+//      parentStaff.isMoved = false;
       parentStaff.gameObject.GetComponentInChildren<StaffNodeDragHandler> ().enabled = true;
     }
     if (0 < tierDiff) {

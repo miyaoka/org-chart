@@ -61,18 +61,20 @@ public class StaffNodePresenter : NodePresenter {
     familyLine = familyLineUI.GetComponent<UILineRenderer> ();
 
 
+
+        /*
     health
       .Where (h => 0 >= h)
-      .Subscribe (_ => isAssigned.Value = false)
+      .Subscribe (_ => isEmpty.Value = false)
       .AddTo (this);
-
+*/
 
     parentNode
       .Where (pn => pn != null)
       .Subscribe (pn => {
         parentDiff = pn.currentLevel
           .CombineLatest(currentLevel, (l, r) => (int?)l - r)
-          .CombineLatest(pn.isAssigned, (l, r) => r ? l : null)
+          .CombineLatest(pn.isEmpty, (l, r) => r ? l : null)
           .ToReactiveProperty ();
       })
       .AddTo(this);
@@ -84,35 +86,27 @@ public class StaffNodePresenter : NodePresenter {
       .ToReactiveProperty ();
 */
 
-    isAssigned
-      .Subscribe (_ => {
-        staffUI.SetActive(_);
-        emptyUI.SetActive(!_);
+    isEmpty
+      .Subscribe (e => {
+        staffUI.SetActive(!e);
+        emptyUI.SetActive(e);
       })
       .AddTo(this);
 
-    //observe content (assign or children)
-    IObservable<bool> hasContent =
-      isAssigned
-        .CombineLatest (hasChild, (assign, child) => (assign || child));
 
-    //destory if no content & no dragging
-    var isDragging =
-    gc.draggingNode
-      .Select (n => n == this)
-      .ToReactiveProperty ();
-    
-    hasContent
-      .CombineLatest (isDragging, (c, d) => c || d)
-      .Where(exist => exist == false)
+    //destory if no content on no dragging
+    isDragging
+      .CombineLatest (isAssigned, (l, r) => l || r)
+      .CombineLatest (hasChild, (l, r) => l || r)
+      .Where(exist => !exist)
       .Subscribe (_ => Destroy(gameObject))
       .AddTo (this);
 
-
-    //hide if no content
-    hasContent
+    //hide if no content on dragging
+    isDragging
+      .CombineLatest(hasChild, (l, r) => l && !r)
       .Subscribe (c => {
-        cg.alpha = c ? 1 : 0;
+        cg.alpha = c ? 0 : 1;
         showFamilyLine(isHired.Value && c);
       })
       .AddTo(this);

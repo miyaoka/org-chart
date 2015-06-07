@@ -24,7 +24,9 @@ public class StaffNodeDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandl
     GameController.Instance.draggingNode.Value = node;
 
     //hide original
-    node.isAssigned.Value = false;
+//    node.isAssigned.Value = false;
+
+    node.isDragging.Value = true;
 
     //notify to all
 //    EventManager.Instance.TriggerEvent (new StaffBeginDragEvent(gameObject));
@@ -47,18 +49,22 @@ public class StaffNodeDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandl
 
   public void OnEndDrag (PointerEventData eventData)
   {
-    GameController.Instance.draggingNode.Value = null;
 
     Destroy (dragPointer);
 
-//    EventManager.Instance.TriggerEvent (new StaffEndDragEvent ());
+    node.isDragging.Value = false;
 
+    /*
     if (node.isMoved) {
       node.isMoved = false;
       enabled = false;
     } else {
       node.isAssigned.Value = true;
     }
+    */
+
+    GameController.Instance.draggingNode.Value = null;
+
 
   }
 

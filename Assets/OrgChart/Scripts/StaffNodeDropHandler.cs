@@ -28,6 +28,7 @@ public class StaffNodeDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHa
       return;
     }
     GameController.Instance.moveStaffNode (pointerNode, staffNode);
+
 	}
 	#endregion
 
@@ -35,7 +36,7 @@ public class StaffNodeDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHa
 
   public void OnPointerEnter (PointerEventData eventData)
 	{
-    if (staffNode.isAssigned.Value || getPointerStaffNode(eventData) ) {
+    if (staffNode.isEmpty.Value || getPointerStaffNode(eventData) ) {
       panel.localScale = new Vector3 (1.5f, 1.5f, 1f);
       outline.enabled = true;
 		}

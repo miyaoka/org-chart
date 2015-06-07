@@ -26,6 +26,7 @@ public class YearRollPresenter : MonoBehaviour {
     pos.y = -pH;
     this.transform.localPosition = pos;
 
+    LeanTween.cancel (gameObject);
     LeanTween.moveLocalY (this.gameObject, 0, 1f).setEase (LeanTweenType.easeOutQuint).setOnComplete( () => {
       LeanTween.moveLocalY (this.gameObject, pH, 1f).setEase (LeanTweenType.easeInQuint);
     });
