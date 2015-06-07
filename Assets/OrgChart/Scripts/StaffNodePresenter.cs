@@ -83,10 +83,7 @@ public class StaffNodePresenter : NodePresenter {
       .Where(h => h)
       .CombineLatest(parentPos, (l, r) => r)
       .CombineLatest (familyPos, (l, r) => l - r)
-      .Subscribe (p => {
-        Debug.Log(p);
-        drawFamilyLine (new Vector2 (0, 0), new Vector2 (p.x, p.y));
-      })
+      .Subscribe (p => drawFamilyLine (new Vector2 (0, 0), new Vector2 (p.x, p.y)))
       .AddTo (this);
 
     isHired
@@ -118,7 +115,8 @@ public class StaffNodePresenter : NodePresenter {
 
 
     //destory if no content on no dragging
-    isDragging
+    isRoot
+      .CombineLatest (isDragging, (l, r) => l || r)
       .CombineLatest (isAssigned, (l, r) => l || r)
       .CombineLatest (hasChild, (l, r) => l || r)
       .Where(exist => !exist)

@@ -8,7 +8,9 @@ using System;
 public class GameController : MonoBehaviour {
 
   [SerializeField] RectTransform recruitContainer;
-  [SerializeField] NodePresenter orgRoot;
+  StaffNodePresenter orgRoot;
+
+  [SerializeField] Transform orgRootUI;
 
   [SerializeField] GameObject staffNodePrefab;
   [SerializeField] Canvas canvas;
@@ -44,8 +46,17 @@ public class GameController : MonoBehaviour {
 
   // Use this for initialization
   void Awake(){
-    manPower = 
-      orgRoot.currentLevelTotal.ToReactiveProperty ();
+
+    var obj = Instantiate(staffNodePrefab);
+    orgRoot = obj.GetComponent<StaffNodePresenter> ();
+    orgRoot.isRoot.Value = true;
+    orgRoot.isAssigned.Value = false;
+    orgRoot.isHired.Value = true;
+    orgRoot.tier.Value = 0;
+    obj.transform.SetParent (orgRootUI, false);
+
+    manPower = orgRoot.currentLevelTotal.ToReactiveProperty ();
+
   }
   void Start () {
 
@@ -241,7 +252,7 @@ public class GameController : MonoBehaviour {
     }
   }
   private GameObject createStaffNode(StaffData staffData, Transform parentContainer, bool isHired = false, StaffNodePresenter parentNode = null){
-    GameObject obj = Instantiate(staffNodePrefab) as GameObject;
+    var obj = Instantiate(staffNodePrefab);
     StaffNodePresenter node = obj.GetComponent<StaffNodePresenter> ();
     node.staffData = staffData;
     node.isHired.Value = isHired;
