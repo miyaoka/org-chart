@@ -20,7 +20,7 @@ public class ButtonAnimator : MonoBehaviour, IPointerClickHandler, IPointerDownH
 
   public void OnPointerDown (PointerEventData eventData)
   {
-    onEnter ();
+    onPress ();
   }
 
   #endregion
@@ -30,7 +30,7 @@ public class ButtonAnimator : MonoBehaviour, IPointerClickHandler, IPointerDownH
   public void OnPointerEnter (PointerEventData eventData)
   {
     if (eventData.eligibleForClick) {
-      onEnter ();
+      onPress ();
     }
   }
 
@@ -69,7 +69,7 @@ public class ButtonAnimator : MonoBehaviour, IPointerClickHandler, IPointerDownH
   private Vector3 origScale;
 
 
-  void onEnter(){
+  void onPress(){
     LeanTween.cancel (animUI);
     LeanTween.scale (animUI, origScale * pushScale, enterAnimTime).setEase (LeanTweenType.easeOutQuint);
   }

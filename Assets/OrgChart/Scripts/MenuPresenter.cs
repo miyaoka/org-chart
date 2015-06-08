@@ -6,8 +6,12 @@ using UniRx;
 public class MenuPresenter : MonoBehaviour {
 
   [SerializeField] Text manPowerText;
+  [SerializeField] Text manCountText;
   [SerializeField] Text moneyText;
   [SerializeField] Text yearText;
+
+  [SerializeField] GameObject warnNoMenberUI;
+
 
   [SerializeField] GameObject dismissArea;
   [SerializeField] GameObject endTurnBtn;
@@ -19,8 +23,14 @@ public class MenuPresenter : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
     var gc = GameController.Instance;
-    gc.manPower.SubscribeToText (manPowerText);
-    gc.money.SubscribeToText (moneyText);
+    gc.manPower.SubscribeToText (manPowerText).AddTo (this);
+    gc.manCount.SubscribeToText (manCountText).AddTo (this);
+
+    gc.manCount
+      .Subscribe (c => warnNoMenberUI.SetActive (1 > c))
+      .AddTo (this);
+
+    gc.money.SubscribeToText (moneyText).AddTo (this);
     gc.year
 //      .Select(y => Util.AddOrdinal(y) + " year")
       .Select(y => y.ToString() + "年目")

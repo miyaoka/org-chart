@@ -28,6 +28,7 @@ public class GameController : MonoBehaviour {
   public ReactiveProperty<int> year = new ReactiveProperty<int> (1);
   public ReactiveProperty<int> money = new ReactiveProperty<int> ();
   public ReactiveProperty<int> manPower = new ReactiveProperty<int> ();
+  public ReactiveProperty<int> manCount = new ReactiveProperty<int> ();
 
   public ReactiveProperty<QuestPresenter> selectedQuest = new ReactiveProperty<QuestPresenter> ();
 
@@ -56,6 +57,8 @@ public class GameController : MonoBehaviour {
     obj.transform.SetParent (orgRootUI, false);
 
     manPower = orgRoot.currentLevelTotal.ToReactiveProperty ();
+//    manCount = orgRoot.childCountTotal.Select(c => c+1).ToReactiveProperty ();
+    manCount = orgRoot.manCountTotal.ToReactiveProperty ();
 
   }
   void Start () {

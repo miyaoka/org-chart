@@ -105,8 +105,8 @@ public class StaffNodePresenter : NodePresenter {
       .AddTo(this);
 
 
-
     isEmpty
+//      .CombineLatest(isDragging, (l, r) => l || r)
       .Subscribe (e => {
         staffUI.SetActive(!e);
         emptyUI.SetActive(e);
@@ -124,6 +124,7 @@ public class StaffNodePresenter : NodePresenter {
       .AddTo (this);
 
     //hide if no content on dragging
+    /*
     isDragging
       .CombineLatest(hasChild, (l, r) => l && !r)
       .Subscribe (c => {
@@ -131,6 +132,7 @@ public class StaffNodePresenter : NodePresenter {
 //        showFamilyLine(isHired.Value && c);
       })
       .AddTo(this);
+      */
 
     thisDelta = 
       Observable
@@ -190,7 +192,7 @@ public class StaffNodePresenter : NodePresenter {
 	}
 
   void drawFamilyLine(Vector2 from, Vector2 to){
-    var centerY = (from.y + to.y) * .3f;
+    var centerY = (from.y + to.y) * .4f;
     familyLine.Points = new Vector2[] { 
       new Vector2(from.x, from.y), 
       new Vector2(from.x, centerY),

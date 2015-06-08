@@ -19,6 +19,8 @@ public class NodePresenter : MonoBehaviour {
   public ReactiveProperty<int> childCountTotal = new ReactiveProperty<int>();
   public ReactiveProperty<int> currentLevel = new ReactiveProperty<int>();
   public ReactiveProperty<int> currentLevelTotal = new ReactiveProperty<int>();
+  public ReactiveProperty<int> manCount = new ReactiveProperty<int>();
+  public ReactiveProperty<int> manCountTotal = new ReactiveProperty<int>();
 
   public ReadOnlyReactiveProperty<bool> hasChild { get; private set; }
   public ReactiveProperty<bool> isSection = new ReactiveProperty<bool>();
@@ -67,30 +69,7 @@ public class NodePresenter : MonoBehaviour {
       .ToReactiveProperty ();
 
     childCount
-      .Subscribe (x => {
-        childResources.Clear ();
-
-        var lvList = new List<ReactiveProperty<int>> {currentLevel};
-        var ccList = new List<ReactiveProperty<int>> {childCount};
-        foreach (Transform child in childNodes) {
-          var node = child.GetComponent<NodePresenter> ();
-          lvList.Add (node.currentLevelTotal);
-          ccList.Add (node.childCountTotal);
-        }
-
-        Observable
-          .CombineLatest (lvList.ToArray ())
-          .Select (list => list.Sum())
-          .Subscribe (v => currentLevelTotal.Value = v)
-          .AddTo (childResources);
-
-        Observable
-          .CombineLatest (ccList.ToArray ())
-          .Select (list => list.Sum())
-          .Subscribe (v => childCountTotal.Value = v)
-          .AddTo (childResources);
-
-      })
+      .Subscribe (_ => watchChildSum ())
       .AddTo (this);
        
     hasChild = 
@@ -98,7 +77,44 @@ public class NodePresenter : MonoBehaviour {
         .Select (c => 0 < c)
         .ToReadOnlyReactiveProperty ();
 
+    manCount =
+      isEmpty
+        .Select (a => a ? 0 : 1)
+        .ToReactiveProperty ();
 
+    watchChildSum ();
+
+  }
+  void watchChildSum(){
+    childResources.Clear ();
+
+    var lvList = new List<ReactiveProperty<int>> {currentLevel};
+    var ccList = new List<ReactiveProperty<int>> {childCount};
+    var mcList = new List<ReactiveProperty<int>> {manCount};
+    foreach (Transform child in childNodes) {
+      var node = child.GetComponent<NodePresenter> ();
+      lvList.Add (node.currentLevelTotal);
+      ccList.Add (node.childCountTotal);
+      mcList.Add (node.manCountTotal);
+    }
+
+    Observable
+      .CombineLatest (lvList.ToArray ())
+      .Select (list => list.Sum())
+      .Subscribe (v => currentLevelTotal.Value = v)
+      .AddTo (childResources);
+
+    Observable
+      .CombineLatest (ccList.ToArray ())
+      .Select (list => list.Sum())
+      .Subscribe (v => childCountTotal.Value = v)
+      .AddTo (childResources);
+
+    Observable
+      .CombineLatest (mcList.ToArray ())
+      .Select (list => list.Sum ())
+      .Subscribe (v => manCountTotal.Value = v)
+      .AddTo (childResources);    
   }
 
 
