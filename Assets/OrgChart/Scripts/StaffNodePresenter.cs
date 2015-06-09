@@ -114,13 +114,13 @@ public class StaffNodePresenter : NodePresenter {
 
 	}
 
-  void drawFamilyLine(Vector2 from, Vector2 to){
-    var centerY = (from.y + to.y) * .4f;
+  void drawFamilyLine(Vector2 start, Vector2 end){
+    var centerY = (start.y + end.y) * .4f;
     familyLine.Points = new Vector2[] { 
-      new Vector2(from.x, from.y), 
-      new Vector2(from.x, centerY),
-      new Vector2(to.x, centerY),
-      new Vector2(to.x, to.y)
+      new Vector2(start.x, start.y), 
+      new Vector2(start.x, centerY),
+      new Vector2(end.x, centerY),
+      new Vector2(end.x, end.y)
     };
     familyLine.SetVerticesDirty();    
   }

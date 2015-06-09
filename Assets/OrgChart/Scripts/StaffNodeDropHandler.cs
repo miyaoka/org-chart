@@ -5,15 +5,15 @@ using UniRx;
 
 public class StaffNodeDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHandler, IPointerExitHandler{
   protected StaffNodePresenter staffNode;
-  [SerializeField] Outline outline;
-  [SerializeField] GameObject animUI;
+  [SerializeField] protected Outline outline;
+  [SerializeField] protected GameObject animUI;
 
-  private float enterAnimTime = .2f;
-  private float exitAnimTime = .02f;
-  private float enlarge = 1.3f;
-  private Vector3 origScale;
+  protected float enterAnimTime = .2f;
+  protected float exitAnimTime = .02f;
+  protected float enlarge = 1.3f;
+  protected Vector3 origScale;
 
-  void Awake(){
+  protected void Awake(){
     staffNode = GetComponentInParent<StaffNodePresenter> ();
     origScale = animUI.transform.localScale;
   }
@@ -36,7 +36,7 @@ public class StaffNodeDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHa
 
 	#region IPointerEnterHandler implementation
 
-  public void OnPointerEnter (PointerEventData eventData)
+  public virtual void OnPointerEnter (PointerEventData eventData)
 	{
     if (staffNode.isEmpty.Value || getPointerStaffNode(eventData) ) {
       LeanTween.cancel (animUI);
