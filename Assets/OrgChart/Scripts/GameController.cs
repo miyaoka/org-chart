@@ -151,6 +151,40 @@ public class GameController : MonoBehaviour {
 
   }
 
+  public void battle(){
+    var q = selectedQuest.Value;
+    if (q == null) {
+      return;
+    }
+    var staffs = new List<StaffNodePresenter> ();
+    StaffNodePresenter[] nodes = orgRoot.GetComponentsInChildren<StaffNodePresenter> ();
+    foreach (StaffNodePresenter n in nodes) {
+      var s = n.staff.Value;
+      if(s == null) {
+        continue;
+      }
+      staffs.Add (n);
+    }
+    if (1 > staffs.Count) {
+      return;
+    }
+
+    foreach (StaffNodePresenter s in staffs) {
+      if (.5f > UnityEngine.Random.value) {
+        q.health.Value -= (float)s.currentLevel.Value;
+      }
+    }
+
+    var count = (int)q.attackerCount.Value;
+    while (0 < count--) {
+      var s = staffs [UnityEngine.Random.Range (0, staffs.Count)];
+      if (.5f > UnityEngine.Random.value) {
+        s.staff.Value.health.Value -= q.attack.Value;
+      }
+    }
+
+  }
+
 
 
   void retreatBattle(){
@@ -162,6 +196,9 @@ public class GameController : MonoBehaviour {
     StaffNodePresenter[] nodes = orgRoot.GetComponentsInChildren<StaffNodePresenter> ();
     foreach (StaffNodePresenter n in nodes) {
       var staff = n.staff.Value;
+      if (staff == null) {
+        continue;
+      }
       staff.age.Value++;
       staff.lastLevel.Value = staff.baseLevel.Value;
       staff.baseLevel.Value = growSkill(staff.age.Value, staff.baseLevel.Value);
@@ -210,9 +247,11 @@ public class GameController : MonoBehaviour {
     float minHealth = 5f;
     float health = Mathf.Max (minHealth, Mathf.Ceil (Mathf.Pow (healthFactor, healthLevel - .5f) * mp));
     q.maxHealth.Value = health;
-    q.health.Value = health * UnityEngine.Random.value;
+    q.health.Value = health;// * UnityEngine.Random.value;
 
     q.attack.Value = Mathf.Floor( attackLevel * mp );
+
+    q.attackerCount.Value = UnityEngine.Random.Range(2,5);
 
     q.reward.Value = (int)Mathf.Floor(mp * (1f + healthLevel)  * ( 1f + UnityEngine.Random.value * 2f));
 

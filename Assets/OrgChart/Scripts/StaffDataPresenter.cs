@@ -131,6 +131,11 @@ public class StaffDataPresenter : MonoBehaviour {
           })
           .AddTo (staffResources);
 
+        s.health
+          .CombineLatest (node.currentLevel, (l, r) => Mathf.Max(0, r == 0 ? 0 : l / r ))
+          .Subscribe (w => healthUI.anchorMax = new Vector2(w, 1))
+          .AddTo (staffResources);
+
 
     })
       .AddTo (this);

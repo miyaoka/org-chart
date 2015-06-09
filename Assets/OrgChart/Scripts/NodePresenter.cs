@@ -108,6 +108,10 @@ public class NodePresenter : MonoBehaviour {
           .Subscribe(b => currentLevel.Value = b)
           .AddTo(staffResources);
 
+        currentLevel
+          .Subscribe(c => s.health.Value = c)
+          .AddTo(staffResources);
+
       
       })
       .AddTo (this);

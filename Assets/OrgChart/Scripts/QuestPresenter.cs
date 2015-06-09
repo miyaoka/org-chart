@@ -24,6 +24,7 @@ public class QuestPresenter : MonoBehaviour, IPointerDownHandler {
   public ReactiveProperty<float> maxHealth = new ReactiveProperty<float>();
   public ReactiveProperty<float> health = new ReactiveProperty<float>();
   public ReactiveProperty<float> attack = new ReactiveProperty<float>();
+  public ReactiveProperty<float> attackerCount = new ReactiveProperty<float>();
   public ReactiveProperty<float> reward = new ReactiveProperty<float>();
 	// Use this for initialization
 	protected void Start () {
