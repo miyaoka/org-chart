@@ -26,7 +26,7 @@ public class StaffNodePresenter : NodePresenter {
   IObservable<Vector2> parentDelta;
   IObservable<Vector2> thisDelta;
 
-
+  /*
 
   public StaffData staffData{
     get {
@@ -51,28 +51,21 @@ public class StaffNodePresenter : NodePresenter {
       }
     }
   }
-
+*/
 
 
 
 	void Start () {
-//    base.Start ();
     var gc = GameController.Instance;
     familyLine = familyLineUI.GetComponent<UILineRenderer> ();
 
 
-    GameController.Instance.draggingNode
+    gc.draggingNode
       .Select (d => d != null)
       .Subscribe (d => panelCG.blocksRaycasts = d ? false : true)
       .AddTo (this);
 
 
-        /*
-    health
-      .Where (h => 0 >= h)
-      .Subscribe (_ => isEmpty.Value = false)
-      .AddTo (this);
-*/
 
     var parentPos = 
       transform.parent.transform.ObserveEveryValueChanged (t => t.position);
@@ -93,20 +86,11 @@ public class StaffNodePresenter : NodePresenter {
 
 
 
-    parentNode
-      .Where (pn => pn != null)
-      .Subscribe (pn => {
 
-        parentDiff = pn.currentLevel
-          .CombineLatest(currentLevel, (l, r) => (int?)l - r)
-          .CombineLatest(pn.isEmpty, (l, r) => r ? null : l)
-          .ToReactiveProperty ();
-      })
-      .AddTo(this);
 
 
     isEmpty
-//      .CombineLatest(isDragging, (l, r) => l || r)
+    //      .CombineLatest(isDragging, (l, r) => l || r)
       .Subscribe (e => {
         staffUI.SetActive(!e);
         emptyUI.SetActive(e);
@@ -114,49 +98,6 @@ public class StaffNodePresenter : NodePresenter {
       .AddTo(this);
 
 
-    //destory if no content on no dragging
-    isRoot
-      .CombineLatest (isDragging, (l, r) => l || r)
-      .CombineLatest (isAssigned, (l, r) => l || r)
-      .CombineLatest (hasChild, (l, r) => l || r)
-      .Where(exist => !exist)
-      .Subscribe (_ => Destroy(gameObject))
-      .AddTo (this);
-
-    //hide if no content on dragging
-    /*
-    isDragging
-      .CombineLatest(hasChild, (l, r) => l && !r)
-      .Subscribe (c => {
-        panelCG.alpha = c ? 0 : 1;
-//        showFamilyLine(isHired.Value && c);
-      })
-      .AddTo(this);
-      */
-
-    thisDelta = 
-      Observable
-        .EveryUpdate()
-        .Select(_ => (transform as RectTransform).sizeDelta)
-        .DistinctUntilChanged();
-    parentDelta = 
-      Observable
-        .EveryUpdate()
-        .Select(_ => transform.parent ? (transform.parent.transform as RectTransform).sizeDelta : new Vector2())
-        .DistinctUntilChanged();
-
-
-
-
-    /*
-    thisDelta
-      .CombineLatest (parentDelta, (td, pd) => new Vector2 (
-        td.x / 2, 
-        pd.x / 2 - transform.position.x + (transform.parent ? transform.parent.transform.position.x : 0)
-      ))
-      .Subscribe (drawFamilyLine)
-      .AddTo(this);
-      */
 
 
 
@@ -170,25 +111,7 @@ public class StaffNodePresenter : NodePresenter {
       .SubscribeToText (levelCountText)
       .AddTo (this);
 
-    /*
-    childCountTotal
-      .Subscribe (c => {
-        if(3 < c && tier.Value == 1){
-          isSection.Value = true;
-        }else {
-          isSection.Value = false;
-        }
-      })
-      .AddTo (this);
 
-    isSection
-      .Subscribe (s => {
-        bg.enabled = s;
-      })
-      .AddTo (this);
-    */
-//    familyLineUI.SetActive (true);
-          
 	}
 
   void drawFamilyLine(Vector2 from, Vector2 to){

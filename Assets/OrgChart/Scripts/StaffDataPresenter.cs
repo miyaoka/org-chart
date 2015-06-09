@@ -20,6 +20,7 @@ public class StaffDataPresenter : MonoBehaviour {
   CompositeDisposable eventResources = new CompositeDisposable();
 
 
+  CompositeDisposable staffResources = new CompositeDisposable();
 
   void Start(){
     node = GetComponentInParent<StaffNodePresenter> ();
@@ -65,85 +66,81 @@ public class StaffDataPresenter : MonoBehaviour {
           relation.color = new Color (1, 1, 1);
         }
       })
-      .AddTo(eventResources);    
-
-    node.baseLevel
-      .CombineLatest(node.hasChild, (s, c) => c ? "/" + s : "" )
-      .SubscribeToText(baseLevelText)
       .AddTo(eventResources);
-    node.baseLevel
-      .CombineLatest (node.lastLevel, (b, l) => b - l)
-      .CombineLatest(GameController.Instance.onQuest, (l, r) => r ? 0 : l)
-      .Subscribe (diff => {
-        if(0 == diff){
-          diffLevelUI.gameObject.SetActive(false);
-        }
-        else{
-          diffLevelUI.gameObject.SetActive(true);
-          if(0 < diff){
-            diffBg.color = new Color(.1f,.5f,.2f);
-            diffText.text = "+" + diff.ToString();
-          }
-          else{
-            diffBg.color = new Color(.9f,.0f,.0f);
-            diffText.text = diff.ToString();
-          }
-        }
-      })
-      .AddTo (eventResources);
-    node.baseLevel
-      .CombineLatest(node.age, (skill,age) => age == 0 ? .5f : Mathf.Min(1, (float)skill/age/.8f))
-      .Subscribe (rate => {
-        currentLevelText.color = Util.HSVToRGB(rate * 100f/360f, .9f, .7f);
-    });
 
-    node.age
-      .Select(age => age + 20)
-      .SubscribeToText(ageText, age => "(" + age.ToString() + ")" )
-      .AddTo(eventResources);
-    node.age
-      .Subscribe (age => {
-        if(age < GameController.retirementAge)
-        {
-          ageText.color =  Util.HSVToRGB(.3f, 1, (1f - (float)age / GameController.retirementAge) * .6f );
-        } else{
-          ageText.color = new Color(1,0,0);
-        }
-      })
-      .AddTo (eventResources);
+    node.staff
+      .Where (s => s != null)
+      .Subscribe (s => {
 
-    node.name
-      .SubscribeToText (nameText)
-      .AddTo (eventResources);
+        staffResources.Clear();
 
-    node.gender
-      .Subscribe (g => {
-        nameText.color = ((g == 0) ? new Color(1f, .8f, .8f) : new Color(.9f, .9f, 1f));
+        s.baseLevel
+          .CombineLatest(node.hasChild, (l, r) => r ? "/" + l : "" )
+          .SubscribeToText(baseLevelText)
+          .AddTo(staffResources);
+
+        s.baseLevel
+          .CombineLatest (s.lastLevel, (b, l) => b - l)
+          .CombineLatest(GameController.Instance.onQuest, (l, r) => r ? 0 : l)
+          .Subscribe (diff => {
+            if(0 == diff){
+              diffLevelUI.gameObject.SetActive(false);
+            }
+            else{
+              diffLevelUI.gameObject.SetActive(true);
+              if(0 < diff){
+                diffBg.color = new Color(.1f,.5f,.2f);
+                diffText.text = "+" + diff.ToString();
+              }
+              else{
+                diffBg.color = new Color(.9f,.0f,.0f);
+                diffText.text = diff.ToString();
+              }
+            }
+          })
+          .AddTo (staffResources);
+        s.baseLevel
+          .CombineLatest(s.age, (skill,age) => age == 0 ? .5f : Mathf.Min(1, (float)skill/age/.8f))
+          .Subscribe (rate => {
+            currentLevelText.color = Util.HSVToRGB(rate * 100f/360f, .9f, .7f);
+          })
+          .AddTo(staffResources);
+
+        s.age
+          .Select(age => age + 20)
+          .SubscribeToText(ageText, age => "(" + age.ToString() + ")" )
+          .AddTo(staffResources);
+        s.age
+          .Subscribe (age => {
+            if(age < GameController.retirementAge)
+            {
+              ageText.color =  Util.HSVToRGB(.3f, 1, (1f - (float)age / GameController.retirementAge) * .6f );
+            } else{
+              ageText.color = new Color(1,0,0);
+            }
+          })
+          .AddTo (staffResources);
+
+        s.name
+          .SubscribeToText (nameText)
+          .AddTo (staffResources);
+
+        s.gender
+          .Subscribe (g => {
+            nameText.color = ((g == 0) ? new Color(1f, .8f, .8f) : new Color(.9f, .9f, 1f));
+          })
+          .AddTo (staffResources);
+
+
     })
-      .AddTo (eventResources);
-    /*
-    node.shirtsColor
-      .Subscribe(x => shirts.color = x)
-      .AddTo(eventResources);
-    node.tieColor
-      .Subscribe(x => tie.color = x)
-      .AddTo(eventResources);
-    node.suitsColor
-      .Subscribe(x => suits.color = x)
-      .AddTo(eventResources);
+      .AddTo (this);
 
-    node.job
-      .Subscribe(j => {
-        researchUI.SetActive(j == Jobs.Research);
-        developUI.SetActive(j == Jobs.Develop);
-        marketUI.SetActive(j == Jobs.Market);
-      })
-      .AddTo(eventResources);
-    */
+
 
   }
   void OnDestroy()
   {
     eventResources.Dispose ();
+    staffResources.Dispose ();
   }
 }

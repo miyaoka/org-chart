@@ -4,7 +4,7 @@ using System.Collections;
 
 public static class Names
 {
-  private static string[] familyNames = {
+  public static string[] familyNames = {
     "Aaron",
     "Abbington",
     "Abbot",

@@ -8,13 +8,12 @@ public class StaffNodeDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHa
   [SerializeField] Outline outline;
   [SerializeField] GameObject animUI;
 
-  private float enterAnimTime = .1f;
+  private float enterAnimTime = .2f;
   private float exitAnimTime = .02f;
-  private float submitAnimTime = .2f;
   private float enlarge = 1.3f;
   private Vector3 origScale;
 
-  new void Awake(){
+  void Awake(){
     staffNode = GetComponentInParent<StaffNodePresenter> ();
     origScale = animUI.transform.localScale;
   }
@@ -41,7 +40,7 @@ public class StaffNodeDropHandler : MonoBehaviour, IDropHandler, IPointerEnterHa
 	{
     if (staffNode.isEmpty.Value || getPointerStaffNode(eventData) ) {
       LeanTween.cancel (animUI);
-      LeanTween.scale (animUI, origScale * enlarge, submitAnimTime).setEase (LeanTweenType.easeOutBack);
+      LeanTween.scale (animUI, origScale * enlarge, enterAnimTime).setEase (LeanTweenType.easeOutBack);
       outline.enabled = true;
 		}
 	}

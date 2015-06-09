@@ -11,9 +11,6 @@ public class NodePresenter : MonoBehaviour {
   //view
   [SerializeField] public RectTransform childNodes;
 
-
-
-
   //model
   public ReactiveProperty<int> childCount { get; private set; }
   public ReactiveProperty<int> childCountTotal = new ReactiveProperty<int>();
@@ -23,9 +20,6 @@ public class NodePresenter : MonoBehaviour {
   public ReactiveProperty<int> manCountTotal = new ReactiveProperty<int>();
 
   public ReadOnlyReactiveProperty<bool> hasChild { get; private set; }
-  public ReactiveProperty<bool> isSection = new ReactiveProperty<bool>();
-
-
 
   public ReactiveProperty<int> tier = new ReactiveProperty<int> (0);
   public ReactiveProperty<bool> isHired = new ReactiveProperty<bool> ();
@@ -35,17 +29,14 @@ public class NodePresenter : MonoBehaviour {
   public ReactiveProperty<bool> isAssigned = new ReactiveProperty<bool> (true);
   public ReadOnlyReactiveProperty<bool> isEmpty { get; private set; }
 
-  public ReactiveProperty<string> name = new ReactiveProperty<string> ();
-  public ReactiveProperty<int> gender = new ReactiveProperty<int> ();
-  public ReactiveProperty<int> baseLevel =  new ReactiveProperty<int> ();  
-  public ReactiveProperty<int> lastLevel =  new ReactiveProperty<int> ();  
-  public ReactiveProperty<int> age = new ReactiveProperty<int> ();
-  public ReactiveProperty<float> health =  new ReactiveProperty<float> ();  
 
   public ReactiveProperty<StaffNodePresenter> parentNode = new ReactiveProperty<StaffNodePresenter>();
   public ReactiveProperty<int?> parentDiff = new ReactiveProperty<int?>();
 
+  public ReactiveProperty<StaffModel> staff = new ReactiveProperty<StaffModel> ();
+
   CompositeDisposable childResources = new CompositeDisposable();
+  CompositeDisposable staffResources = new CompositeDisposable();
 
 
   void Awake(){
@@ -53,6 +44,7 @@ public class NodePresenter : MonoBehaviour {
 
     var childStream = childNodes.gameObject.OnTransformChildrenChangedAsObservable ();
 
+    //difine props
     childCount = 
       childStream
         .Select (_ => childNodes.childCount)
@@ -62,16 +54,7 @@ public class NodePresenter : MonoBehaviour {
       isAssigned
         .CombineLatest (isDragging, (l, r) => !l || r)
         .ToReadOnlyReactiveProperty ();
-
-    currentLevel = baseLevel
-      .CombineLatest (childCount, (l, r) =>  l - r)
-      .CombineLatest(isEmpty, (l, r) => r ? 0 : l)
-      .ToReactiveProperty ();
-
-    childCount
-      .Subscribe (_ => watchChildSum ())
-      .AddTo (this);
-       
+               
     hasChild = 
       childCount
         .Select (c => 0 < c)
@@ -81,6 +64,53 @@ public class NodePresenter : MonoBehaviour {
       isEmpty
         .Select (a => a ? 0 : 1)
         .ToReactiveProperty ();
+
+    //subscribe
+    childCount
+      .Subscribe (_ => watchChildSum ())
+      .AddTo (this);
+    
+    //destory if no content on no dragging
+    isRoot
+      .CombineLatest (isDragging, (l, r) => l || r)
+      .CombineLatest (isAssigned, (l, r) => l || r)
+      .CombineLatest (hasChild, (l, r) => l || r)
+      .Where(exist => !exist)
+      .Subscribe (_ => Destroy(gameObject))
+      .AddTo (this);
+
+
+    //if have parent node
+    parentNode
+      .Where (pn => pn != null)
+      .Subscribe (pn => {
+        parentDiff = pn.currentLevel
+          .CombineLatest(currentLevel, (l, r) => (int?)l - r)
+          .CombineLatest(pn.isEmpty, (l, r) => r ? null : l)
+          .ToReactiveProperty ();
+      })
+      .AddTo(this);
+
+
+
+
+
+    //if have staff
+    staff
+      .Where (s => s != null)
+      .Subscribe (s => {
+
+        staffResources.Clear();
+
+        s.baseLevel
+          .CombineLatest (childCount, (l, r) =>  l - r)
+          .CombineLatest(isEmpty, (l, r) => r ? 0 : l)
+          .Subscribe(b => currentLevel.Value = b)
+          .AddTo(staffResources);
+
+      
+      })
+      .AddTo (this);
 
     watchChildSum ();
 
@@ -117,6 +147,10 @@ public class NodePresenter : MonoBehaviour {
       .AddTo (childResources);    
   }
 
-
+  void OnDestroy()
+  {
+    childResources.Dispose ();
+    staffResources.Dispose ();
+  }
 
 }

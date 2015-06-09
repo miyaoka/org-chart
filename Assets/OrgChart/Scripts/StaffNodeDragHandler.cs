@@ -19,7 +19,7 @@ public class StaffNodeDragHandler : MonoBehaviour, IBeginDragHandler, IDragHandl
     GameSounds.select.Play ();
 
     //clone item
-    dragPointer = GameController.Instance.createStaffCursor(node.staffData);
+    dragPointer = GameController.Instance.createStaffCursor(node.staff.Value);
 
     GameController.Instance.draggingNode.Value = node;
 

@@ -57,7 +57,6 @@ public class GameController : MonoBehaviour {
     obj.transform.SetParent (orgRootUI, false);
 
     manPower = orgRoot.currentLevelTotal.ToReactiveProperty ();
-//    manCount = orgRoot.childCountTotal.Select(c => c+1).ToReactiveProperty ();
     manCount = orgRoot.manCountTotal.ToReactiveProperty ();
 
   }
@@ -161,7 +160,8 @@ public class GameController : MonoBehaviour {
 
   void endYear(){
     StaffNodePresenter[] nodes = orgRoot.GetComponentsInChildren<StaffNodePresenter> ();
-    foreach (StaffNodePresenter staff in nodes) {
+    foreach (StaffNodePresenter n in nodes) {
+      var staff = n.staff.Value;
       staff.age.Value++;
       staff.lastLevel.Value = staff.baseLevel.Value;
       staff.baseLevel.Value = growSkill(staff.age.Value, staff.baseLevel.Value);
@@ -251,13 +251,13 @@ public class GameController : MonoBehaviour {
     }
     int count = UnityEngine.Random.Range (3, 4);
     for(int i = 0; i < count; i++){
-      createStaffNode (createStaffData (), recruitContainer);
+      createStaffNode (createStaffModel(), recruitContainer);
     }
   }
-  private GameObject createStaffNode(StaffData staffData, Transform parentContainer, bool isHired = false, StaffNodePresenter parentNode = null){
+  private GameObject createStaffNode(StaffModel s, Transform parentContainer, bool isHired = false, StaffNodePresenter parentNode = null){
     var obj = Instantiate(staffNodePrefab);
     StaffNodePresenter node = obj.GetComponent<StaffNodePresenter> ();
-    node.staffData = staffData;
+    node.staff.Value = s;
     node.isHired.Value = isHired;
     if (parentNode) {
       node.parentNode.Value = parentNode;
@@ -274,7 +274,7 @@ public class GameController : MonoBehaviour {
       moveStaffToStaff (node, parentNode as StaffNodePresenter);
     } else {
       //orgroot
-      createStaffNode (node.staffData, parentNode.childNodes, true);
+      createStaffNode (node.staff.Value, parentNode.childNodes, true);
       GameSounds.promote.Play ();
     }
 
@@ -284,15 +284,14 @@ public class GameController : MonoBehaviour {
   }
   private void moveStaffToStaff(StaffNodePresenter node, StaffNodePresenter parentStaff){
     int tierDiff = node.tier.Value - parentStaff.tier.Value;
-    node.health.Value = 1.0f;
     if (parentStaff.isAssigned.Value) {
       tierDiff -= 1;
-      createStaffNode (node.staffData, parentStaff.childNodes, true, parentStaff);
+      createStaffNode (node.staff.Value, parentStaff.childNodes, true, parentStaff);
     } else {
       if (0 == parentStaff.tier.Value) {
         tierDiff = 1;
       }
-      parentStaff.staffData = node.staffData;
+      parentStaff.staff.Value = node.staff.Value;
       parentStaff.isAssigned.Value = true;
 //      parentStaff.isEmpty.Value = true;
 //      parentStaff.isMoved = false;
@@ -305,9 +304,9 @@ public class GameController : MonoBehaviour {
 
  
 
-  public GameObject createStaffCursor(StaffData staffData){
+  public GameObject createStaffCursor(StaffModel s){
     //clone
-    GameObject cursor = createStaffNode (staffData, canvas.transform);
+    GameObject cursor = createStaffNode (s, canvas.transform);
     //add to canvas
     cursor.transform.SetAsLastSibling();
     //set size
@@ -319,6 +318,24 @@ public class GameController : MonoBehaviour {
     return cursor;
   }
 
+  StaffModel createStaffModel(){
+    var s = new StaffModel ();
+    var age = UnityEngine.Random.Range(0,35);
+
+    age = (int)(UDFs.BetaInv (UnityEngine.Random.value, 1.4d, 1d, 0, 0) * 40);
+
+    int baseSkill = UnityEngine.Random.Range(1,1);
+    for(int i = 0; i < age; i++){
+      baseSkill = growSkill (i, baseSkill);
+    }
+    s.baseLevel.Value = s.lastLevel.Value = Mathf.CeilToInt((float)baseSkill * .625f);
+    s.age.Value = age;
+    s.gender.Value = (.2f > UnityEngine.Random.value) ? 0 : 1;
+    s.name.Value = Names.getRandomName (s.gender.Value);
+
+    return s;
+  }
+  /*
   StaffData createStaffData(){
     StaffData data = new StaffData ();
     int age = UnityEngine.Random.Range(0,35);
@@ -336,12 +353,8 @@ public class GameController : MonoBehaviour {
 
     return data;
   }
-  float nearHue(float hue){
-    return (hue + UnityEngine.Random.value * 1F/6F - 1F/12F + 1F ) % 1F;
-  }
-  float compHue(float hue){
-    return (hue + .5F) % 1F;
-  }
+  */
+
 
   // Update is called once per frame
   void Update () {
