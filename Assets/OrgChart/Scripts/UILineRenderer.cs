@@ -70,6 +70,7 @@ public class UILineRenderer : Graphic
 		var sizeY = rectTransform.rect.height;
 		var offsetX = -rectTransform.pivot.x * rectTransform.rect.width;
 		var offsetY = -rectTransform.pivot.y * rectTransform.rect.height;
+
 		
 		// don't want to scale based on the size of the rect, so this is switchable now
 		if (!relativeSize)

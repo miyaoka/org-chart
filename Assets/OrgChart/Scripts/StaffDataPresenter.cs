@@ -10,6 +10,7 @@ public class StaffDataPresenter : MonoBehaviour {
   [SerializeField] Text ageText;
   [SerializeField] RectTransform healthUI;
   [SerializeField] Text nameText;
+  [SerializeField] RectTransform avatarUI;
 
 
   //model
@@ -136,6 +137,12 @@ public class StaffDataPresenter : MonoBehaviour {
           .Subscribe (w => healthUI.anchorMax = new Vector2(w, 1))
           .AddTo (staffResources);
 
+        s.health
+          .Select(h => 0 < h)
+          .Subscribe(l => {
+            avatarUI.localRotation = Quaternion.Euler(0, 0, l ? 0 : -90);
+          })
+          .AddTo(staffResources);
 
     })
       .AddTo (this);

@@ -10,7 +10,7 @@ public class StaffNodePresenter : NodePresenter {
 
   //view
 //  [SerializeField] GameObject contentUI;
-  [SerializeField] GameObject staffUI;
+  [SerializeField] public GameObject staffUI;
   [SerializeField] GameObject emptyUI;
   [SerializeField] GameObject familyLineUI;
   [SerializeField] CanvasGroup panelCG;
@@ -76,6 +76,7 @@ public class StaffNodePresenter : NodePresenter {
       .Where(h => h)
       .CombineLatest(parentPos, (l, r) => r)
       .CombineLatest (familyPos, (l, r) => l - r)
+      .Skip(1)
       .Subscribe (p => drawFamilyLine (new Vector2 (0, 0), new Vector2 (p.x, p.y)))
       .AddTo (this);
 

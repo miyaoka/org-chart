@@ -13,6 +13,7 @@ public class GameController : MonoBehaviour {
   [SerializeField] Transform orgRootUI;
 
   [SerializeField] GameObject staffNodePrefab;
+  [SerializeField] GameObject damagePrefab;
   [SerializeField] Canvas canvas;
   [SerializeField] GameObject questPrefab;
   [SerializeField] RectTransform questContainer;
@@ -31,6 +32,7 @@ public class GameController : MonoBehaviour {
   public ReactiveProperty<int> manCount = new ReactiveProperty<int> ();
 
   public ReactiveProperty<QuestPresenter> selectedQuest = new ReactiveProperty<QuestPresenter> ();
+  public ReactiveProperty<string> logText = new ReactiveProperty<string>();
 
   public const int retirementAge = 40;
 
@@ -116,6 +118,9 @@ public class GameController : MonoBehaviour {
   void startYear(){
     updateRecruits ();
     updateProjects ();
+
+    logText.Value = "";
+
   }
 
   void startPlan(){
@@ -169,18 +174,45 @@ public class GameController : MonoBehaviour {
       return;
     }
 
+
     foreach (StaffNodePresenter s in staffs) {
+      var log = s.staff.Value.name.Value + "の攻撃、";
       if (.5f > UnityEngine.Random.value) {
-        q.health.Value -= (float)s.currentLevel.Value;
+        var d = s.currentLevel.Value;
+        log += d.ToString () + "ダメージ与えた！";
+        q.health.Value -= (float)d;
+      } else {
+        log += "ミス";
       }
+      logText.Value += log + "\n";
     }
 
     var count = (int)q.attackerCount.Value;
     while (0 < count--) {
       var s = staffs [UnityEngine.Random.Range (0, staffs.Count)];
+      var sname = s.staff.Value.name.Value;
+      var log = sname + "は";
+
+      var dmgObj = Instantiate(damagePrefab);
+      dmgObj.transform.SetParent (s.staffUI.transform, false);
+
+//      dmgObj.transform.position = s.transform.position;
+//      Debug.Log (s.transform.position);
+      var dp = dmgObj.GetComponent<DamagePresenter> ();
+
       if (.5f > UnityEngine.Random.value) {
-        s.staff.Value.health.Value -= q.attack.Value;
+        var d = 1;
+        dp.pop (d.ToString ());
+        log += d.ToString () + "ダメージ受けた！";
+        s.staff.Value.health.Value -= d;
+        if (0 >= s.staff.Value.health.Value) {
+          log += sname + "は死亡した";
+        }
+      } else {
+        dp.pop ("0");
+        log += "攻撃をかわした";
       }
+      logText.Value += log + "\n";
     }
 
   }
@@ -251,7 +283,7 @@ public class GameController : MonoBehaviour {
 
     q.attack.Value = Mathf.Floor( attackLevel * mp );
 
-    q.attackerCount.Value = UnityEngine.Random.Range(2,5);
+    q.attackerCount.Value = UnityEngine.Random.Range(1,3);
 
     q.reward.Value = (int)Mathf.Floor(mp * (1f + healthLevel)  * ( 1f + UnityEngine.Random.value * 2f));
 
