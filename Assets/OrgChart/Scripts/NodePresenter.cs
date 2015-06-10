@@ -107,10 +107,13 @@ public class NodePresenter : MonoBehaviour {
           .CombineLatest(isEmpty, (l, r) => r ? 0 : l)
           .Subscribe(b => currentLevel.Value = b)
           .AddTo(staffResources);
-
+        /*
         currentLevel
           .Subscribe(c => s.health.Value = c)
           .AddTo(staffResources);
+          */
+
+
 
       
       })

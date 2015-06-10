@@ -10,11 +10,13 @@ public class DamagePresenter : MonoBehaviour {
 	
 	}
 
-  public void pop(string text){
+  public void pop(string text, Color? color = null, int size = 60){
     var t = GetComponentInChildren<Text> ();
     t.text = text;
+    t.color = color ?? Color.red;
+    t.fontSize = size;
 
-    var xMove = (Random.value * .7f + .3f) * 50f;
+    var xMove = (Random.value * .8f + .2f) * 100f;
     var time = Random.value * .2f + 1.0f;
     var yMove = 30f;
     var yGround = -20f;

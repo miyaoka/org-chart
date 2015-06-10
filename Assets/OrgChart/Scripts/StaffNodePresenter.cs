@@ -90,6 +90,7 @@ public class StaffNodePresenter : NodePresenter {
 
 
 
+
     isEmpty
     //      .CombineLatest(isDragging, (l, r) => l || r)
       .Subscribe (e => {

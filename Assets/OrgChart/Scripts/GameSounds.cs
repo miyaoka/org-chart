@@ -9,6 +9,9 @@ public class GameSounds : MonoBehaviour {
   public static AudioSource retire;
   public static AudioSource accounting;
   public static AudioSource submit;
+  public static AudioSource hit;
+  public static AudioSource damage;
+  public static AudioSource miss;
 	    
 	// Use this for initialization
 	void Start () {
@@ -19,6 +22,9 @@ public class GameSounds : MonoBehaviour {
     retire = audios [3];
     accounting = audios [4];
     submit = audios [5];
+    hit = audios [6];
+    damage = audios [7];
+    miss = audios [8];
 	}
 	
 	// Update is called once per frame

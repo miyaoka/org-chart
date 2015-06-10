@@ -17,6 +17,7 @@ public class GameController : MonoBehaviour {
   [SerializeField] Canvas canvas;
   [SerializeField] GameObject questPrefab;
   [SerializeField] RectTransform questContainer;
+  [SerializeField] RectTransform questHealth;
 
   public ReactiveProperty<bool> isDragging = new ReactiveProperty<bool> (false);
 
@@ -34,6 +35,8 @@ public class GameController : MonoBehaviour {
   public ReactiveProperty<QuestPresenter> selectedQuest = new ReactiveProperty<QuestPresenter> ();
   public ReactiveProperty<string> logText = new ReactiveProperty<string>();
 
+  public IConnectableObservable<long> battleTimer;
+
   public const int retirementAge = 40;
 
   private static GameController s_Instance;
@@ -49,6 +52,17 @@ public class GameController : MonoBehaviour {
 
   // Use this for initialization
   void Awake(){
+    battleTimer = Observable.EveryUpdate ().Publish ();
+    IDisposable battleTimerConnect = default(IDisposable);
+    onQuest
+      .Subscribe (q => {
+        if(q){
+          battleTimerConnect = battleTimer.Connect();
+        } else if(battleTimerConnect != null) {
+          battleTimerConnect.Dispose();
+        }
+
+    }).AddTo (this);
 
     var obj = Instantiate(staffNodePrefab);
     orgRoot = obj.GetComponent<StaffNodePresenter> ();
@@ -155,7 +169,69 @@ public class GameController : MonoBehaviour {
 
 
   }
+  public void attackToQuest(NodePresenter s)
+  {
+    var q = selectedQuest.Value;
+    if (q == null) {
+      return;
+    }
 
+    var dmgObj = Instantiate(damagePrefab);
+    dmgObj.transform.SetParent (questHealth.transform, false);
+    var dp = dmgObj.GetComponent<DamagePresenter> ();
+
+    var log = s.staff.Value.name.Value + "の攻撃、";
+    if (.5f > UnityEngine.Random.value) {
+      var d = s.currentLevel.Value;
+      dp.pop (d.ToString ());
+      GameSounds.hit.Play ();
+      log += d.ToString () + "ダメージ与えた！";
+      q.health.Value -= (float)d;
+    } else {
+      GameSounds.miss.Play ();
+      dp.pop ("miss", Color.white, 20);
+      log += "ミス";
+    }
+    logText.Value += log + "\n";
+  }
+  public void attackToStaff(int d)
+  {
+    var staffs = new List<StaffNodePresenter> ();
+    StaffNodePresenter[] nodes = orgRoot.GetComponentsInChildren<StaffNodePresenter> ();
+    foreach (StaffNodePresenter n in nodes) {
+      if(n.staff.Value == null || 0 >= n.staff.Value.health.Value) {
+        continue;
+      }
+      staffs.Add (n);
+    }
+    if (1 > staffs.Count) {
+      return;
+    }
+
+    var s = staffs [UnityEngine.Random.Range (0, staffs.Count)];
+    var sname = s.staff.Value.name.Value;
+    var log = sname + "は";
+
+    var dmgObj = Instantiate(damagePrefab);
+    dmgObj.transform.SetParent (s.staffUI.transform, false);
+
+    var dp = dmgObj.GetComponent<DamagePresenter> ();
+
+    if (.5f > UnityEngine.Random.value) {
+      dp.pop (d.ToString ());
+      GameSounds.damage.Play ();
+      log += d.ToString () + "ダメージ受けた！";
+      s.staff.Value.damage.Value += d;
+      if (0 >= s.staff.Value.health.Value) {
+        log += sname + "は死亡した";
+      }
+    } else {
+      dp.pop ("miss", Color.white, 20);
+      log += "攻撃をかわした";
+    }
+    logText.Value += log + "\n";
+
+  }
   public void battle(){
     var q = selectedQuest.Value;
     if (q == null) {
@@ -276,8 +352,8 @@ public class GameController : MonoBehaviour {
     float healthFactor = 5f;
     float healthLevel = UnityEngine.Random.value;
     float attackLevel = UnityEngine.Random.value;
-    float minHealth = 5f;
-    float health = Mathf.Max (minHealth, Mathf.Ceil (Mathf.Pow (healthFactor, healthLevel - .5f) * mp));
+    float minHealth = 20f;
+    float health = Mathf.Max (minHealth, Mathf.Ceil (Mathf.Pow (healthFactor, healthLevel - .5f) * mp * 4));
     q.maxHealth.Value = health;
     q.health.Value = health;// * UnityEngine.Random.value;
 
@@ -403,6 +479,7 @@ public class GameController : MonoBehaviour {
     s.age.Value = age;
     s.gender.Value = (.2f > UnityEngine.Random.value) ? 0 : 1;
     s.name.Value = Names.getRandomName (s.gender.Value);
+    s.attackInterval.Value = 5f;
 
     return s;
   }

@@ -28,6 +28,7 @@ public class StaffDataPresenter : MonoBehaviour {
     relation = GetComponent<Image> ();
     diffBg = diffLevelUI.GetComponent<Image> ();
     diffText = diffLevelUI.GetComponentInChildren<Text> ();
+    var gc = GameController.Instance;
 
     /*
     node.health
@@ -132,6 +133,11 @@ public class StaffDataPresenter : MonoBehaviour {
           })
           .AddTo (staffResources);
 
+        s.health = 
+          s.damage
+            .CombineLatest (node.currentLevel, (l, r) => r- l)
+            .ToReactiveProperty();
+
         s.health
           .CombineLatest (node.currentLevel, (l, r) => Mathf.Max(0, r == 0 ? 0 : l / r ))
           .Subscribe (w => healthUI.anchorMax = new Vector2(w, 1))
@@ -143,6 +149,40 @@ public class StaffDataPresenter : MonoBehaviour {
             avatarUI.localRotation = Quaternion.Euler(0, 0, l ? 0 : -90);
           })
           .AddTo(staffResources);
+
+        gc.onQuest
+          .Where(q => !q)
+          .Subscribe(q => {
+            s.damage.Value = 0;
+          }).AddTo(staffResources);
+
+        gc.onQuest
+          .Where(q => q)
+          .Subscribe(q => {
+            s.attackInterval.Value = (Random.value * .2f + .9f) * 5f;
+            s.attackTimer.Value = s.attackInterval.Value * (Random.value * .5f + .5f);
+          }).AddTo(staffResources);
+
+        gc.battleTimer
+          .CombineLatest(node.isHired, (l, r) => r)
+          .CombineLatest(s.health, (l, r) => l && 0 < r) 
+          .Where(r => r)
+          .Subscribe (_ => {
+
+            s.attackTimer.Value += Time.deltaTime;
+            if(s.attackInterval.Value <= s.attackTimer.Value){
+              s.attackTimer.Value = 0;
+              s.attackInterval.Value = (Random.value * .2f + .9f) * 5f;
+              LeanTween.cancel(avatarUI.gameObject);
+              var origX = avatarUI.localPosition.x;
+              LeanTween.moveLocalX (avatarUI.gameObject, origX - 20, .5f).setEase (LeanTweenType.easeOutBounce).setOnComplete( () => {
+                gc.attackToQuest(node);
+                LeanTween.moveLocalX (avatarUI.gameObject, origX, .3f).setEase (LeanTweenType.easeOutCubic);
+              });
+
+            }
+          })
+          .AddTo (staffResources);
 
     })
       .AddTo (this);

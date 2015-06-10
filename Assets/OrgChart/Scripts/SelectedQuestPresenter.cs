@@ -18,15 +18,16 @@ public class SelectedQuestPresenter : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+    var gc = GameController.Instance;
 
-    GameController.Instance.selectedQuest
+    gc.selectedQuest
       .Select(q => q != null)
       .Subscribe (q => {
         hasQuest.SetActive(q);
         noQuest.SetActive(!q);
       });
 
-    GameController.Instance.selectedQuest
+    gc.selectedQuest
       .Where(q => q)
       .Subscribe (q => {
         
@@ -55,6 +56,26 @@ public class SelectedQuestPresenter : MonoBehaviour {
           .Select (v => v.ToString ("N0"))
           .SubscribeToText (rewardText)
           .AddTo (q);        
+
+        gc.onQuest
+          .Where(_ => _)
+          .Subscribe(_ => {
+            q.attackInterval.Value = 5f;
+            q.attackTimer.Value = 0;
+          }).AddTo(q);
+
+        gc.battleTimer
+          .Subscribe (_ => {
+
+            q.attackTimer.Value += Time.deltaTime;
+            if(q.attackInterval.Value <= q.attackTimer.Value){
+              q.attackTimer.Value = 0;
+              q.attackInterval.Value = (Random.value * .2f + .9f) * 5f;
+              gc.attackToStaff(Random.Range(1, 4));
+            }
+          })
+          .AddTo (q);
+
     });
 
 
