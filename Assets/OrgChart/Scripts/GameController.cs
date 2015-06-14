@@ -316,16 +316,7 @@ public class GameController : MonoBehaviour {
   }
 
 
-  void onEndTurn(EndTurnEvent e){
-    
 
-    updateRecruits ();
-    updateProjects ();
-
-    money.Value -= manPower.Value;
-
-    GameSounds.accounting.Play ();
-  }
   int growSkill(int age, int skill){
     
     if (retirementAge > age) {
